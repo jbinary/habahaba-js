@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-BUILDDIR=build
+BUILDDIR=../build
 
 all: html css img templates js libs
 
