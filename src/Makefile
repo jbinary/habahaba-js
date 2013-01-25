@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 BUILDDIR=build
 
-all: html css img templates
+all: html css img templates js libs
 
 init:
 	mkdir $(BUILDDIR) 2>/dev/null || true
@@ -16,6 +16,10 @@ templates: init templates/*.yate
 css: init css/*.css
 	mkdir -p $(BUILDDIR)/css
 	cp css/*.css $(BUILDDIR)/css
+
+libs: init libs/*
+	mkdir -p $(BUILDDIR)/js/libs
+	cp -R libs/* $(BUILDDIR)/js/libs
 
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js
