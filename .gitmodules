@@ -1,0 +1,3 @@
+[submodule "yate"]
+	path = src/libs/yate
+	url = git@github.com:pasaran/yate.git
