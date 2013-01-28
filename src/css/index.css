@@ -1,0 +1,442 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #0098a9;
+    height: 100%;
+    }
+
+
+#wrapper {
+    height: 100%;
+    position: relative;
+    }
+
+#header {
+    height: 60px;
+    width: 100%;
+    position: absolute;
+    z-index: 10;
+    background: #0098a9 url(../img/pictures-bg.png) left center no-repeat;
+    }
+
+    #header #logo {
+        height: 56px;
+        width: 254px;
+        background: url(../img/logo.png) no-repeat;
+        float: left;
+        margin: 2px 0 0 3px;
+        }
+
+#left-column {
+    margin-left: 3px;
+    width: 294px;
+    position: absolute;
+    padding-top: 60px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    }
+
+.border {
+    border: 1px solid #c2e1e5;
+    }
+
+    .border:first-child {
+        margin-bottom: 7px;
+        position: absolute;
+        }
+
+        #left-column #user-block {
+            margin: 1px;
+            background: #c2e1e5;
+            height: 120px;
+            }
+
+        #user-block h4 {
+            font: bold 22px Arial;
+            color: #00707d;
+            margin: 8px 6px;
+            float: left;
+            }
+
+        #user-block #blog-button {
+            display: block;
+            background: url(../img/blog-button.png) no-repeat;
+            width: 42px;
+            height: 27px;
+            float: right;
+            margin: 4px;
+            }
+
+        #user-block #blog-button:hover {
+            background: url(../img/blog-button-hover.png) no-repeat;
+            }
+
+        #user-block #personal-info-button {
+            display: block;
+            background: url(../img/personal-info-button.png) no-repeat;
+            width: 27px;
+            height: 27px;
+            float: right;
+            margin: 4px;
+            }
+
+        #user-block #personal-info-button:hover {
+            background: url(../img/personal-info-button-hover.png) no-repeat;
+            }
+
+        #user-block img {
+            width: 70px;
+            height: 70px;
+            margin-left: 6px;
+            float: left;
+            }
+
+        #user-block #status {
+            margin: 0 4px 0 6px;
+            height: 36px;
+            float: left;
+            width: 192px;
+            background: #edf6f7;
+            font: italic 14px Open Sans;
+            color: #777978;
+            padding: 6px;
+            }
+
+        #user-block select {
+            float: left;
+            width: 192px;
+            padding: 0 6px;
+            margin-left: 6px;
+            }
+
+
+        #block-size {
+            position: absolute;
+            top: 190px;
+            bottom: 2px;
+            right: 0;
+            left: 0;
+            }
+
+        #left-column #contact-block {
+            height: 100%;
+            padding: 1px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            background: #c2e1e5;
+            background-clip: content-box;
+            }
+
+        #contact-block #container {
+            padding: 4px;
+            height: 100%;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            background: #c0c0c0;
+            background-clip: content-box;
+            }
+
+            #contact-block #container #search {
+                height: 39px;
+                background: #f4f4f4;
+                margin:1px;
+                }
+
+                #contact-block #container #search input {
+                    width: 233px;
+                    height: 19px;
+                    border: 1px solid #c0c0c0;
+                    margin: 6px;
+                    background: white url(../img/search-img.png) 5px center no-repeat;
+                    padding: 3px 10px 3px 25px;
+                    font: 14px Verdana;
+                    color: #777978;
+                    }
+
+            #contact-block #container #roster {
+                overflow-y: auto;
+                position: absolute;
+                top: 46px;
+                bottom: 46px;
+                right: 5px;
+                left: 5px;
+                }
+
+            #contact-block #container .group-name {
+                margin: 0 1px 1px;
+                border: 1px solid white;
+                height: 30px;
+                background: url(../img/group-bg.png) repeat-x;
+                }
+
+                #contact-block #container .group-name h4 {
+                    font: 18px Arial;
+                    margin: 4px 6px;
+                    float: left;
+                    }
+
+                #contact-block #container .group-name p {
+                    float: left;
+                    margin: 6px 0;
+                    color: #777978;
+                    font: 12px Arial;
+                    }
+
+                    #contact-block #container .group-name p strong {
+                        color: #00707d;
+                        font-weight: bold;
+                        }
+
+                #contact-block #container .group-list {
+                    padding: 15px 0;
+                    background-color: white;
+                    }
+
+                    #contact-block #container .group-list .contact {
+                        height: 60px;
+                        }
+
+                        #contact-block #container .group-list .contact img {
+                            width: 50px;
+                            height: 50px;
+                            float: left;
+                            margin-left: 15px;
+                            }
+
+                        #contact-block #container .group-list .contact span {
+                            width: 10px;
+                            height: 10px;
+                            display: block;
+                            float: left;
+                            margin: 6px 6px 2px 6px;
+                            }
+
+                        #contact-block #container .group-list .contact .online {
+                            background: url(../img/available-circle-status.png);
+                            }
+
+                        #contact-block #container .group-list .contact .offline {
+                            background: url(../img/offline-circle-status.png);
+                            }
+
+                        #contact-block #container .group-list .contact h5 {
+                            float: left;
+                            margin: 2px 0 0;
+                            font: 14px Verdana; 
+                            width: 170px;
+                            }
+
+                        #contact-block #container .group-list .contact p {
+                            float: left;
+                            margin: 1px 0 3px 22px;
+                            width: 170px;
+                            font: italic 12px Open Sans;
+                            line-height: 14px;
+                            color: #6f6f6f;
+                            }
+
+    #contact-block #roster-buttons {
+        position: absolute;
+        bottom: 6px;
+        left: 6px;
+        right: 6px;
+        height: 39px;
+        background: #f4f4f4;
+        }
+
+        #contact-block #roster-buttons button {
+            font: 12px Verdana;
+            color: white;
+            text-shadow: 1px 1px 1px #00707d;
+            height: 27px;
+            border: none;
+            line-height: 10px;
+            text-align: left;
+            }
+
+        #contact-block #roster-buttons #add-contact-button {
+            background: url(../img/addcontact-button.png);
+            padding-right: 20px;
+            width: 96px;
+            margin: 6px 0 6px 6px;
+            float:left;
+            }
+
+        #contact-block #roster-buttons #add-contact-button:hover {
+            background: url(../img/addcontact-button-hover.png);
+            }
+
+        #contact-block #roster-buttons #join-room-button {
+            background: url(../img/enterroom-button.png);
+            padding-right: 20px;
+            width: 96px;
+            margin: 6px 0 6px 6px;
+            float:left;
+            }
+
+        #contact-block #roster-buttons #join-room-button:hover {
+            background: url(../img/enterroom-button-hover.png);
+            }
+
+        #contact-block #roster-buttons #settings-button {
+            width: 27px;
+            background: url(../img/settings-button.png);
+            float: right;
+            margin: 6px 6px 6px 0;
+            }
+
+        #contact-block #roster-buttons #settings-button:hover {
+            background: url(../img/settings-button-hover.png);
+            }
+
+
+
+#right-column {
+    padding: 60px 0 0 304px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    }
+
+    #right-column #right-block-size {
+        position: absolute;
+        top: 60px;
+        right: 2px;
+        bottom: 2px;
+        left: 302px;
+        padding: 1px;
+        margin: 0;
+        background: #c2e1e5;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        background-clip: content-box;
+        }
+
+        #right-column #right-block-size #message-window {
+            position: absolute;
+            top: 35px;
+            right: 4px;
+            left: 4px;
+            bottom: 4px;
+            border: 1px solid #bdbdbd;
+            background: white;
+            }
+
+#bookmarks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    }
+
+    #bookmarks li {
+        float: left;
+        background: white;
+        opacity: 0.5;
+        display: block;
+        font: bold 15px Arial;
+        margin: 4px 0 0 3px;
+        height: 30px;
+        line-height: 34px;
+        z-index: 100;
+        position: relative;
+        }
+
+    #bookmarks #active {
+        opacity: 1;
+        border-top: 1px solid #bdbdbd;
+        border-left: 1px solid #bdbdbd;
+        border-right: 1px solid #bdbdbd;
+        }
+
+        #bookmarks li .contact-status {
+            margin: 9px 8px 0 7px;
+            width: 16px;
+            height: 13px;
+            display: block;
+            float: left;
+            }
+
+        #bookmarks li .available {
+            background: url(../img/available-tab-status.png);
+            }
+
+        #bookmarks li .away {
+            background: url(../img/away-tab-status.png);
+            }
+
+        #bookmarks li .room {
+            background: url(../img/room-tab-status.png);
+            }
+
+        #bookmarks li .close-button {
+            display: block;
+            width: 7px;
+            height: 7px;
+            background: url(../img/close-button.png);
+            float: right;
+            margin: 2px 2px 0 15px;
+            }
+
+#message-window {
+    overflow-y: scroll;
+    }
+
+    #message-window .companion-block {
+        height: 95px;
+        }
+
+        #message-window .companion-block img {
+            height: 70px;
+            width: 70px;
+            margin: 13px 0 0 13px;
+            float: left;
+            }
+
+        #message-window .companion-block span {
+            float: left;
+            margin: 13px 0 0 0;
+            padding: 0 7px;
+            display: block;
+            background: #f4f4f4;
+            font: italic 14px Open Sans;
+            color: #777978;
+            max-width: 50%;
+            }
+
+    #message-window .dialog-block {
+        border-top: 1px solid #bdbdbd;
+        }
+
+        #message-window .dialog-block .message {
+            padding: 11px 13px;
+            border-top: 1px dotted #bdbdbd;
+            }
+
+        #message-window .dialog-block .message:first-child {
+            border-top: none;
+            }
+
+            #message-window .dialog-block .message img {
+                float: left;
+                width: 25px;
+                height: 25px;
+                }
+
+            #message-window .dialog-block .message h5 {
+                font: bold 18px Arial;
+                color: #777978;
+                float: left;
+                margin: 0 20px 0 10px;
+                }
+
+            #message-window .dialog-block .message p {
+                float: left;
+                margin: 0 20px 0 38px;
+                font: 14px Verdana;
+                }

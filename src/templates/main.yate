@@ -1,0 +1,107 @@
+match / {
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo">
+            </div>
+        </div>
+        <div id="left-column">
+            apply .my_presence render_my_presence
+            apply .roster render_roster
+        </div>
+        <div id="right-column">
+            <div class="border" id="right-block-size">
+            </div>
+        </div>
+    </div>
+}
+
+func selected() {
+    @selected = "selected"
+}
+
+match / render_my_presence {
+    apply .my_presence render_my_presence
+}
+
+match .my_presence render_my_presence {
+    <div class="border">
+        <div id="user-block">
+            <h4>{ ..nickname }</h4>
+            <a href="#" id="personal-info-button"></a>
+            <a href="#" id="blog-button"></a>
+            <br class="clr"/>
+            <img src="img/userpic.png" alt="ava"/>
+            <p id="status">{ .status }</p>
+            <select>
+                <option>
+                "Available"
+                </option>
+                <option>
+                if .show == "away" { selected() }
+                "Away"
+                </option>
+                <option>
+                if .show == "xa" { selected() }
+                "Extended Away"
+                </option>
+                <option>
+                if .show == "dnd" { selected() }
+                "Do Not Disturb"
+                </option>
+                <option>Offline</option>
+            </select>
+            <br class="clr"/>
+       </div>
+    </div>
+}
+
+match .roster render_roster {
+    <div class="border" id="block-size" >
+        <div id="contact-block">
+            <div id="container">
+                <div id="search">
+                    <input type="text"/>
+                </div>
+                <div id="roster">
+                    <div class="group">
+                        <div class="group-name">
+                            <h4>Group 1</h4>
+                            <p>(<strong>6</strong>/7)</p>
+                        </div>
+                        <div class="group-list">
+                            <div class="contact">
+                                <img alt="contact ava" src="img/userpic.png"/>
+                                <span class="online"></span>
+                                <h5>Amy</h5>
+                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                            </div>
+                            <div class="contact">
+                                <img alt="contact ava" src="img/userpic.png"/>
+                                <span class="offline"></span>
+                                <h5>Amy</h5>
+                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                            </div>
+                            <div class="contact">
+                                <img alt="contact ava" src="img/userpic.png"/>
+                                <span class="offline"></span>
+                                <h5>Amy</h5>
+                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                            </div>
+                            <div class="contact">
+                                <img alt="contact ava" src="img/userpic.png"/>
+                                <span class="online"></span>
+                                <h5>Amy</h5>
+                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="roster-buttons">
+                    <button id="add-contact-button">Добавить контакт</button>
+                    <button id="join-room-button">Войти в комнату</button>
+                    <button id="settings-button"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
