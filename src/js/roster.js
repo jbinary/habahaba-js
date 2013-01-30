@@ -2,9 +2,15 @@
 (function(){
     var habahaba = window.habahaba;
     var jslix = window.jslix;
+    var WrongElement = jslix.exceptions.WrongElement;
     var Client = habahaba.Client;
 
     var presence = jslix.Element({
+        clean_type: function(value) {
+            if (['unavailable', undefined].indexOf(value) == -1)
+                 throw new WrongElement();
+            return value;
+        },
         anyHandler: function(presence) {
             var roster_item = new Model('.roster.items').getAll();
             roster_item = roster_item.filter(function(item) {
