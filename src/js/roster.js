@@ -7,7 +7,13 @@
     Client.prototype.init_roster = function() {
         this.data.roster = {
             items: [],
-            groups: []
+            groups: [
+                {
+                    name: 'Undefined',
+                    pk: 0,
+                    special_group: 'undefined'
+                }
+            ]
         };
         this.roster = new jslix.roster(this.dispatcher);
         this.roster.signals.got.add(this.got_roster);
@@ -25,6 +31,11 @@
                     group.name = item.groups[gi];
                     group.set();
                 }
+                groups.push(group.pk);
+            }
+            if (!item.groups.length) {
+                var group = new Model('.roster.groups');
+                group = group.get({special_group: 'undefined'})
                 groups.push(group.pk);
             }
             var model = new Model('.roster.items').new();
