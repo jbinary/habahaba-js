@@ -72,7 +72,8 @@ match .roster render_roster {
                             <div class="group-name">
                                 <h4>{ .name }</h4>
                                 overall = count(contacts)
-                                <p>(<strong>x</strong>/{ overall })</p>
+                                online = count(contacts[ .presences ][ count(.presences[.type != 'unavailable']) > 0 ])
+                                <p>(<strong>{ online }</strong>/{ overall })</p>
                             </div>
                             <div class="group-list">
                                 for sort(sort(contacts, .nickname), .jid._node) {
