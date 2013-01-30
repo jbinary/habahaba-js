@@ -11,6 +11,13 @@
         <script type="text/javascript" src="templates/main.yate.js"></script>
         <!-- JQuery -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+
+        <!-- CryptoJS -->
+        <script src="js/libs/cryptojs/rollups/md5.js"></script>
+        <script src="js/libs/cryptojs/components/core.js"></script>
+        <script src="js/libs/cryptojs/components/enc-base64.js"></script>
+        <!-- JS-Signals -->
+        <script src="js/libs/signals.js"></script>
         <!-- JSLiX -->
         <script src="js/libs/jslix/jslix.js"></script>
         <script src="js/libs/jslix/jslix.stanzas.js"></script>
@@ -30,7 +37,64 @@
 
         <!-- Habahaba -->
         <script type="text/javascript" src="js/main.js"/></script>
+        <script type="text/javascript" src="js/models.js"/></script>
+        <script type="text/javascript" src="js/client.js"/></script>
+        <script type="text/javascript" src="js/roster.js"/></script>
+
+        <script>
+            function doLogin(oForm) {
+                document.getElementById('err').innerHTML = '';
+                    var options = {
+                        http_base: oForm.http_base.value,
+                        jid: oForm.jid.value,
+                        password: oForm.password.value,
+                        register: oForm.register.checked
+                    },
+                    client = new habahaba.Client(options);
+                    habahaba.client = client;
+                    client.connect().done(function() {
+                        client.dispatcher.send(jslix.stanzas.presence.create());
+                        habahaba.view_start();
+                    }).fail(function(reason) {
+                        alert(reason);
+                    });
+                return false;
+            }
+        </script>
     </head>
     <body>
+        <div id="err"></div>
+
+        <div id="login_pane">
+            <form name="loginForm" onSubmit="return doLogin(this);" action="#">
+                <table>
+                    <tr>
+                        <th><label for="http_base">HTTP Base</label></th><td>
+                        <input type="text" name="http_base" id="http_base" tabindex="1" value="/bosh/"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="jid">JID</label></th><td>
+                        <input type="text" name="jid" id="jid" tabindex="2" value="user@server.local"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="password">Password</label></th><td>
+                        <input type="password" name="password" id="password" tabindex="3" value="ghjcnjgfhjkm"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th></th><td>
+                        <input type="checkbox" name="register" id="register_checkbox" />
+                        <label for="register_checkbox">Register new account</label></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td><td>
+                        <input type="submit" value="Login" tabindex="4">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
     </body>
 </html>

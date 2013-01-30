@@ -1,4 +1,4 @@
-match / {
+match / __main__ {
     <div id="wrapper">
         <div id="header">
             <div id="logo">
@@ -64,36 +64,57 @@ match .roster render_roster {
                 </div>
                 <div id="roster">
                     <div class="group">
-                        <div class="group-name">
-                            <h4>Group 1</h4>
-                            <p>(<strong>6</strong>/7)</p>
-                        </div>
-                        <div class="group-list">
-                            <div class="contact">
-                                <img alt="contact ava" src="img/userpic.png"/>
-                                <span class="online"></span>
-                                <h5>Amy</h5>
-                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                        for sort(.groups, .name) {
+                            gpk = .pk
+                            contacts = ..items[ .groups == gpk ]
+                            <div class="group-name">
+                                <h4>{ .name }</h4>
+                                overall = count(contacts)
+                                <p>(<strong>x</strong>/{ overall })</p>
                             </div>
-                            <div class="contact">
-                                <img alt="contact ava" src="img/userpic.png"/>
-                                <span class="offline"></span>
-                                <h5>Amy</h5>
-                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                            <div class="group-list">
+                                for sort(sort(contacts, .nickname), .jid._node) {
+                                    <div class="contact">
+                                        <img alt="contact ava" src="img/userpic.png"/>
+                                        <span class="online">
+                                        if !.presences.length {
+                                            @class = "offline"
+                                        }
+                                        </span>
+                                        <h5>
+                                        if .nickname {
+                                            "{ .nickname }"
+                                        } else {
+                                            if ._jid._node {
+                                                "{ .jid._node }@"
+                                            } else { 
+                                                "{ .jid._domain }"
+                                            }
+                                        }
+                                        </h5>
+                                        <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                                    </div>
+                                }
+                                /*<div class="contact">
+                                    <img alt="contact ava" src="img/userpic.png"/>
+                                    <span class="offline"></span>
+                                    <h5>Amy</h5>
+                                    <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                                </div>
+                                <div class="contact">
+                                    <img alt="contact ava" src="img/userpic.png"/>
+                                    <span class="offline"></span>
+                                    <h5>Amy</h5>
+                                    <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                                </div>
+                                <div class="contact">
+                                    <img alt="contact ava" src="img/userpic.png"/>
+                                    <span class="online"></span>
+                                    <h5>Amy</h5>
+                                    <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                                </div>*/
                             </div>
-                            <div class="contact">
-                                <img alt="contact ava" src="img/userpic.png"/>
-                                <span class="offline"></span>
-                                <h5>Amy</h5>
-                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
-                            </div>
-                            <div class="contact">
-                                <img alt="contact ava" src="img/userpic.png"/>
-                                <span class="online"></span>
-                                <h5>Amy</h5>
-                                <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
                 <div id="roster-buttons">
