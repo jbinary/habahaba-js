@@ -20,6 +20,7 @@
             if (!resource.length) {
                 presences.push(presence);
             } else {
+                // FIXME: remove obsolete unavailable presences
                 presences[presences.indexOf(resource[0])] = presence;
             }
             roster_item.presences = presences;
