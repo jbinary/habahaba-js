@@ -85,11 +85,10 @@ match .roster render_roster {
                                         if .nickname {
                                             "{ .nickname }"
                                         } else {
-                                            if ._jid._node {
+                                            if .jid._node {
                                                 "{ .jid._node }@"
-                                            } else { 
-                                                "{ .jid._domain }"
                                             }
+                                            "{ .jid._domain }"
                                         }
                                         </h5>
                                         <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
