@@ -80,7 +80,7 @@ match .roster render_roster {
                                     <div class="contact">
                                         <img alt="contact ava" src="img/userpic.png"/>
                                         <span class="online">
-                                        if !presence {
+                                        if !presence || presence.type == 'unavailable' {
                                             @class = "offline"
                                         } else {
                                             if presence.show {

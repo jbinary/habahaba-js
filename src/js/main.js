@@ -31,7 +31,7 @@ yr.externals.max_priority = function(nodes) {
         var node = nodes[i];
         var value = node.data.priority;
         values[value] = node;
-        if (value !== undefined)
+        if (value !== undefined && node.data.type != 'unavailable')
             avalues.push(value);
     }
     if (avalues.length) {
