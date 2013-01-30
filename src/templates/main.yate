@@ -1,3 +1,5 @@
+external nodeset max_priority(nodeset)
+
 match / __main__ {
     <div id="wrapper">
         <div id="header">
@@ -74,11 +76,18 @@ match .roster render_roster {
                             </div>
                             <div class="group-list">
                                 for sort(sort(contacts, .nickname), .jid._node) {
+                                    presence = max_priority(.presences)
                                     <div class="contact">
                                         <img alt="contact ava" src="img/userpic.png"/>
                                         <span class="online">
-                                        if !.presences.length {
+                                        if !presence {
                                             @class = "offline"
+                                        } else {
+                                            if presence.show {
+                                                @class = presence.show
+                                            } else {
+                                                @class = "online"
+                                            }
                                         }
                                         </span>
                                         <h5>
@@ -91,7 +100,7 @@ match .roster render_roster {
                                             "{ .jid._domain }"
                                         }
                                         </h5>
-                                        <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                                        <p>{ presence.status }</p>
                                     </div>
                                 }
                                 /*<div class="contact">

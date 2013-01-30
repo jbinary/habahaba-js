@@ -15,6 +15,10 @@
         jslix.Client.apply(this, arguments);
         this.data = data;
         this.init_roster();
+        var that = this;
+        this.roster.signals.got.add(function() {
+            that.changeStatus();
+        });
     }
     var Client = habahaba.Client;
 
@@ -34,6 +38,10 @@
             d.reject.apply(d, arguments);
         });
         return d;
+    }
+
+    Client.prototype.changeStatus = function() {
+        this.dispatcher.send(jslix.stanzas.presence.create({}));
     }
 
 })();

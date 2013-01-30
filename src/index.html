@@ -53,7 +53,6 @@
                     client = new habahaba.Client(options);
                     habahaba.client = client;
                     client.connect().done(function() {
-                        client.dispatcher.send(jslix.stanzas.presence.create());
                         habahaba.view_start();
                     }).fail(function(reason) {
                         alert(reason);

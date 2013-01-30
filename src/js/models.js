@@ -71,11 +71,20 @@ modelEngine = function(data) {
             }
         }
         return obj;
-    }
+    } 
 
     Model.prototype.fromDocument = function(obj) {
         for (var field in obj) {
-            this[field] = obj[field];
+            if ((field[0] == '_') || 
+                (obj[field] instanceof Function))
+                 continue;
+            if (obj[field] instanceof Array) {
+                this[field] = obj[field].slice();
+            } else if (obj[field] instanceof Object) {
+                this[field] = obj[field].clone();
+            } else {
+                this[field] = obj[field]; // TODO: when tracking changes must go through objects instead of ==
+            }
         }
         return this;
     }
@@ -196,7 +205,11 @@ modelEngine = function(data) {
     }
 
     Model.prototype.getAll = function() {
-        return this.getCollection();
+        var collection = this.getCollection();
+        for (var i=0; i<collection.length; i++) {
+            collection[i] = new Model(this._model_name).fromDocument(collection[i]);
+        }
+        return collection;
     }
 
     return {Model: Model,

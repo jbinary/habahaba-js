@@ -23,3 +23,22 @@ habahaba.view_start = function() {
 yr.externals.count = function(nodeset) {
     return nodeset.length;
 }
+
+yr.externals.max_priority = function(nodes) {
+    var values = {};
+    var avalues = [];
+    for (var i=0, l=nodes.length; i<l; i++) {
+        var node = nodes[i];
+        var value = node.data.priority;
+        values[value] = node;
+        if (value !== undefined)
+            avalues.push(value);
+    }
+    if (avalues.length) {
+        var max = Math.max(avalues);
+        return [values[max]];
+    } else if (undefined in values) {
+        return [values[undefined]]
+    }
+    return [];
+}
