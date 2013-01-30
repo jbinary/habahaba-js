@@ -65,66 +65,50 @@ match .roster render_roster {
                     <input type="text"/>
                 </div>
                 <div id="roster">
-                    <div class="group">
-                        for sort(.groups, .name) {
-                            gpk = .pk
-                            contacts = ..items[ .groups == gpk ]
-                            <div class="group-name">
-                                <h4>{ .name }</h4>
-                                overall = count(contacts)
-                                online = count(contacts[ .presences ][ count(.presences[.type != 'unavailable']) > 0 ])
-                                <p>(<strong>{ online }</strong>/{ overall })</p>
-                            </div>
-                            <div class="group-list">
-                                for sort(sort(contacts, .nickname), .jid._node) {
-                                    presence = max_priority(.presences)
-                                    <div class="contact">
-                                        <img alt="contact ava" src="img/userpic.png"/>
-                                        <span class="online">
-                                        if !presence || presence.type == 'unavailable' {
-                                            @class = "offline"
-                                        } else {
-                                            if presence.show {
-                                                @class = presence.show
+                    for sort(.groups, .name) {
+                        gpk = .pk
+                        contacts = ..items[ .groups == gpk ]
+                        if exists(contacts) {
+                            <div class="group">
+                                <div class="group-name">
+                                    <h4>{ .name }</h4>
+                                    overall = count(contacts)
+                                    online = count(contacts[ .presences ][ exists(.presences[.type != 'unavailable']) ])
+                                    <p>(<strong>{ online }</strong>/{ overall })</p>
+                                </div>
+                                <div class="group-list">
+                                    for sort(sort(contacts, .nickname), .jid._node) {
+                                        presence = max_priority(.presences)
+                                        <div class="contact">
+                                            <img alt="contact ava" src="img/userpic.png"/>
+                                            <span class="online">
+                                            if !presence || presence.type == 'unavailable' {
+                                                @class = "offline"
                                             } else {
-                                                @class = "online"
+                                                if presence.show {
+                                                    @class = presence.show
+                                                } else {
+                                                    @class = "online"
+                                                }
                                             }
-                                        }
-                                        </span>
-                                        <h5>
-                                        if .nick {
-                                            "{ .nick }"
-                                        } else {
-                                            if .jid._node {
-                                                "{ .jid._node }@"
+                                            </span>
+                                            <h5>
+                                            if .nick {
+                                                "{ .nick }"
+                                            } else {
+                                                if .jid._node {
+                                                    "{ .jid._node }@"
+                                                }
+                                                "{ .jid._domain }"
                                             }
-                                            "{ .jid._domain }"
-                                        }
-                                        </h5>
-                                        <p>{ presence.status }</p>
-                                    </div>
-                                }
-                                /*<div class="contact">
-                                    <img alt="contact ava" src="img/userpic.png"/>
-                                    <span class="offline"></span>
-                                    <h5>Amy</h5>
-                                    <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
+                                            </h5>
+                                            <p>{ presence.status }</p>
+                                        </div>
+                                    }
                                 </div>
-                                <div class="contact">
-                                    <img alt="contact ava" src="img/userpic.png"/>
-                                    <span class="offline"></span>
-                                    <h5>Amy</h5>
-                                    <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
-                                </div>
-                                <div class="contact">
-                                    <img alt="contact ava" src="img/userpic.png"/>
-                                    <span class="online"></span>
-                                    <h5>Amy</h5>
-                                    <p>Status, as usual bla bla bla ... Status, as usual bla bla bla</p>
-                                </div>*/
                             </div>
                         }
-                    </div>
+                    }
                 </div>
                 <div id="roster-buttons">
                     <button id="add-contact-button">Добавить контакт</button>
