@@ -17,7 +17,12 @@
 
         dispatcher.bind('world:changed', function() {
             var rendered = dispatcher.render(new Model('__main__'));
+            var scrollTop = document.getElementById('roster');
+            if (scrollTop)
+                scrollTop = scrollTop.scrollTop;
             $('body').html(rendered);
+            if (scrollTop)
+                document.getElementById('roster').scrollTop = scrollTop;
         });
 
         dispatcher.start();
