@@ -14,7 +14,8 @@
     habahaba.Client = function() {
         jslix.Client.apply(this, arguments);
         this.data = data;
-        this.init_roster();
+        this.init_roster(); // TODO: init roster only if appropriate file is
+                            // loaded
         var that = this;
         this.roster.signals.got.add(function() {
             that.changeStatus();
