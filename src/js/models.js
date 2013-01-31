@@ -214,7 +214,7 @@ modelEngine = function(data) {
     }
 
     Model.prototype.getAll = function() {
-        var collection = this.getCollection();
+        var collection = this.getCollection().slice();
         for (var i=0; i<collection.length; i++) {
             collection[i] = new Model(this._model_name).fromDocument(collection[i]);
         }
