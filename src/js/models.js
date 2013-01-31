@@ -155,7 +155,7 @@ modelEngine = function(data) {
         dispatcher.fire('world:changed');
     }
 
-    Model.prototype.set = function() {
+    Model.prototype.set = function(silently) {
         var obj = this.toDocument();
         var old_obj = new Model(this._model_name).get(this.pk, true);
         // fire attr changed event
@@ -179,10 +179,10 @@ modelEngine = function(data) {
             for (var key in old_obj) {
                 if (this[key] === undefined) test(key);
             };
-            if (anything_changed) {
+            if (anything_changed && !silently) {
                 this.fireChanged();
             }
-        } else dispatcher.fire('world:changed');
+        } else if (!silently) dispatcher.fire('world:changed');
 
     }
 

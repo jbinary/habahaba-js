@@ -51,7 +51,7 @@
         this.dispatcher.addHandler(presence, this, 'client.roster');
     }
 
-    var _prepare_roster_item = function(item, old_item) {
+    var _prepare_roster_item = function(item, silently, old_item) {
         var groups = [];
         for (var gi=0; gi<item.groups.length; gi++) {
             var model = new Model('.roster.groups');
@@ -75,7 +75,7 @@
         else
             model.presences = old_item.presences;
         model.groups = groups;
-        model.set();
+        model.set(silently);
     }
 
     Client.prototype.roster_updated = function(items) {
@@ -90,14 +90,14 @@
             else {
                 the_item = undefined;
             }
-            _prepare_roster_item(item, the_item);
+            _prepare_roster_item(item, false, the_item);
         }
     }
 
     Client.prototype.got_roster = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
-            _prepare_roster_item(item);
+            _prepare_roster_item(item, true);
         }
     }
 })();
