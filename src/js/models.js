@@ -117,7 +117,7 @@ modelEngine = function(data) {
         return chain
     }
 
-    Model.prototype.execute = function() {
+    Model.prototype.execute = function(_raw) {
         var collection = this.getCollection();
         if (!collection) return null;
         var that = this;
@@ -127,10 +127,15 @@ modelEngine = function(data) {
             }
             return true;
         });
+        if (!_raw) {
+            for (var i=0; i<results.length; i++) {
+                results[i] = new Model(this._model_name).fromDocument(results[i]);
+            }
+        }
         return results;
     }
 
-    Model.prototype.get = function(pk) {
+    Model.prototype.get = function(pk, _raw) {
         if (!(pk instanceof Object) && pk) {
             var query = {pk: pk};
         } else if (!(pk instanceof Object)) {
@@ -139,11 +144,10 @@ modelEngine = function(data) {
             var query = pk;
         }
         var m = new Model(this._model_name).filter(query);
-        var results = m.execute();
+        var results = m.execute(_raw);
         if (!results.length) return null;
         if (results.length > 1) throw "More than 1 object returned"; // TODO: exception here
-        this.fromDocument(results[0]);
-        return this;
+        return results[0];
     }
 
     Model.prototype.fireChanged = function() {
@@ -153,7 +157,7 @@ modelEngine = function(data) {
 
     Model.prototype.set = function() {
         var obj = this.toDocument();
-        var old_obj = new Model(this._model_name).get(this.pk);
+        var old_obj = new Model(this._model_name).get(this.pk, true);
         // fire attr changed event
         if (!old_obj) {
             var collection = this.getCollection();
@@ -164,7 +168,7 @@ modelEngine = function(data) {
         if (old_obj && this.pk && this._model_name) {
             var anything_changed = false;
             var test = function(k) {
-                if (k[0] != '_' && old_obj[k] != that[k]) {
+                if (k[0] != '_' && old_obj[k] != that[k] && !(that[k] instanceof Function)) {
                     dispatcher.fire('model:' + that._model_name + ':attr-changed:' + k,
                                     that, old_obj[k]);
                     anything_changed = true;
@@ -182,13 +186,18 @@ modelEngine = function(data) {
 
     }
 
+    var _removeFromArray = function(array, index) {
+        var rest = array.slice(index + 1 || array.length);
+        array.length = index < 0 ? array.length + index: index;
+        array.push.apply(array, rest);
+        return array;
+    }
+
     Model.prototype.del = function() {
         var collection = this.getCollection();
         var raw = this.get(this.pk);
         var index = collection.indexOf(raw);
-        var rest = collection.slice(from + 1 || collection.length);
-        collection.length = index < 0 ? collection.length + index: index;
-        collection.push.apply(collection, rest);
+        collection = _removeFromArray(collection, index);
         this.getCollection(collection);
         var pk = this.pk;
         this.pk = null;
