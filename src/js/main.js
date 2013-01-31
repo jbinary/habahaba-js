@@ -60,7 +60,7 @@
                 avalues.push(value);
         }
         if (avalues.length) {
-            var max = Math.max(avalues);
+            var max = Math.max.apply(null, avalues);
             return [values[max]];
         } else if (undefined in values) {
             return [values[undefined]]
