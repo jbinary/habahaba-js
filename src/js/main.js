@@ -9,7 +9,7 @@
         data['__main__'] = {}
         data.view = [{
             pk: 'singleton',
-            collapsed_groups: [1]
+            collapsed_groups: []
         }]
         var _modelEngine = modelEngine(data);
         var dispatcher = _modelEngine.dispatcher;
