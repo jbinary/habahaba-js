@@ -68,14 +68,18 @@
             group = group.get({special_group: 'undefined'})
             groups.push(group.pk);
         }
-        model = old_item || new Model('.roster.items').new();
-        model.fromDocument(item);
-        if (!old_item)
-            model.presences = [];
-        else
-            model.presences = old_item.presences;
-        model.groups = groups;
-        model.set(silently);
+        if (item.subscription == 'remove') {
+            if (old_item) old_item.del();
+        } else {
+            model = old_item || new Model('.roster.items').new();
+            model.fromDocument(item);
+            if (!old_item)
+                model.presences = [];
+            else
+                model.presences = old_item.presences;
+            model.groups = groups;
+            model.set(silently);
+        }
     }
 
     Client.prototype.roster_updated = function(items) {
