@@ -1,3 +1,5 @@
+module "main"
+
 external nodeset max_priority(nodeset)
 
 match / __main__ {
@@ -69,7 +71,7 @@ match .roster render_roster {
                         gpk = .pk
                         contacts = ..items[ .groups == gpk ]
                         if exists(contacts) {
-                            <div class="group">
+                            <div class="group" id="group-{ gpk }">
                                 <div class="group-name">
                                     @onclick = (
                                         "habahaba.view.collapse_group({ gpk });"
@@ -80,10 +82,10 @@ match .roster render_roster {
                                     <p>(<strong>{ online }</strong>/{ overall })</p>
                                 </div>
                                 if !exists(...view.collapsed_groups[. == gpk]) {
-                                    <div class="group-list">
+                                    <div class="group-list" id="group-list-{ gpk }">
                                         for sort(sort(contacts, .nickname), .jid._node) {
                                             presence = max_priority(.presences)
-                                            <div class="contact">
+                                            <div class="contact" id="contact-{ gpk }-{ .pk }">
                                                 <img alt="contact ava" src="img/userpic.png"/>
                                                 <span class="online">
                                                 if !presence || presence.type == 'unavailable' {
