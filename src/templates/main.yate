@@ -23,6 +23,20 @@ func selected() {
     @selected = "selected"
 }
 
+func slideAnimation() {
+    @onshow = (
+    :::
+        $(this).hide();
+        $(this).slideDown('slow');
+    :::
+    )
+    @onhide = (
+    :::
+        $(this).slideUp('slow');
+    :::
+    )
+}
+
 match / render_my_presence {
     apply .my_presence render_my_presence
 }
@@ -83,9 +97,12 @@ match .roster render_roster {
                                 </div>
                                 if !exists(...view.collapsed_groups[. == gpk]) {
                                     <div class="group-list" id="group-list-{ gpk }">
-                                        for sort(sort(contacts, .nickname), .jid._node) {
+                                        slideAnimation()
+                                        sorted_contacts = sort(contacts, .nick)
+                                        for sorted_contacts {
                                             presence = max_priority(.presences)
                                             <div class="contact" id="contact-{ gpk }-{ .pk }">
+                                                slideAnimation()
                                                 <img alt="contact ava" src="img/userpic.png"/>
                                                 <span class="online">
                                                 if !presence || presence.type == 'unavailable' {
