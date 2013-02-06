@@ -228,6 +228,9 @@ html, body {
                             margin: 2px 0 0;
                             font: 14px Verdana; 
                             width: 170px;
+                            max-height: 1.2em;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                             }
 
                         #contact-block #container .group-list .contact p {
@@ -237,6 +240,10 @@ html, body {
                             font: italic 12px Open Sans;
                             line-height: 14px;
                             color: #6f6f6f;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 190px;
+                            max-height: 30px;
                             }
 
     #contact-block #roster-buttons {
