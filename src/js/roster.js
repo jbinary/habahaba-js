@@ -59,7 +59,7 @@
             if (!group) {
                 group = model.new();
                 group.name = item.groups[gi];
-                group.set();
+                group.set(silently);
             }
             groups.push(group.pk);
         }
