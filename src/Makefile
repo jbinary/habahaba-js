@@ -6,12 +6,13 @@ all: html css img templates js libs
 init:
 	mkdir $(BUILDDIR) 2>/dev/null || true
 
-templates: init templates/*.yate
+templates: init templates/main.yate
 	mkdir -p $(BUILDDIR)/templates
-	for template in templates/*.yate; \
+	for template in templates/main.yate; \
 	do \
 	    yate $$template > $(BUILDDIR)/$$template.js; \
 	done
+	rm templates/*.obj
 
 css: init css/*.css
 	mkdir -p $(BUILDDIR)/css
