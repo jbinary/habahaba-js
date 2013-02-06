@@ -21,15 +21,16 @@ var DOMdiff = (function() {
    * FIXME: as long as the tagname stays the same, outerchange (class, etc) should be a modification, not top diff.
    *
    */
-  var equal = function equal(e1, e2/*, after*/) {
+  var equal = function equal(e1, e2, after) {
 
     // first: if this element is a previous route's problem
     // point, we're going to TOTALLY ignore it and pretend it's
     // fine, so that we can find further problems.
-    /*var soffset = (after && after.length!==0 ? after.splice(0,1)[0] : 0);
+    if (after) after = after.slice();
+    var soffset = (after && after.length!==0 ? after.splice(0,1)[0] : 0);
     if(soffset === -1) {
       return 0;
-    }*/
+    }
 
     // different element (1)?
     if(e1.nodeType !== e2.nodeType) {
@@ -50,8 +51,20 @@ var DOMdiff = (function() {
     }
 
     // different content?
-    var l1 = $(e1).children().not('*[removed]').size();
-    var l2 = $(e2).children().not('*[removed]').size();
+    /*var l1 = $(e1).children().not('*[removed]').size();
+    var l2 = $(e2).children().not('*[removed]').size();*/
+
+    var count_children = function(node) {
+        var l = 0;
+        for (var i=0; i<node.childNodes.length; i++) {
+            var child = node.childNodes[i];
+            if (!(child.hasAttribute && child.hasAttribute('removed'))) l++;
+        }
+        return l;
+    }
+
+    var l1 = count_children(e1),
+        l2 = count_children(e2);
     if(l1 != l2) {
       return -1;
     }
@@ -93,7 +106,7 @@ var DOMdiff = (function() {
         i2++;
         continue;
       }
-      eq = equal(node1, node2/*, after*/);
+      eq = equal(node1, node2, after);
       if(eq !== 0)
       {
         // (first) difference found. "eq" will indicate
@@ -110,6 +123,25 @@ var DOMdiff = (function() {
   };
 
   diffObject.equal = equal;
+
+  var getDiff = function getDiff(e1, e2) {
+    var route = equal(e1,e2),
+        routes = [route],
+        newRoute;
+
+    while(typeof route === "object") {
+      newRoute = equal(e1,e2,route.slice());
+      routes.push(newRoute);
+      route = newRoute;
+    }
+
+    // Remove "0" from routes if length > 1, since
+    // the last attempt will find no differences, but
+    // will do so because it's "deemed safe".
+    if(routes.length>1) { routes.splice(routes.indexOf(0), 1); }
+    return routes;
+  };
+  diffObject.getDiff = getDiff;
 
   return diffObject;
 }());
