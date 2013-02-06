@@ -1,0 +1,75 @@
+match /.roster.items (nodeset group) {
+    presence = max_priority(.presences)
+    <div class="contact" id="contact-{ group.pk }-{ .pk }">
+        slideAnimation()
+        <img alt="contact ava" src="img/userpic.png"/>
+        <span class="online">
+        if !presence || presence.type == 'unavailable' {
+            @class = "offline"
+        } else {
+            if presence.show {
+                @class = presence.show
+            } else {
+                @class = "online"
+            }
+        }
+        </span>
+        <h5>
+        if .nick {
+            "{ .nick }"
+        } else {
+            if .jid._node {
+                "{ .jid._node }@"
+            }
+            "{ .jid._domain }"
+        }
+        </h5>
+        <p>{ presence.status }</p>
+    </div>
+}
+
+match /.roster.groups {
+    group = .
+    gpk = group.pk
+    contacts = ..items[ .groups == gpk ]
+    if exists(contacts) {
+        <div class="group" id="group-{ gpk }">
+            <div class="group-name">
+                @onclick = (
+                    "habahaba.view.collapse_group({ gpk });"
+                )
+                <h4>{ .name }</h4>
+                overall = count(contacts)
+                online = count(contacts[ .presences ][ exists(.presences[.type != 'unavailable']) ])
+                <p>(<strong>{ online }</strong>/{ overall })</p>
+            </div>
+            if !exists(...view.collapsed_groups[. == gpk]) {
+                <div class="group-list" id="group-list-{ gpk }">
+                    slideAnimation()
+                    sorted_contacts = sort(contacts, .nick)
+                    apply sorted_contacts (group)
+            </div>
+            }
+        </div>
+    }
+}
+
+match .roster render_roster {
+    <div class="border" id="block-size" >
+        <div id="contact-block">
+            <div id="container">
+                <div id="search">
+                    <input type="text"/>
+                </div>
+                <div id="roster">
+                    apply sort(.groups, .name)
+                </div>
+                <div id="roster-buttons">
+                    <button id="add-contact-button">Добавить контакт</button>
+                    <button id="join-room-button">Войти в комнату</button>
+                    <button id="settings-button"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
