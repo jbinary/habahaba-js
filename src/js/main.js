@@ -53,7 +53,7 @@ var update_world = function(rendered) {
         }
     }
 
-    var wrapper = document.implementation.createHTMLDocument();
+    var wrapper = document.implementation.createHTMLDocument('');
     wrapper.body.innerHTML = rendered;
     rendered = wrapper.body;
 
