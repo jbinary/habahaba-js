@@ -14,6 +14,11 @@
     habahaba.Client = function() {
         jslix.Client.apply(this, arguments);
         this.data = data;
+        this.storage = new Storage(sessionStorage, 'habahaba');
+        this.account_storage = this.storage.chroot(
+            'accounts',
+            this.dispatcher.connection.jid.getBareJID()
+        );
         this.init_roster(); // TODO: init roster only if appropriate file is
                             // loaded
         var that = this;
