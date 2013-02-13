@@ -1,3 +1,5 @@
+// TODO: Make a separate roster class instead of extending Client
+
 "use strict";
 (function(){
     var habahaba = window.habahaba;
@@ -34,6 +36,7 @@
         }
     }, [jslix.stanzas.presence]);
 
+    var that;
     Client.prototype.init_roster = function() {
         this.data.roster = {
             items: [],
@@ -49,6 +52,7 @@
         this.roster.signals.got.add(this.got_roster);
         this.roster.signals.updated.add(this.roster_updated);
         this.dispatcher.addHandler(presence, this, 'client.roster');
+        that = this;
     }
 
     var _prepare_roster_item = function(item, silently, old_item) {
@@ -82,18 +86,19 @@
         }
     }
 
-    Client.prototype.roster_updated = function(items) {
+    Client.prototype.get_roster_item = function(jid) {
         var all_items = new Model('.roster.items').getAll();
+        if (jid.getBareJID) jid = jid.getBareJID();
+        var the_item = all_items.filter(function(citem) {
+            return (citem.jid.getBareJID() == jid)
+        });
+        if (the_item.length) return the_item[0];
+    }
+
+    Client.prototype.roster_updated = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
-            var the_item = all_items.filter(function(citem) {
-                return (citem.jid.getBareJID() == item.jid.getBareJID())
-            });
-            if (the_item.length)
-                the_item = the_item[0]
-            else {
-                the_item = undefined;
-            }
+            the_item = that.get_roster_item(item.jid);
             _prepare_roster_item(item, false, the_item);
         }
     }
@@ -103,5 +108,6 @@
             var item = items[i];
             _prepare_roster_item(item, true);
         }
+        that.init_avatars(); // TODO: the same as for init_roster
     }
 })();

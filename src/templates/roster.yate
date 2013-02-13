@@ -1,8 +1,22 @@
+external scalar get_avatar_uri(scalar)
+
 match /.roster.items (nodeset group) {
     presence = max_priority(.presences)
     <div class="contact" id="contact-{ group.pk }-{ .pk }">
         slideAnimation()
-        <img alt="contact ava" src="img/userpic.png"/>
+        node = if .jid._node {
+            "{ .jid._node }@"
+        } else {
+            ""
+        }
+        jid = "{ node }{ .jid._domain }"
+        <div class="avatar">
+            <img alt="contact ava" src="img/userpic.png">
+                if .avatar_hash {
+                    @src = get_avatar_uri(jid)
+                }
+            </img>
+        </div>
         <span class="online">
         if !presence || presence.type == 'unavailable' {
             @class = "offline"
@@ -18,10 +32,7 @@ match /.roster.items (nodeset group) {
         if .nick {
             "{ .nick }"
         } else {
-            if .jid._node {
-                "{ .jid._node }@"
-            }
-            "{ .jid._domain }"
+            "{ jid }"
         }
         </h5>
         <p>{ presence.status }</p>
