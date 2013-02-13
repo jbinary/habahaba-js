@@ -132,7 +132,6 @@ var update_world = function(rendered) {
                     if (!next) {
                         var showed = e2.appendChild(cloned);
                     } else {
-                        //var showed = $(cloned).insertBefore($(next));
                         next.parentElement.insertBefore(cloned, next);
                     }
                     var handler = get_event_handler(cloned, 'onshow');
