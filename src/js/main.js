@@ -32,7 +32,6 @@ var get_event_handler = function(node, event_name) {
 }
 
 var update_world = function(rendered) {
-    var t = new Date().getTime();
     var replaceWith = function(with_, what) {
         var new_child = with_.cloneNode(true);
         what.parentElement.replaceChild(new_child, what);
@@ -60,7 +59,6 @@ var update_world = function(rendered) {
     var d1 = rendered.firstChild,
         d2 = document.getElementsByTagName('body')[0].firstChild;
     var zzz = 0;
-    var acc_t = 0;
     while (true) {
         zzz++;
         if (zzz > 30) debugger; // XXX: we can avoid this infinite loop
