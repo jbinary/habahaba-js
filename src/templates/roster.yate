@@ -54,7 +54,7 @@ match /.roster.groups {
                 online = count(contacts[ .presences ][ exists(.presences[.type != 'unavailable']) ])
                 <p>(<strong>{ online }</strong>/{ overall })</p>
             </div>
-            if !exists(...view.collapsed_groups[. == gpk]) {
+            if !exists(...view.collapsed_groups[.pk == gpk]) {
                 <div class="group-list" id="group-list-{ gpk }">
                     slideAnimation()
                     sorted_contacts = sort(contacts, .nick)

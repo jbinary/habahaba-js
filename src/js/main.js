@@ -7,10 +7,10 @@
     habahaba.view_start = function() {
         var data = habahaba.client.data;
         data['__main__'] = {}
-        data.view = [{
-            pk: 'singleton',
-            collapsed_groups: []
-        }]
+        data.view = {
+            collapsed_groups: [],
+            tabs: []
+        }
         var _modelEngine = modelEngine(data);
         var dispatcher = _modelEngine.dispatcher;
         var Model = _modelEngine.Model;
@@ -186,23 +186,16 @@ dispatcher.bind('world:changed', function() {
         window.Model = Model;
     }
 
-    var getViewModel = function() {
-        return new Model('.view').get();
-    }
-
     habahaba.view = {
         collapse_group: function(gpk) {
-            var viewModel = getViewModel();
-            var index = viewModel.collapsed_groups.indexOf(gpk);
-            if (index == -1) {
-                viewModel.collapsed_groups.push(gpk);
+            var collapsedGroup = new Model('.view.collapsed_groups').get(gpk);
+            if (!collapsedGroup) {
+                var collapsedGroup = new Model('.view.collapsed_groups');
+                collapsedGroup.pk = gpk;
+                collapsedGroup.set();
             } else {
-                var cgroups = viewModel.collapsed_groups;
-                var res = cgroups.slice(0, index);
-                res = res.concat(cgroups.slice(index + 1));
-                viewModel.collapsed_groups = res;
+                collapsedGroup.del();
             }
-            viewModel.set();
         }
     }
 
