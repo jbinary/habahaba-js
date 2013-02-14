@@ -1,0 +1,49 @@
+match / working_area {
+    <div id="right-column">
+        <div class="border" id="right-block-size">
+            <ul id="bookmarks">
+                apply .view.tabs
+                /*<li><span class="contact-status away"></span>Brian<a href="#" class="close-button"></a></li>
+                <li id="active"><span class="contact-status available"></span>Amanda<a href="#" class="close-button"></a></li>
+                <li><span class="contact-status room"></span>room<a href="#" class="close-button"></a></li>
+                <li><span class="contact-status away"></span>hell<a href="#" class="close-button"></a></li>*/
+            </ul>
+            <div id="message-window">
+                <div class="companion-block">
+                    <img alt="ava" src="img/userpic.png"/>
+                    <span>Oh shi... Life is an awasome gift. Enjoy it.</span>                            
+                </div>
+                <div class="dialog-block">
+                    <div class="message">
+                        <img alt="ava" src="img/userpic.png"/>
+                        <h5>Bob</h5>
+                        <br class="clr"/>
+                        <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
+                        <br class="clr"/>
+                    </div>
+                    <div class="message">
+                        <img alt="ava" src="img/userpic.png"/>
+                        <h5>Bob</h5>
+                        <br class="clr"/>
+                        <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
+                        <br class="clr"/>
+                    </div>
+                    <br class="clr"/>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+match /.view.tabs {
+    contact = roster_item(.roster_item_id)
+    <li>
+        <span class="contact-status ">
+            @class += get_contact_status(contact)
+        </span>
+        get_contact_display(contact)
+        <a href="#" class="close-button">
+            @onclick="habahaba.view.close_tab({ .pk }); return false"
+        </a>
+    </li>
+}

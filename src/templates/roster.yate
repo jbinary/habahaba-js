@@ -1,15 +1,43 @@
 external scalar get_avatar_uri(scalar)
 
+func get_contact_jid(nodeset contact) {
+    node = if contact.jid._node {
+        "{ contact.jid._node }@"
+    } else {
+        ""
+    }
+    "{ node }{ contact.jid._domain }"
+}
+
+func get_contact_display(nodeset contact) {
+    if contact.nick {
+        "{ contact.nick }"
+    } else {
+        get_contact_jid(contact)
+    }
+}
+
+func get_contact_status(nodeset contact) {
+    presence = max_priority(contact.presences)
+    if !presence || presence.type == 'unavailable' {
+        "offline"
+    } else {
+        if presence.show {
+            presence.show
+        } else {
+            "online"
+        }
+    }
+}
+
+key roster_item(.roster.items, .pk) { . }
+
 match /.roster.items (nodeset group) {
     presence = max_priority(.presences)
     <div class="contact" id="contact-{ group.pk }-{ .pk }">
+        @onclick = "habahaba.view.open_contact({ .pk });"
         slideAnimation()
-        node = if .jid._node {
-            "{ .jid._node }@"
-        } else {
-            ""
-        }
-        jid = "{ node }{ .jid._domain }"
+        jid = get_contact_jid(.)
         <div class="avatar">
             <img alt="contact ava" src="img/userpic.png">
                 if .avatar_hash {
@@ -17,23 +45,11 @@ match /.roster.items (nodeset group) {
                 }
             </img>
         </div>
-        <span class="online">
-        if !presence || presence.type == 'unavailable' {
-            @class = "offline"
-        } else {
-            if presence.show {
-                @class = presence.show
-            } else {
-                @class = "online"
-            }
-        }
+        <span>
+            @class = get_contact_status(.)
         </span>
         <h5>
-        if .nick {
-            "{ .nick }"
-        } else {
-            "{ jid }"
-        }
+        get_contact_display(.)
         </h5>
         <p>{ presence.status }</p>
     </div>

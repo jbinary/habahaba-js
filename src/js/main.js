@@ -196,6 +196,25 @@ dispatcher.bind('world:changed', function() {
             } else {
                 collapsedGroup.del();
             }
+        },
+        open_contact: function(item_id) {
+            var contact = new Model('.roster.items').get(item_id);
+            var tabs = new Model('.view.tabs').getAll();
+            if (tabs.filter(function(tab) {
+                return tab.type == 'contact' && tab.roster_item_id == item_id;
+            }).length == 0) {
+                var tab = new Model('.view.tabs').new();
+                tab.type = 'contact';
+                tab.roster_item_id = item_id;
+                tab.set();
+                return true;
+            }
+        },
+        close_tab: function(tab_id) {
+            var tab = new Model('.view.tabs').get(tab_id);
+            if (!tab) return;
+            tab.del();
+            return true;
         }
     }
 

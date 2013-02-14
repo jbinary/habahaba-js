@@ -12,10 +12,7 @@ match / __main__ {
             apply .my_presence render_my_presence
             apply .roster render_roster
         </div>
-        <div id="right-column">
-            <div class="border" id="right-block-size">
-            </div>
-        </div>
+        apply / working_area
     </div>
 }
 
@@ -74,3 +71,4 @@ match .my_presence render_my_presence {
 }
 
 include "roster.yate"
+include "working_area.yate"

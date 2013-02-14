@@ -375,15 +375,15 @@ html, body {
             float: left;
             }
 
-        #bookmarks li .available {
+        #bookmarks li .contact-status.online {
             background: url(../img/available-tab-status.png);
             }
 
-        #bookmarks li .away {
+        #bookmarks li .contact-status.away {
             background: url(../img/away-tab-status.png);
             }
 
-        #bookmarks li .room {
+        #bookmarks li .contact-status.room {
             background: url(../img/room-tab-status.png);
             }
 
