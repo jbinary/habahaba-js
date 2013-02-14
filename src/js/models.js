@@ -195,7 +195,7 @@ modelEngine = function(data) {
 
     Model.prototype.del = function() {
         var collection = this.getCollection();
-        var raw = this.get(this.pk);
+        var raw = this.get(this.pk, true);
         var index = collection.indexOf(raw);
         collection = _removeFromArray(collection, index);
         this.getCollection(collection);
