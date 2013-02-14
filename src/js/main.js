@@ -99,11 +99,30 @@ var update_world = function(rendered) {
                 continue;
             }
 
+            // Check attributes
+            // Are there any new attributes?
+            for (var a=0, len=e1.attributes.length; a<len; a++) {
+                var attr = e1.attributes[a];
+                var _attr = e2.attributes.getNamedItem(attr.name);
+                if (!_attr || _attr.nodeValue != attr.nodeValue) {
+                    var _attr = document.createAttribute(attr.name);
+                    _attr.nodeValue = attr.nodeValue;
+                    e2.attributes.setNamedItem(_attr);
+                }
+            }
+            // Are there any obsolete attributes?
+            for (var a=e2.attributes.length-1; a>=0; a--) {
+                var attr = e2.attributes[a];
+                if (!e1.attributes.getNamedItem(attr.name)) {
+                    e2.attributes.removeNamedItem(attr.name);
+                }
+            }
+
             for (var c=0, len=e1.childNodes.length; c<len; c++) {
                 var child = e1.childNodes[c];
                 var _child = e2.childNodes[c];
                 if (_child) {
-                    if (_child.hasAttribute('removed')) {
+                    if (_child.hasAttribute && _child.hasAttribute('removed')) {
                         $(_child).stop(true, true);
                         $(_child).show();
                         _child.removeAttribute('removed');
@@ -197,7 +216,7 @@ dispatcher.bind('world:changed', function() {
                 collapsedGroup.del();
             }
         },
-        open_contact: function(item_id) {
+        open_contact: function(item_id, activate) {
             var contact = new Model('.roster.items').get(item_id);
             var tabs = new Model('.view.tabs').getAll();
             if (tabs.filter(function(tab) {
@@ -206,7 +225,10 @@ dispatcher.bind('world:changed', function() {
                 var tab = new Model('.view.tabs').new();
                 tab.type = 'contact';
                 tab.roster_item_id = item_id;
-                tab.set();
+                tab.set(!!activate);
+                if (activate) {
+                    habahaba.view.activate_tab(tab.pk); 
+                }
                 return true;
             }
         },
@@ -214,6 +236,24 @@ dispatcher.bind('world:changed', function() {
             var tab = new Model('.view.tabs').get(tab_id);
             if (!tab) return;
             tab.del();
+            return true;
+        },
+        activate_tab: function(tab_id) {
+            var tab = new Model('.view.tabs').get(tab_id);
+            if (!tab) return;
+            var tabs = new Model('.view.tabs').getAll();
+            for (var i=0; i<tabs.length; i++) {
+                var ctab = tabs[i];
+                if (ctab.active && ctab.pk != tab.pk) {
+                    ctab.active = false;
+                    ctab.set();
+                    break;
+                } else if (ctab.active && ctab.pk == tab.pk) {
+                    return true;
+                }
+            }
+            tab.active = true;
+            tab.set();
             return true;
         }
     }
