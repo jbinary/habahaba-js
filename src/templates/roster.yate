@@ -35,7 +35,7 @@ key roster_item(.roster.items, .pk) { . }
 match /.roster.items (nodeset group) {
     presence = max_priority(.presences)
     <div class="contact" id="contact-{ group.pk }-{ .pk }">
-        @onclick = "habahaba.view.open_contact({ .pk });"
+        @onclick = "habahaba.view.open_contact({ .pk }, true);"
         slideAnimation()
         jid = get_contact_jid(.)
         <div class="avatar">

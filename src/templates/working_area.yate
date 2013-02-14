@@ -3,10 +3,6 @@ match / working_area {
         <div class="border" id="right-block-size">
             <ul id="bookmarks">
                 apply .view.tabs
-                /*<li><span class="contact-status away"></span>Brian<a href="#" class="close-button"></a></li>
-                <li id="active"><span class="contact-status available"></span>Amanda<a href="#" class="close-button"></a></li>
-                <li><span class="contact-status room"></span>room<a href="#" class="close-button"></a></li>
-                <li><span class="contact-status away"></span>hell<a href="#" class="close-button"></a></li>*/
             </ul>
             <div id="message-window">
                 <div class="companion-block">
@@ -38,6 +34,10 @@ match / working_area {
 match /.view.tabs {
     contact = roster_item(.roster_item_id)
     <li>
+        if .active {
+            @class = 'active'
+        }
+        @onclick = "habahaba.view.activate_tab({ .pk }); return false"
         <span class="contact-status ">
             @class += get_contact_status(contact)
         </span>

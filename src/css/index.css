@@ -360,7 +360,7 @@ html, body {
         position: relative;
         }
 
-    #bookmarks #active {
+    #bookmarks .active {
         opacity: 1;
         border-top: 1px solid #bdbdbd;
         border-left: 1px solid #bdbdbd;
