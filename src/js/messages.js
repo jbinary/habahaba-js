@@ -16,6 +16,13 @@
                 throw new WrongElement('Only chat and normal messages')
             return value;
         },
+        clean_delay: function(value) {
+            if (value) return value;
+            value = jslix.delayed.stanzas.delay.create({
+                stamp: new Date()
+            });
+            return value;
+        },
         anyHandler: function(message) {
             var roster_item = new Model('.roster.items');
             roster_item = roster_item.filter({
@@ -39,7 +46,7 @@
             messages.set();
             return; // TODO: EmptyStanza?
         }
-    }, [jslix.stanzas.message]);
+    }, [jslix.stanzas.message, jslix.delayed.stanzas.mixin]);
 
     var that;
     Client.prototype.init_messages = function() {

@@ -2,6 +2,7 @@ module "main"
 
 external nodeset max_priority(nodeset)
 external array splitlines(scalar)
+external scalar formatDate(nodeset, scalar)
 
 match / __main__ {
     <div id="wrapper">

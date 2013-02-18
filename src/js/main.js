@@ -293,4 +293,8 @@ dispatcher.bind('world:changed', function() {
         }
         return string;
     }
+
+    yr.externals.formatDate = function(date, format_string) {
+        return moment(date.data).format(format_string);
+    }
 })();
