@@ -218,19 +218,23 @@ dispatcher.bind('world:changed', function() {
         },
         open_contact: function(item_id, activate) {
             var contact = new Model('.roster.items').get(item_id);
+            if (!contact) return false;
             var tabs = new Model('.view.tabs').getAll();
-            if (tabs.filter(function(tab) {
+            var tab = tabs.filter(function(tab) {
                 return tab.type == 'contact' && tab.roster_item_id == item_id;
-            }).length == 0) {
+            })
+            if (!tab.length) {
                 var tab = new Model('.view.tabs').new();
                 tab.type = 'contact';
                 tab.roster_item_id = item_id;
                 tab.set(!!activate);
-                if (activate) {
-                    habahaba.view.activate_tab(tab.pk); 
-                }
-                return true;
+            } else {
+                tab = tab[0];
             }
+            if (activate) {
+                habahaba.view.activate_tab(tab.pk); 
+            }
+            return true;
         },
         close_tab: function(tab_id) {
             var tab = new Model('.view.tabs').get(tab_id);
