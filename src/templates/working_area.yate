@@ -22,6 +22,7 @@ match /.view.tabs[.active] msgwindow {
             }
         </img>
         <span>
+            @title = "{ presence.status }"
             "{ presence.status }"
         </span>
     </div>
