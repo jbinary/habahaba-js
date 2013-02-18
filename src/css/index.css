@@ -405,9 +405,9 @@ html, body {
         }
 
         #message-window .companion-block img {
-            height: 70px;
-            width: 70px;
-            margin: 13px 0 0 13px;
+            max-height: 70px;
+            max-width: 70px;
+            margin: 13px auto auto 13px;
             float: left;
             }
 
