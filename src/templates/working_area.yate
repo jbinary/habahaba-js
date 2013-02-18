@@ -5,29 +5,42 @@ match / working_area {
                 apply .view.tabs
             </ul>
             <div id="message-window">
-                <div class="companion-block">
-                    <img alt="ava" src="img/userpic.png"/>
-                    <span>Oh shi... Life is an awasome gift. Enjoy it.</span>                            
-                </div>
-                <div class="dialog-block">
-                    <div class="message">
-                        <img alt="ava" src="img/userpic.png"/>
-                        <h5>Bob</h5>
-                        <br class="clr"/>
-                        <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
-                        <br class="clr"/>
-                    </div>
-                    <div class="message">
-                        <img alt="ava" src="img/userpic.png"/>
-                        <h5>Bob</h5>
-                        <br class="clr"/>
-                        <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
-                        <br class="clr"/>
-                    </div>
-                    <br class="clr"/>
-                </div>
+                apply .view.tabs msgwindow
             </div>
         </div>
+    </div>
+}
+
+match /.view.tabs[.active] msgwindow {
+    contact = roster_item(.roster_item_id)
+    jid = get_contact_jid(contact)
+    presence = max_priority(contact.presences)
+    <div class="companion-block">
+        <img alt="ava" src="img/userpic.png">
+            if contact.avatar_hash {
+                @src = get_avatar_uri(jid)
+            }
+        </img>
+        <span>
+            "{ presence.status }"
+        </span>
+    </div>
+    <div class="dialog-block">
+        <div class="message">
+            <img alt="ava" src="img/userpic.png"/>
+            <h5>Bob</h5>
+            <br class="clr"/>
+            <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
+            <br class="clr"/>
+        </div>
+        <div class="message">
+            <img alt="ava" src="img/userpic.png"/>
+            <h5>Bob</h5>
+            <br class="clr"/>
+            <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
+            <br class="clr"/>
+        </div>
+        <br class="clr"/>
     </div>
 }
 
