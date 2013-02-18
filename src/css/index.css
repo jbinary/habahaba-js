@@ -438,10 +438,16 @@ html, body {
             border-top: none;
             }
 
-            #message-window .dialog-block .message img {
-                float: left;
+            #message-window .dialog-block .message .avatar {
                 width: 25px;
                 height: 25px;
+                float: left;
+            }
+
+            #message-window .dialog-block .message .avatar img {
+                max-width: 25px;
+                max-height: 25px;
+                margin: 0 auto;
                 }
 
             #message-window .dialog-block .message h5 {

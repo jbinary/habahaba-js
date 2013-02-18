@@ -21,6 +21,7 @@
         );
         this.init_roster(); // TODO: init roster only if appropriate file is
                             // loaded
+        this.init_messages();
         var that = this;
         this.roster.signals.got.add(function() {
             that.changeStatus();

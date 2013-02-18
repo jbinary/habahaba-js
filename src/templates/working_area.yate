@@ -1,3 +1,5 @@
+key roster_item_messages(.messages.contacts, .roster_item_id) { . }
+
 match / working_area {
     <div id="right-column">
         <div class="border" id="right-block-size">
@@ -27,20 +29,27 @@ match /.view.tabs[.active] msgwindow {
         </span>
     </div>
     <div class="dialog-block">
-        <div class="message">
-            <img alt="ava" src="img/userpic.png"/>
-            <h5>Bob</h5>
-            <br class="clr"/>
-            <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
-            <br class="clr"/>
+        messages = roster_item_messages(.roster_item_id)
+        apply messages.history
+        <br class="clr"/>
+    </div>
+}
+
+match /.messages.contacts.history {
+    from = .from
+    sender = /.roster.items[.jid._node == from._node][.jid._domain == from._domain]
+    sender_jid = get_contact_jid(sender)
+    <div class="message">
+        <div class="avatar">
+            <img alt="ava" src="img/userpic.png">
+                if sender.avatar_hash {
+                    @src = get_avatar_uri(sender_jid)
+                }
+            </img>
         </div>
-        <div class="message">
-            <img alt="ava" src="img/userpic.png"/>
-            <h5>Bob</h5>
-            <br class="clr"/>
-            <p>jf;ija;dfij ;asifjd;siajf ;oiad;ofias;j fiojsa;fja;sdifj jfdaihs kjsdfa,sdfkjh aldifhasuifhasjf</p>
-            <br class="clr"/>
-        </div>
+        <h5>{ get_contact_display(sender) }</h5>
+        <br class="clr"/>
+        <p>{ .body }</p>
         <br class="clr"/>
     </div>
 }
