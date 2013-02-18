@@ -49,7 +49,9 @@ match /.messages.contacts.history {
         </div>
         <h5>{ get_contact_display(sender) }</h5>
         <br class="clr"/>
-        <p>{ .body }</p>
+        for splitlines(.body) {
+            <p>{ . }</p>
+        }
         <br class="clr"/>
     </div>
 }

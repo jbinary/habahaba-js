@@ -458,7 +458,6 @@ html, body {
                 }
 
             #message-window .dialog-block .message p {
-                float: left;
                 margin: 0 20px 0 38px;
                 font: 14px Verdana;
                 }

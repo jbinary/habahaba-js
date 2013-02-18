@@ -1,6 +1,7 @@
 module "main"
 
 external nodeset max_priority(nodeset)
+external array splitlines(scalar)
 
 match / __main__ {
     <div id="wrapper">

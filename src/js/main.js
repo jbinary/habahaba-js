@@ -285,4 +285,12 @@ dispatcher.bind('world:changed', function() {
         }
         return [];
     }
+
+    yr.externals.splitlines = function(string) {
+        string = string.split('\n');
+        for (var i=0; i<string.length; i++) {
+            string[i] = {data: string[i]}
+        }
+        return string;
+    }
 })();
