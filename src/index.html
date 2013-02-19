@@ -69,6 +69,52 @@
                     });
                 return false;
             }
+            function serializeData(data) {
+                if (data instanceof jslix.JID) {
+                    return {
+                        '__type__': 'jslix.JID',
+                        'value': data.toString()
+                    }
+                } else if (data instanceof Date) {
+                    return {
+                        '__type__': 'Date',
+                        'value': data.toString()
+                    }
+                } else if (data instanceof Array) {
+                    var res = [];
+                    for (var i=0; i<data.length; i++) {
+                        res.push(serializeData(data[i]));
+                    }
+                    return res;
+                }
+                var res = {};
+                for (var k in data) {
+                    if (data[k] instanceof Object)
+                        res[k] = serializeData(data[k]);
+                    else
+                        res[k] = data[k];
+                }
+                return res;
+            }
+            function deserializeData(json) {
+                if (json.__type__) {
+                    if (json.__type__ == 'jslix.JID') return new jslix.JID(json.value);
+                    if (json.__type__ == 'Date') return new Date(json.value);
+                }
+                if (json instanceof Array) {
+                    var res = [];
+                    for (var i=0; i<json.length; i++) {
+                        res.push(deserializeData(json[i]));
+                    }
+                    return res;
+                }
+                var res = {};
+                for (var k in json) {
+                    if (json[k] instanceof Object) res[k] = deserializeData(json[k]);
+                    else res[k] = json[k];
+                }
+                return res;
+            }
         </script>
     </head>
     <body>
