@@ -20,7 +20,11 @@ css: init css/*.css
 
 libs: init libs/*
 	mkdir -p $(BUILDDIR)/js/libs
-	cp -R libs/* $(BUILDDIR)/js/libs
+	cp -R libs/jslix/src/ $(BUILDDIR)/js/libs/jslix
+	cp -R libs/crypto-js-read-only/build $(BUILDDIR)/js/libs/cryptojs
+	cp -R libs/js-signals/dist/signals.js $(BUILDDIR)/js/libs/signals.js
+	cp -R libs/moment.min.js $(BUILDDIR)/js/libs/moment.min.js
+	cp -R libs/yate/lib/runtime.js $(BUILDDIR)/js/libs/yate-runtime.js
 
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js
