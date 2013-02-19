@@ -25,6 +25,7 @@
             var resource = presences.filter(function(p) {
                 return p.from.getResource() == presence.from.getResource();
             });
+            presence = habahaba.onlyFields(presence);
             if (!resource.length) {
                 presences.push(presence);
             } else {

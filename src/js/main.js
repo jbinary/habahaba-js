@@ -1,6 +1,21 @@
 "use strict";
 (function() {
-    var habahaba = {};
+    var habahaba = {
+        onlyFields: function(stanza) {
+            var res = {};
+            var definition = stanza.__definition__;
+            for (var k in definition) {
+                if (definition[k].field) {
+                    var value = stanza[k];
+                    if (value && value.__definition__)
+                        res[k] = habahaba.onlyFields(value)
+                    else
+                        res[k] = value;
+                }
+            }
+            return res;
+        }
+    };
     window.habahaba = habahaba;
 
     var viewModel;

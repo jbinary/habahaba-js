@@ -42,6 +42,7 @@
             } else {
                 messages = messages[0];
             }
+            var message = habahaba.onlyFields(message);
             messages.history.push(message); // TODO: collect garbage
             messages.set();
             return; // TODO: EmptyStanza?
