@@ -265,7 +265,7 @@ dispatcher.bind('world:changed', function() {
                 var ctab = tabs[i];
                 if (ctab.active && ctab.pk != tab.pk) {
                     ctab.active = false;
-                    ctab.set();
+                    ctab.set(true);
                     break;
                 } else if (ctab.active && ctab.pk == tab.pk) {
                     return true;
