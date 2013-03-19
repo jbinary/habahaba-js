@@ -6,32 +6,73 @@ match / working_area {
             <ul id="bookmarks">
                 apply .view.tabs
             </ul>
-            <div id="message-window">
-                apply .view.tabs msgwindow
-            </div>
+            apply .view.tabs msgwindow
+            apply .view.tabs inputarea
         </div>
     </div>
 }
 
-match /.view.tabs[.active] msgwindow {
-    contact = roster_item(.roster_item_id)
-    jid = get_contact_jid(contact)
-    presence = max_priority(contact.presences)
-    <div class="companion-block">
-        <img alt="ava" src="img/userpic.png">
-            if contact.avatar_hash {
-                @src = get_avatar_uri(jid)
-            }
-        </img>
-        <span>
-            @title = "{ presence.status }"
-            "{ presence.status }"
-        </span>
+match /.view.tabs[.active] inputarea {
+    <div id="chat-wrapper">
+        <div id="chat-buttons">
+            <a id="emoticons" href="#"></a>
+            <a id="send" href="#"></a>
+        </div>
+        <textarea id="typing-window"></textarea>
     </div>
-    <div class="dialog-block">
-        messages = roster_item_messages(.roster_item_id)
-        apply messages.history
-        <br class="clr"/>
+}
+
+match /.view.tabs[.active] msgwindow {
+    <div id="message-window">
+        contact = roster_item(.roster_item_id)
+        jid = get_contact_jid(contact)
+        presence = max_priority(contact.presences)
+        <div class="companion-block">
+            <img alt="ava" src="img/userpic.png">
+                if contact.avatar_hash {
+                    @src = get_avatar_uri(jid)
+                }
+            </img>
+            <div class="status-messages">
+                <p>
+                    @title = "{ presence.status }"
+                    "{ presence.status }"
+                </p>
+                <br class="clr" />
+                /*<p id="action-info">
+                    "читает сообщение..."
+                </p>*/
+            </div>
+            <div class="companion-info">
+                <h5>Tester</h5>
+                status = get_contact_status(contact)
+                <p>
+                if status == 'dnd' {
+                    "Do not disturb"
+                } else if status == 'online' {
+                    "Online"
+                } else if status == 'away' {
+                    "Away"
+                } else if status == 'xa' {
+                    "Extended Away"
+                } else if status == 'chat' {
+                    "Free for Chat"
+                } else if status == 'offline' {
+                    "Offline"
+                }
+                </p>
+                <span class="contact-status ">
+                    @class += get_contact_status(contact)
+                </span>
+                <br class="clr" />
+                /*<a href="#">Read blog</a>*/
+            </div>
+        </div>
+        <div class="dialog-block">
+            messages = roster_item_messages(.roster_item_id)
+            apply messages.history
+            <br class="clr"/>
+        </div>
     </div>
 }
 

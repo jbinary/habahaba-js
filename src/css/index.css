@@ -225,6 +225,22 @@ html, body {
                             background: url(../img/available-circle-status.png);
                             }
 
+                        #contact-block #container .group-list .contact .chat {
+                            background: url(../img/chat-circle-status.png);
+                            }
+
+                        #contact-block #container .group-list .contact .away {
+                            background: url(../img/away-circle-status.png);
+                            }
+
+                        #contact-block #container .group-list .contact .xa {
+                            background: url(../img/notavailable-circle-status.png);
+                            }
+
+                        #contact-block #container .group-list .contact .dnd {
+                            background: url(../img/dnd-circle-status.png);
+                            }
+
                         #contact-block #container .group-list .contact .offline {
                             background: url(../img/offline-circle-status.png);
                             }
@@ -336,9 +352,10 @@ html, body {
             top: 35px;
             right: 4px;
             left: 4px;
-            bottom: 4px;
+            bottom: 84px;
             border: 1px solid #bdbdbd;
             background: white;
+            overflow: hidden;
             }
 
 #bookmarks {
@@ -367,7 +384,7 @@ html, body {
         border-right: 1px solid #bdbdbd;
         }
 
-        #bookmarks li .contact-status {
+        .contact-status {
             margin: 9px 8px 0 7px;
             width: 16px;
             height: 13px;
@@ -375,15 +392,31 @@ html, body {
             float: left;
             }
 
-        #bookmarks li .contact-status.online {
+        .contact-status.online {
             background: url(../img/available-tab-status.png);
             }
 
-        #bookmarks li .contact-status.away {
+        .contact-status.away {
             background: url(../img/away-tab-status.png);
             }
 
-        #bookmarks li .contact-status.room {
+        .contact-status.dnd {
+            background: url(../img/dnd-tab-status.png);
+            }
+
+        .contact-status.chat {
+            background: url(../img/chat-tab-status.png);
+            }
+
+        .contact-status.offline {
+            background: url(../img/offline-tab-status.png);
+            }
+
+        .contact-status.xa {
+            background: url(../img/notavailable-tab-status.png);
+            }
+
+        .contact-status.room {
             background: url(../img/room-tab-status.png);
             }
 
@@ -411,7 +444,7 @@ html, body {
             float: left;
             }
 
-        #message-window .companion-block span {
+        #message-window .companion-block p {
             float: left;
             margin: 13px 0 0 0;
             padding: 0 7px;
@@ -419,14 +452,62 @@ html, body {
             background: #f4f4f4;
             font: italic 14px Open Sans;
             color: #777978;
-            max-width: 50%;
+            max-width: 100%;
             max-height: 2.75em;
             overflow: hidden;
             text-overflow: ellipsis;
             }
 
+            #message-window .companion-block .status-messages {
+                float: left;
+                width: 50%;
+                }
+
+        #message-window .companion-block #action-info {
+            float: left;
+            margin: 20px 0 0 5px;
+            background: white;
+            }
+
+        #message-window .companion-block .companion-info {
+            float: right;
+            width: 40%;
+            }
+
+            #message-window .companion-block .companion-info h5 {
+                text-align: right;
+                font: bold 16px Arial;
+                margin: 7px 10px 10px 0;
+                }
+
+            #message-window .companion-block .companion-info .contact-status {
+                float: right;
+                }
+
+            #message-window .companion-block .companion-info p {
+                float: right;
+                text-align: right;
+                background: white;
+                font: 12px Arial;
+                margin: 8px 0 0 0;
+                }
+
+            #message-window .companion-block .companion-info a {
+                float: right;
+                font: 12px Arial;
+                color: #00707d;
+                text-decoration: none;
+                text-align: right;
+                margin: 8px 6px 0 0;
+                }
+                
+
     #message-window .dialog-block {
         border-top: 1px solid #bdbdbd;
+        overflow-y: auto;
+        height: -webkit-calc(100% - 95px);
+        height: -moz-calc(100% - 95px);
+        height: calc(100% - 95px);
         }
 
         #message-window .dialog-block .message {
@@ -461,3 +542,56 @@ html, body {
                 margin: 0 20px 0 38px;
                 font: 14px Verdana;
                 }
+
+#chat-wrapper {
+    border-right: 1px solid #bdbdbd;
+    border-left: 1px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
+    background: #f4f4f4;
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    left: 4px;
+    height: 79px;
+    }
+
+#chat-buttons {
+    position: absolute;
+    bottom: 47px;
+    }
+
+    #chat-buttons #emoticons {
+        margin: 3px;
+        float: left;
+        display: block;
+        width: 27px;
+        height: 27px;
+        background: url("../img/smile-button.png");
+        }
+
+    #chat-buttons #emoticons:hover {
+        background: url("../img/smile-button-hover.png");
+        }
+
+    #chat-buttons #send {
+        margin: 3px;
+        float: left;
+        display: block;
+        width: 27px;
+        height: 27px;
+        background: url("../img/sendfile-button.png");
+        }
+
+    #chat-buttons #send:hover {
+        background: url("../img/sendfile-button-hover.png");
+        }
+
+#typing-window {
+    position: absolute;
+    bottom: 6px;
+    height: 33px;
+    border: 1px solid #bdbdbd;
+    right: 1px;
+    left: 1px;
+    padding: 3px;
+    }
