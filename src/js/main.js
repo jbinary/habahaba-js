@@ -177,7 +177,7 @@ var update_world = function(rendered) {
                     break;
                 }
             }
-            for (var c=0, len=e2.childNodes.length; c<len; c++) {
+            for (var len=e2.childNodes.length - 1, c=len; c>=0; c--) {
                 var child = e2.childNodes[c];
                 var _child = e1.childNodes[c];
                 if (_child) {
