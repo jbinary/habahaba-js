@@ -40,12 +40,27 @@
     var that;
     Client.prototype.init_roster = function() {
         this.data.roster = {
-            items: [],
+            items: [
+                {
+                    groups: [-1],
+                    jid: this.data.my_jid,
+                    nick: this.data.nickname,
+                    pk: 0,
+                    presences: [],
+                    subscription: 'both'
+                    // TODO: avatar_hash
+                }
+            ],
             groups: [
                 {
                     name: 'Undefined',
                     pk: 0,
                     special_group: 'undefined'
+                },
+                {
+                    name: 'Self contact',
+                    pk: -1,
+                    special_group: 'self-contact'
                 }
             ]
         };
@@ -107,7 +122,7 @@
     Client.prototype.got_roster = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
-            _prepare_roster_item(item, true);
+            _prepare_roster_item(item, i<items.length-1);
         }
         that.init_avatars(); // TODO: the same as for init_roster
     }
