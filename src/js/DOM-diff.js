@@ -66,7 +66,7 @@ var DOMdiff = (function() {
     var l1 = count_children(e1),
         l2 = count_children(e2);
     if(l1 != l2) {
-      return -1;
+        return -1;
     }
 
     // different attributes?
@@ -79,11 +79,18 @@ var DOMdiff = (function() {
                  "src",
                  "rel",
                  "__more__attributes__here__"],
-        a, last = attrs.length,
-        attr, a1, a2;
+        a, attr, a1, a2;
 
-    for(a=0; a<last; a++) {
-      attr = attrs[a];
+    var names = {};
+    $.each([e1, e2], function(i, e) { 
+        for (a=0; a<e.attributes.length; a++) {
+            var name = e.attributes[a].name;
+            if (name.slice(0, 5) == 'data-' || attrs.indexOf(name) !== -1) {
+                names[name] = null;
+            }
+        }
+    });
+    for(var attr in names) {
       a1 = e1.getAttribute(attr);
       a2 = e2.getAttribute(attr);
       if(a1==a2 || (!a1 && a2=="") || (!a2 && a1=="")) continue;
