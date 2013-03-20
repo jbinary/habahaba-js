@@ -18,7 +18,18 @@ match /.view.tabs[.active] inputarea {
             <a id="emoticons" href="#"></a>
             <a id="send" href="#"></a>
         </div>
-        <textarea id="typing-window"></textarea>
+        <textarea id="typing-window" data-tab="{ .pk }">
+            @onkeyup = :::
+                var e = arguments[0],
+                    $this = $(this);
+                if (e.keyCode == 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    habahaba.view.send_message($.trim($this.val()),
+                                               $this.attr('data-tab'));
+                    $this.val('');
+                }
+            :::
+        </textarea>
     </div>
 }
 
@@ -77,7 +88,11 @@ match /.view.tabs[.active] msgwindow {
 }
 
 match /.messages.contacts.history {
-    from = .from
+    from = if (.from) {
+        .from
+    } else {
+        /.my_jid
+    }
     sender = /.roster.items[.jid._node == from._node][.jid._domain == from._domain]
     sender_jid = get_contact_jid(sender)
     <div class="message">

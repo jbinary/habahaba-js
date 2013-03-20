@@ -52,6 +52,14 @@ habahaba.view = {
         tab.active = true;
         tab.set();
         return true;
+    },
+    send_message: function(text, tab_id) {
+        var tab = new Model('.view.tabs').get(tab_id);
+        if (!tab || tab.type != 'contact') return;
+        var contact = new Model('.roster.items').get(tab.roster_item_id);
+        if (!contact) return;
+        habahaba.client.messages.send_chat_message(text, contact);
+        return true;
     }
 }
 
