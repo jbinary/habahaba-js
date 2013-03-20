@@ -14,14 +14,18 @@
     habahaba.Client = function() {
         jslix.Client.apply(this, arguments);
         this.data = data;
+        this.data.my_jid = this.connection.jid;
         this.storage = new Storage(sessionStorage, 'habahaba');
         this.account_storage = this.storage.chroot(
             'accounts',
             this.dispatcher.connection.jid.getBareJID()
         );
+
         this.init_roster(); // TODO: init roster only if appropriate file is
                             // loaded
-        this.init_messages();
+        this.messages = new habahaba.Client.Messages(this.dispatcher, this.data);
+        this.messages.init();
+
         var that = this;
         this.roster.signals.got.add(function() {
             that.changeStatus();
@@ -30,9 +34,7 @@
     var Client = habahaba.Client;
 
     Client._name = 'habahaba.Client';
-
     Client.prototype = new jslix.Client();
-
     Client.prototype.constructor = Client;
 
     Client.prototype.connect = function() {
