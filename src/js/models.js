@@ -136,7 +136,7 @@ modelEngine = function(data) {
     }
 
     Model.prototype.get = function(pk, _raw) {
-        if (!(pk instanceof Object) && pk) {
+        if (!(pk instanceof Object) && pk !== undefined) {
             var query = {pk: pk};
         } else if (!(pk instanceof Object)) {
             var query = {};
@@ -146,7 +146,7 @@ modelEngine = function(data) {
         var m = new Model(this._model_name).filter(query);
         var results = m.execute(_raw);
         if (!results.length) return null;
-        if (results.length > 1) throw "More than 1 object returned"; // TODO: exception here
+        if (results.length > 1) throw new Error("More than 1 object returned"); // TODO: exception here
         return results[0];
     }
 
