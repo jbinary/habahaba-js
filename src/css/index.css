@@ -543,6 +543,13 @@ html, body {
                 font: 14px Verdana;
                 }
 
+            #message-window .dialog-block .message .timestamp {
+                float: right;
+                color: gray;
+                font-weight: bold;
+                font-family: Arial;
+                }
+
 #chat-wrapper {
     border-right: 1px solid #bdbdbd;
     border-left: 1px solid #bdbdbd;

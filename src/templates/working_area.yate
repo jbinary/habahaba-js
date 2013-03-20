@@ -104,7 +104,9 @@ match /.messages.contacts.history {
             </img>
         </div>
         <h5>{ get_contact_display(sender) }</h5>
-        formatDate(.delay.stamp, "HH:mm")
+        <span class="timestamp">
+            formatDate(.delay.stamp, "HH:mm")
+        </span>
         <br class="clr"/>
         for splitlines(.body) {
             <p>{ . }</p>
