@@ -89,7 +89,7 @@ match .roster render_roster {
                     <input type="text"/>
                 </div>
                 <div id="roster">
-                    apply sort(.groups, .name)
+                    apply sort(.groups[.special_group != 'self-contact'], .name)
                 </div>
                 <div id="roster-buttons">
                     <button id="add-contact-button">Добавить контакт</button>
