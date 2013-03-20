@@ -46,6 +46,8 @@ var get_event_handler = function(node, event_name) {
     return handler;
 }
 
+var preserves = {};
+
 var update_world = function(rendered) {
     var replaceWith = function(with_, what) {
         var new_child = with_.cloneNode(true);
@@ -70,6 +72,17 @@ var update_world = function(rendered) {
     var wrapper = document.implementation.createHTMLDocument('');
     wrapper.body.innerHTML = rendered;
     rendered = wrapper.body;
+
+    $('*[data-preserve][id]').each(function() {
+        var attrs = $(this).attr('data-preserve').split(',');
+        if (!preserves[this.id]) {
+            preserves[this.id] = {};
+        }
+        var that = this;
+        $.each(attrs, function(_i, attr) {
+            preserves[that.id][attr] = that[attr];
+        });
+    });
 
     var d1 = rendered.firstChild,
         d2 = document.getElementsByTagName('body')[0].firstChild;
@@ -204,6 +217,15 @@ var update_world = function(rendered) {
             }
         }
     }
+    $('*[data-preserve][id]').each(function() {
+        var attrs = $(this).attr('data-preserve').split(',');
+        var that = this;
+        $.each(attrs, function(_i, attr) {
+            if (preserves[that.id] && preserves[that.id][attr]) {
+                that[attr] = preserves[that.id][attr];
+            }
+        });
+    });
 }
 
 dispatcher.bind('world:changed', function() {

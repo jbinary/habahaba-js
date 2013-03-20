@@ -593,7 +593,7 @@ html, body {
         background: url("../img/sendfile-button-hover.png");
         }
 
-#typing-window {
+textarea.typing-window {
     position: absolute;
     bottom: 6px;
     height: 33px;

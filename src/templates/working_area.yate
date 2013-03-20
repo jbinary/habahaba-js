@@ -18,7 +18,8 @@ match /.view.tabs[.active] inputarea {
             <a id="emoticons" href="#"></a>
             <a id="send" href="#"></a>
         </div>
-        <textarea id="typing-window" data-tab="{ .pk }">
+        <textarea id="typing-window-{ .pk }" class="typing-window" data-tab="{ .pk }">
+            @data-preserve = "value,scrollTop,selectionDirection,selectionStart,selectionEnd"
             @onkeyup = :::
                 var e = arguments[0],
                     $this = $(this);
@@ -79,7 +80,7 @@ match /.view.tabs[.active] msgwindow {
                 /*<a href="#">Read blog</a>*/
             </div>
         </div>
-        <div class="dialog-block">
+        <div id="dialog-block-{ .pk }" class="dialog-block" data-preserve="scrollTop">
             messages = roster_item_messages(.roster_item_id)
             apply messages.history
             <br class="clr"/>
