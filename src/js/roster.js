@@ -114,7 +114,7 @@
     Client.prototype.roster_updated = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
-            the_item = that.get_roster_item(item.jid);
+            var the_item = that.get_roster_item(item.jid);
             _prepare_roster_item(item, false, the_item);
         }
     }
