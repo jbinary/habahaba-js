@@ -39,16 +39,76 @@ var _moveNode = function(parent, node, i) {
 }
 
 var get_event_handler = function(node, event_name) {
-    var handler;
-    try {
-        handler = new Function(node.getAttribute(event_name));
-    } catch (e) {} // TODO: logging?
+    if (!node.getAttribute) return;
+    var handler = node.getAttribute(event_name);
+    if (handler) {
+        handler = new Function(handler);
+        try {
+            node.removeAttribute(event_name);
+        } catch (e) {} // TODO: logging?
+    }
     return handler;
 }
 
+var push_handler = function(func, args) {
+    handlers.push({
+        func: func,
+        args: args
+    });
+}
+
+var apply_event_handler = function(node, event_name) {
+    push_handler(_apply_event_handler, arguments);
+}
+
+var apply_bubbledown_handler = function(node, event_name) {
+    push_handler(_apply_bubbledown_handler, arguments);
+}
+
+var restore_preserved_attrs = function(node) {
+    push_handler(_restore_preserved_attrs, arguments);
+}
+
+var _apply_event_handler = function(node, event_name) {
+    var handler = get_event_handler(node, event_name);
+    if (!handler) return;
+    handler.apply(node);
+}
+
+var _apply_bubbledown_handler = function(node, event_name) {
+    _apply_event_handler(node, event_name);
+    $('*['+ event_name +']', node).each(function() {
+        _apply_event_handler(this, event_name);
+    });
+}
+
+var _restore_preserved_attrs = function(node) {
+    if (typeof(node) === 'string') {
+        node = document.getElementById(node);
+    }
+    $(node).parent().find('*[data-preserve][id]').each(function() {
+        var attrs = $(this).attr('data-preserve').split(',');
+        var that = this;
+        $.each(attrs, function(_i, attr) {
+            if (preserves[that.id] && preserves[that.id][attr]) {
+                that[attr] = preserves[that.id][attr];
+                delete preserves[that.id][attr];
+            }
+        });
+    });
+}
+
+var really_apply_handlers = function() {
+    $.each(handlers, function() {
+        this.func.apply(null, this.args);
+    });
+}
+
 var preserves = {};
+var handlers;
 
 var update_world = function(rendered) {
+    handlers = [];
     var replaceWith = function(with_, what) {
         var new_child = with_.cloneNode(true);
         what.parentElement.replaceChild(new_child, what);
@@ -64,8 +124,44 @@ var update_world = function(rendered) {
         work_el = document.getElementById(id);
         var new_el = wrapper.getElementById(id);
         if (new_el) {
-            replaceWith(new_el, work_el);
+            work_el.innerHTML = '';
+            $.each(new_el.childNodes, function() {
+                var cloned = this.cloneNode(true);
+                work_el.appendChild(cloned);
+                restore_preserved_attrs(cloned);
+                apply_bubbledown_handler(cloned, 'oncreate');
+            });
             return true;
+        }
+    }
+
+    var check_attributes = function() {
+        // Check attributes
+        if (!e1.attributes || !e2.attributes) return;
+        // Are there any new attributes?
+        var id_changed = false;
+        for (var a=0, len=e1.attributes.length; a<len; a++) {
+            var attr = e1.attributes[a];
+            var _attr = e2.attributes.getNamedItem(attr.name);
+            if (!_attr || _attr.nodeValue != attr.nodeValue) {
+                var _attr = document.createAttribute(attr.name);
+                _attr.nodeValue = attr.nodeValue;
+                e2.attributes.setNamedItem(_attr);
+                if (attr.name === 'id')  {
+                    id_changed = true;
+                }
+            }
+        }
+        // Are there any obsolete attributes?
+        for (var a=e2.attributes.length-1; a>=0; a--) {
+            var attr = e2.attributes[a];
+            if (!e1.attributes.getNamedItem(attr.name)) {
+                e2.attributes.removeNamedItem(attr.name);
+            }
+        }
+        if (id_changed) {
+            restore_preserved_attrs(e2.id);
+            apply_bubbledown_handler(e2, 'oncreate');
         }
     }
 
@@ -104,6 +200,8 @@ var update_world = function(rendered) {
                 var e1 = e1.childNodes[c[0]];
                 var e2 = e2.childNodes[c[1]];
             }
+
+            check_attributes();
             if (e1.childNodes.length == e2.childNodes.length && 
                 e1.childNodes.length == 0) {
                 replaceWith(e1, e2);
@@ -123,26 +221,6 @@ var update_world = function(rendered) {
                     var parent = e2.parentElement;
                     _moveNode(parent, _e1, i1);
                     _moveNode(parent, e2, i2);
-                }
-                continue;
-            }
-
-            // Check attributes
-            // Are there any new attributes?
-            for (var a=0, len=e1.attributes.length; a<len; a++) {
-                var attr = e1.attributes[a];
-                var _attr = e2.attributes.getNamedItem(attr.name);
-                if (!_attr || _attr.nodeValue != attr.nodeValue) {
-                    var _attr = document.createAttribute(attr.name);
-                    _attr.nodeValue = attr.nodeValue;
-                    e2.attributes.setNamedItem(_attr);
-                }
-            }
-            // Are there any obsolete attributes?
-            for (var a=e2.attributes.length-1; a>=0; a--) {
-                var attr = e2.attributes[a];
-                if (!e1.attributes.getNamedItem(attr.name)) {
-                    e2.attributes.removeNamedItem(attr.name);
                 }
             }
 
@@ -181,10 +259,9 @@ var update_world = function(rendered) {
                     } else {
                         next.parentElement.insertBefore(cloned, next);
                     }
-                    var handler = get_event_handler(cloned, 'onshow');
-                    if (handler) {
-                        handler.apply(cloned);
-                    }
+                    restore_preserved_attrs(cloned);
+                    apply_event_handler(cloned, 'onshow');
+                    apply_bubbledown_handler(cloned, 'oncreate');
                 } else {
                     console.log('Something went wrong');
                     break;
@@ -203,29 +280,21 @@ var update_world = function(rendered) {
                 if (!f) {
                     // Remove
                     child.setAttribute('removed', true);
-                    var handler = get_event_handler(child, 'onhide');
-                    if (handler) handler.apply(child);
-
-                    $(child).promise().done(function() {
-                        if (this[0].hasAttribute('removed')) {
-                            try {
-                                this[0].parentElement.removeChild(this[0]);
-                            } catch (e) {}
-                        }
-                    });
+                    apply_event_handler(child, 'onhide');
+                    push_handler(function(child) {
+                        $(child).promise().done(function() {
+                            if (this[0].hasAttribute('removed')) {
+                                try {
+                                    this[0].parentElement.removeChild(this[0]);
+                                } catch (e) {}
+                            }
+                        });
+                    }, [child]);
                 }
             }
         }
     }
-    $('*[data-preserve][id]').each(function() {
-        var attrs = $(this).attr('data-preserve').split(',');
-        var that = this;
-        $.each(attrs, function(_i, attr) {
-            if (preserves[that.id] && preserves[that.id][attr]) {
-                that[attr] = preserves[that.id][attr];
-            }
-        });
-    });
+    really_apply_handlers();
 }
 
 dispatcher.bind('world:changed', function() {
