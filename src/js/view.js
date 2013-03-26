@@ -30,9 +30,18 @@ habahaba.view = {
         return true;
     },
     close_tab: function(tab_id) {
-        var tab = new Model('.view.tabs').get(tab_id);
+        var tabs = new Model('.view.tabs').getAll();
+        var tab;
+        $.each(tabs, function() {
+            if (this.pk == tab_id) tab = this;
+        });
         if (!tab) return;
+        var index = tabs.indexOf(tab);
+        var a_tab = tabs[index + 1] || tabs[index - 1];
         tab.del();
+        if (a_tab) {
+            habahaba.view.activate_tab(a_tab.pk);
+        }
         return true;
     },
     activate_tab: function(tab_id) {
