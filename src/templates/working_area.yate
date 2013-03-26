@@ -25,9 +25,10 @@ match /.view.tabs[.active] inputarea {
                     $this = $(this);
                 if (e.keyCode == 13 && !e.shiftKey) {
                     e.preventDefault();
-                    habahaba.view.send_message($.trim($this.val()),
-                                               $this.attr('data-tab'));
+                    var msg = $this.val();
                     $this.val('');
+                    habahaba.view.send_message($.trim(msg),
+                                               $this.attr('data-tab'));
                 }
             :::
         </textarea>
@@ -56,7 +57,9 @@ match /.view.tabs[.active] msgwindow {
                 </p>*/
             </div>
             <div class="companion-info">
-                <h5>Tester</h5>
+                <h5>
+                get_contact_display(contact)
+                </h5>
                 status = get_contact_status(contact)
                 <p>
                 if status == 'dnd' {
@@ -80,7 +83,21 @@ match /.view.tabs[.active] msgwindow {
                 /*<a href="#">Read blog</a>*/
             </div>
         </div>
-        <div id="dialog-block-{ .pk }" class="dialog-block" data-preserve="scrollTop">
+        <div id="dialog-block-{ .pk }" class="dialog-block" data-tab="{ .pk }" data-rosteritem="{ .roster_item_id }">
+            @data-preserve = "scrollTop"
+            @oncreate = :::
+                var $this = $(this);
+                $this.scroll(function() {
+                    var prevent_auto_scroll = 
+                        $this.scrollTop() + $this.height() != $this.prop('scrollHeight');
+                    var tab = new Model('.view.tabs').get($this.attr('data-tab'));
+                    tab.prevent_auto_scroll = prevent_auto_scroll;
+                    tab.set(true);
+                });
+                var roster_item = $this.attr('data-rosteritem');
+                var roster_item = new Model('.roster.items').get(roster_item);
+                habahaba.view.autoscroll(roster_item);
+            :::
             messages = roster_item_messages(.roster_item_id)
             apply messages.history
             <br class="clr"/>

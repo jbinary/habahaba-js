@@ -69,6 +69,21 @@ habahaba.view = {
         if (!contact) return;
         habahaba.client.messages.send_chat_message(text, contact);
         return true;
+    },
+    autoscroll: function(roster_item) {
+        var tab = new Model('.view.tabs').get({roster_item_id: roster_item.pk,
+                                               active: true});
+        if (!tab) return;
+        var block = $('#dialog-block-' + tab.pk);
+        if (!tab.prevent_auto_scroll) {
+            block.animate({
+                scrollTop: $('.dialog-block').prop('scrollHeight')
+            }, 'fast');
+            block.promise().always(function() {
+                tab.prevent_auto_scroll = undefined;
+                tab.set(true);
+            });
+        }
     }
 }
 
