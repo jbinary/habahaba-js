@@ -8,7 +8,8 @@
             priority: 0,
             status: 'Hey ho!',
             show: 'dnd'
-        }
+        },
+        loaded_plugins: {}
     };
 
     habahaba.Client = function() {
@@ -29,6 +30,14 @@
         var that = this;
         this.roster.signals.got.add(function() {
             that.changeStatus();
+        });
+
+        // Init plugins
+        // TODO: dependency engine
+        $.each(habahaba.plugins_init_order, function() {
+            var plugin = new habahaba.plugins[this](that.dispatcher, data);
+            plugin.load(); // TODO: handle errors
+            data.loaded_plugins[this] = plugin;
         });
     }
     var Client = habahaba.Client;

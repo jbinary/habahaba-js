@@ -1,6 +1,8 @@
 "use strict";
 (function() {
     var habahaba = {
+        plugins: {},
+        plugins_init_order: [], // TODO: dependency engine
         onlyFields: function(stanza) {
             var res = {};
             var definition = stanza.__definition__;
