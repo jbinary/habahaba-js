@@ -63,6 +63,7 @@ habahaba.view = {
         return true;
     },
     send_message: function(text, tab_id) {
+        if (!text.length) return;
         var tab = new Model('.view.tabs').get(tab_id);
         if (!tab || tab.type != 'contact') return;
         var contact = new Model('.roster.items').get(tab.roster_item_id);
