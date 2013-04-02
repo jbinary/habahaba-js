@@ -36,7 +36,9 @@
         // TODO: dependency engine
         $.each(habahaba.plugins_init_order, function() {
             var plugin = new habahaba.plugins[this](that.dispatcher, data);
-            plugin.load(); // TODO: handle errors
+            if (plugin.load) {
+                plugin.load(); // TODO: handle errors
+            }
             data.loaded_plugins[this] = plugin;
         });
     }
