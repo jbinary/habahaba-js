@@ -20,17 +20,7 @@ match /.view.tabs[.active] inputarea {
         </div>
         <textarea id="typing-window-{ .pk }" class="typing-window" data-tab="{ .pk }">
             @data-preserve = "value,scrollTop,selectionDirection,selectionStart,selectionEnd"
-            @onkeyup = :::
-                var e = arguments[0],
-                    $this = $(this);
-                if (e.keyCode == 13 && !e.shiftKey) {
-                    e.preventDefault();
-                    var msg = $this.val();
-                    $this.val('');
-                    habahaba.view.send_message($.trim(msg),
-                                               $this.attr('data-tab'));
-                }
-            :::
+            @onkeyup = "habahaba.view.chat_keyup.apply(this, arguments)"
         </textarea>
     </div>
 }
@@ -52,9 +42,22 @@ match /.view.tabs[.active] msgwindow {
                     "{ presence.status }"
                 </p>
                 <br class="clr" />
-                /*<p id="action-info">
-                    "читает сообщение..."
-                </p>*/
+                if (contact.chatstate) {
+                    state = contact.chatstate
+                    <p id="action-info">
+                        if (state == 'active') {
+                            "is paying attention to the conversation"
+                        } else if (state == 'inactive') {
+                            "is doing something else"
+                        } else if (state == 'gone') {
+                            "has gone"
+                        } else if (state == 'composing') {
+                            "is composing a message"
+                        } else if (state == 'paused') {
+                            "has paused composing a message"
+                        }
+                    </p>
+                }
             </div>
             <div class="companion-info">
                 <h5>

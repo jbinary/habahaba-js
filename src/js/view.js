@@ -45,6 +45,7 @@
                 if (a_tab) {
                     habahaba.view.activate_tab(a_tab.pk);
                 }
+                update_chatstate({tab: tab, state: 'gone'});
                 return true;
             },
             activate_tab: function(tab_id) {
@@ -63,11 +64,11 @@
                 }
                 tab.active = true;
                 tab.set();
+                update_chatstate({tab: tab, state: 'active'});
                 return true;
             },
-            send_message: function(text, tab_id) {
+            send_message: function(text, tab) {
                 if (!text.length) return;
-                var tab = new Model('.view.tabs').get(tab_id);
                 if (!tab || tab.type != 'contact') return;
                 var contact = new Model('.roster.items').get(tab.roster_item_id);
                 if (!contact) return;
@@ -88,6 +89,19 @@
                         tab.set(true);
                     });
                 }
+            },
+            chat_keyup: function(e) {
+                var $this = $(this);
+                var tab = new Model('.view.tabs').get($this.attr('data-tab'));
+                if (e.keyCode == 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    var msg = $this.val();
+                    $this.val('');
+                    update_chatstate({tab: tab, state: 'active'});
+                    habahaba.view.send_message($.trim(msg), tab);
+                } else {
+                    update_chatstate({tab: tab, state: 'composing'});
+                }
             }
         }
 
@@ -104,14 +118,15 @@
                 var value = node.data.priority;
                 if (node.data.type == 'unavailable') value = undefined;
                 values[value] = node;
-                if (value !== undefined)
+                if (value !== undefined) {
                     avalues.push(value);
+                }
             }
             if (avalues.length) {
                 var max = Math.max.apply(null, avalues);
                 return [values[max]];
             } else if (undefined in values) {
-                return [values[undefined]]
+                return [values[undefined]];
             }
             return [];
         }
@@ -127,9 +142,35 @@
         yr.externals.formatDate = function(date, format_string) {
             return moment(date.data).format(format_string);
         }
+
+        var require = function(plugin_name, to_execute) {
+            if (data.loaded_plugins[plugin_name]) {
+                to_execute(data.loaded_plugins[plugin_name]);
+            }
+        }
+
+        var update_chatstate = function(state_obj) {
+            require('chatstates', function(plugin) {
+                var jid;
+                if (state_obj.jid) {
+                    jid = state_obj.jid;
+                } else if (state_obj.tab && state_obj.tab.type == 'contact') {
+                    var roster_item = new Model('.roster.items').
+                                        get(state_obj.tab.roster_item_id);
+                    if (roster_item) {
+                        jid = roster_item.jid;
+                    }
+                }
+                if (jid) {
+                    plugin.update_my_activity(state_obj.state, jid);
+                }
+            });
+        }
+
     }
+
     plugin._name = 'habahaba.desktop_view';
-    plugin.provides = ['view'];
+    plugin.provides = ['view', 'view.chatstates'];
     habahaba.plugins[plugin._name] = plugin;
     // TODO: dependency engine
     habahaba.plugins_init_order.push(plugin._name);
