@@ -111,29 +111,21 @@ var handlers;
 
 var update_world = function(rendered) {
     handlers = [];
-    var replaceWith = function(with_, what) {
+    var replaceWith = function(with_, what, parent) {
         var new_child = with_.cloneNode(true);
         what.parentElement.replaceChild(new_child, what);
     }
 
-    var replace = function(child) {
-        var work_el = child;
-        while (!work_el.getAttribute || 
-                !work_el.getAttribute('id')) {
-            work_el = work_el.parentElement;
+    var replace = function(wrapper_el, doc_el, parent) {
+        if (wrapper_el) {
+            var cloned = wrapper_el.cloneNode(true);
         }
-        var id = work_el.getAttribute('id');
-        work_el = document.getElementById(id);
-        var new_el = wrapper.getElementById(id);
-        if (new_el) {
-            work_el.innerHTML = '';
-            $.each(new_el.childNodes, function() {
-                var cloned = this.cloneNode(true);
-                work_el.appendChild(cloned);
-                restore_preserved_attrs(cloned);
-                apply_bubbledown_handler(cloned, 'oncreate');
-            });
-            return true;
+        if (wrapper_el && doc_el) {
+            parent.replaceChild(cloned, doc_el);
+        } else if (wrapper_el) {
+            parent.appendChild(cloned);
+        } else if (doc_el) {
+            parent.removeChild(doc_el);
         }
     }
 
@@ -238,11 +230,11 @@ var update_world = function(rendered) {
                     var _p = DOMdiff.equal(child, _child);
                     if (_p === 0) continue;
                 }
-                var id;
+                var id = undefined;
                 if (child.getAttribute)
                     id = child.getAttribute('id');
                 if (!id) {
-                    replace(child);
+                    replace(child, _child, e2);
                     break;
                 }
                 var old_el = document.getElementById(id);
@@ -275,23 +267,26 @@ var update_world = function(rendered) {
                 if (_child) {
                     var _p = DOMdiff.equal(child, _child);
                     if (_p === 0) continue;
-                }
-                var f = replace(child);
-                // TODO: optimisation: don't look through elements
-                // that were processed in the previous loop
-                if (!f) {
-                    // Remove
-                    child.setAttribute('removed', true);
-                    apply_event_handler(child, 'onhide');
-                    push_handler(function(child) {
-                        $(child).promise().done(function() {
-                            if (this[0].hasAttribute('removed')) {
-                                try {
-                                    this[0].parentElement.removeChild(this[0]);
-                                } catch (e) {}
-                            }
-                        });
-                    }, [child]);
+                    //replace(child, _child);
+                    // TODO: optimisation: don't look through elements
+                    // that were processed in the previous loop
+                } else {
+                    if (child.setAttribute) {
+                        // Remove
+                        child.setAttribute('removed', true);
+                        apply_event_handler(child, 'onhide');
+                        push_handler(function(child) {
+                            $(child).promise().done(function() {
+                                if (this[0].hasAttribute('removed')) {
+                                    try {
+                                        this[0].parentElement.removeChild(this[0]);
+                                    } catch (e) {}
+                                }
+                            });
+                        }, [child]);
+                    } else {
+                        child.parentNode.removeChild(child);
+                    }
                 }
             }
         }
