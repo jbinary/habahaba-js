@@ -267,7 +267,6 @@ var update_world = function(rendered) {
                 if (_child) {
                     var _p = DOMdiff.equal(child, _child);
                     if (_p === 0) continue;
-                    //replace(child, _child);
                     // TODO: optimisation: don't look through elements
                     // that were processed in the previous loop
                 } else {
