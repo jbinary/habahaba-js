@@ -79,13 +79,19 @@ var DOMdiff = (function() {
                  "src",
                  "rel",
                  "__more__attributes__here__"],
+        ignore_attrs = [
+            'onshow',
+            'oncreate',
+            'onhide'
+        ],
         a, attr, a1, a2;
 
     var names = {};
     $.each([e1, e2], function(i, e) { 
         for (a=0; a<e.attributes.length; a++) {
             var name = e.attributes[a].name;
-            if (name.slice(0, 5) == 'data-' || attrs.indexOf(name) !== -1) {
+            if ((name.slice(0, 5) == 'data-' || attrs.indexOf(name) !== -1 ||
+                 name.slice(0, 2) == 'on') && ignore_attrs.indexOf(name) === -1) {
                 names[name] = null;
             }
         }
