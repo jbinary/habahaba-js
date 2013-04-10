@@ -150,9 +150,11 @@ modelEngine = function(data) {
         return results[0];
     }
 
-    Model.prototype.fireChanged = function() {
+    Model.prototype.fireChanged = function(silently) {
         dispatcher.fire('model:' + this._model_name + ':changed', this);
-        dispatcher.fire('world:changed');
+        if (!silently) {
+            dispatcher.fire('world:changed');
+        }
     }
 
     Model.prototype.set = function(silently) {
@@ -179,8 +181,8 @@ modelEngine = function(data) {
             for (var key in old_obj) {
                 if (this[key] === undefined) test(key);
             };
-            if (anything_changed && !silently) {
-                this.fireChanged();
+            if (anything_changed) {
+                this.fireChanged(silently);
             }
         } else if (!silently) dispatcher.fire('world:changed');
 
