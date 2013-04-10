@@ -191,6 +191,11 @@
             if (!tab || tab.prevent_auto_scroll || !tab.active) {
                 roster_item.unread = true;
                 roster_item.set();
+
+                // We want also to expand the group if the tab was not opened
+                if (!tab && roster_item.groups.length) {
+                    habahaba.view.collapse_group(roster_item.groups[0]);
+                }
             }
 
             habahaba.view.autoscroll(roster_item);
