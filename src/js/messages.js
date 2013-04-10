@@ -69,10 +69,13 @@
     }
 
     Messages.prototype.send_chat_message = function(text, roster_item) {
-        var msg = jslix.stanzas.message.create({
+        var msg = this.message_stanza.create({
             type: 'chat',
             to: roster_item.jid,
-            body: text
+            body: text,
+            delay: {
+                stamp: new Date()
+            }
         });
         this.dispatcher.send(msg);
         this.update_chat_history(msg, roster_item);
