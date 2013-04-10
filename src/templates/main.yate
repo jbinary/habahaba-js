@@ -44,8 +44,8 @@ match .my_presence render_my_presence {
     <div class="border">
         <div id="user-block">
             <h4>{ ..nickname }</h4>
-            <a href="#" id="personal-info-button"></a>
-            <a href="#" id="blog-button"></a>
+            /*<a href="#" id="personal-info-button"></a>
+            <a href="#" id="blog-button"></a>*/
             <br class="clr"/>
             <img src="img/userpic.png" alt="ava"/>
             <p id="status">{ .status }</p>

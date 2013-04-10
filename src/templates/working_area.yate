@@ -15,8 +15,8 @@ match / working_area {
 match /.view.tabs[.active] inputarea {
     <div id="chat-wrapper">
         <div id="chat-buttons">
-            <a id="emoticons" href="#"></a>
-            <a id="send" href="#"></a>
+            /*<a id="emoticons" href="#"></a>
+            <a id="send" href="#"></a>*/
         </div>
         <textarea id="typing-window-{ .pk }" class="typing-window" data-tab="{ .pk }">
             @data-preserve = "value,scrollTop,selectionDirection,selectionStart,selectionEnd"

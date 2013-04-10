@@ -96,8 +96,8 @@ match .roster render_roster {
                     apply sort(.groups[.special_group != 'self-contact'], .name)
                 </div>
                 <div id="roster-buttons">
-                    <button id="add-contact-button">Добавить контакт</button>
-                    <button id="join-room-button">Войти в комнату</button>
+                    /*<button id="add-contact-button">Добавить контакт</button>
+                    <button id="join-room-button">Войти в комнату</button>*/
                     <button id="settings-button"></button>
                 </div>
             </div>
