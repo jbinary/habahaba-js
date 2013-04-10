@@ -66,7 +66,6 @@
         var message = habahaba.onlyFields(message);
         messages.history.push(message); // TODO: collect garbage
         messages.set();
-        habahaba.view.autoscroll(roster_item); // TODO: move to view with an event
     }
 
     Messages.prototype.send_chat_message = function(text, roster_item) {
