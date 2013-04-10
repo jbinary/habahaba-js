@@ -144,7 +144,14 @@
         }
 
         yr.externals.formatDate = function(date, format_string) {
-            return moment(date.data).format(format_string);
+            var res;
+            if (date.length) {
+                date = date[0];
+                res = moment(date.data).format(format_string);
+            } else {
+                res = 'None';
+            }
+            return res;
         }
 
         var require = function(plugin_name, to_execute) {
@@ -170,6 +177,7 @@
                 }
             });
         }
+
         dispatcher.bind('model:.messages.contacts:changed', function(model) {
             var roster_item = new Model('.roster.items').get(model.roster_item_id);
             habahaba.view.autoscroll(roster_item);
