@@ -3,9 +3,15 @@ modelEngine = function(data) {
         signals: {},
         data: data || {},
         //views: {},
-        bind: function(signal, handler) {
-            this.signals[signal] = this.signals[signal] || [];
-            this.signals[signal][this.signals[signal].length] = handler;
+        bind: function(signals, handler) {
+            if (!(signals instanceof Array)) {
+                signals = [signals];
+            }
+            var that = this;
+            $.each(signals, function() {
+                that.signals[this] = that.signals[this] || [];
+                that.signals[this][that.signals[this].length] = handler;
+            });
         },
         fire: function(signal, sender, params) {
             var signals = this.signals[signal] || [];
@@ -80,6 +86,10 @@ modelEngine = function(data) {
                  continue;
             if (obj[field] instanceof Array) {
                 this[field] = obj[field].slice();
+            } else if (obj[field] instanceof Date) {
+                var cloned = new Date();
+                cloned.setTime(obj[field].getTime());
+                this[field] = cloned;
             } else if (obj[field] instanceof Object) {
                 this[field] = obj[field].clone();
             } else {
