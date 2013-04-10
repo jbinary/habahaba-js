@@ -1,6 +1,6 @@
 "use strict";
 (function() {
-    var plugin = function(dispatcher, data) {
+    var plugin = function(jslix_dispatcher, data) {
         habahaba.view = {
             collapse_group: function(gpk) {
                 var collapsedGroup = new Model('.view.collapsed_groups').get(gpk);
@@ -105,6 +105,10 @@
             }
         }
 
+        var _modelEngine = habahaba.view_start();
+        var Model = _modelEngine.Model;
+        var dispatcher = _modelEngine.dispatcher;
+
         // External functions for yate
         yr.externals.count = function(nodeset) {
             return nodeset.length;
@@ -166,7 +170,10 @@
                 }
             });
         }
-
+        dispatcher.bind('model:.messages.contacts:changed', function(model) {
+            var roster_item = new Model('.roster.items').get(model.roster_item_id);
+            habahaba.view.autoscroll(roster_item);
+        });
     }
 
     plugin._name = 'habahaba.desktop_view';

@@ -21,7 +21,15 @@
             'accounts',
             this.dispatcher.connection.jid.getBareJID()
         );
+    }
 
+    var Client = habahaba.Client;
+
+    Client._name = 'habahaba.Client';
+    Client.prototype = new jslix.Client();
+    Client.prototype.constructor = Client;
+
+    Client.prototype.init = function() {
         this.init_roster(); // TODO: init roster only if appropriate file is
                             // loaded
         this.messages = new habahaba.Client.Messages(this.dispatcher, this.data);
@@ -34,6 +42,7 @@
 
         // Init plugins
         // TODO: dependency engine
+        this.roster.init();
         $.each(habahaba.plugins_init_order, function() {
             var plugin = new habahaba.plugins[this](that.dispatcher, data);
             if (plugin.load) {
@@ -42,17 +51,12 @@
             data.loaded_plugins[this] = plugin;
         });
     }
-    var Client = habahaba.Client;
-
-    Client._name = 'habahaba.Client';
-    Client.prototype = new jslix.Client();
-    Client.prototype.constructor = Client;
 
     Client.prototype.connect = function() {
         var d = $.Deferred();
         var that = this;
         this.connection.connect(this.dispatcher).done(function() {
-            that.roster.init();
+            that.init();
             d.resolve.apply(d, arguments);
         }).fail(function() {
             d.reject.apply(d, arguments);

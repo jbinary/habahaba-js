@@ -71,7 +71,7 @@
                     client = new habahaba.Client(options);
                     habahaba.client = client;
                     client.connect().done(function() {
-                        habahaba.view_start();
+                        console.log('Started');
                     }).fail(function(reason) {
                         alert(reason);
                     });

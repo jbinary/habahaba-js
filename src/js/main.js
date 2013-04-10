@@ -304,6 +304,7 @@ dispatcher.bind('world:changed', function() {
 });
 
         dispatcher.start();
-        window.Model = Model;
+        window.Model = Model; // XXX: don't use window?
+        return _modelEngine;
     }
 })();
