@@ -178,10 +178,38 @@
             });
         }
 
-        dispatcher.bind('model:.messages.contacts:changed', function(model) {
+        // When .messages.contacts is updated, we need to autoscroll
+        // and update unread status
+        dispatcher.bind(['model:.messages.contacts:changed',
+                         'model:.messages.contacts:added'], function(model) {
             var roster_item = new Model('.roster.items').get(model.roster_item_id);
+
+            // Update unread if it's necessary
+            var tab = new Model('.view.tabs').get({
+                roster_item_id: model.roster_item_id
+            });
+            if (!tab || tab.prevent_auto_scroll || !tab.active) {
+                roster_item.unread = true;
+                roster_item.set();
+            }
+
             habahaba.view.autoscroll(roster_item);
         });
+
+        // When prevent_autoscroll is reset or inactive tab became active then
+        // we need to reset the unread flag too
+        var update_unread = function(tab) {
+            if (!tab.prevent_auto_scroll && tab.active) {
+                var roster_item = new Model('.roster.items').get(tab.roster_item_id);
+                if (!roster_item) return;
+                roster_item.unread = false;
+                roster_item.set(false);
+            }
+        }
+        dispatcher.bind('model:.view.tabs:attr-changed:prevent_auto_scroll',
+                        update_unread);
+        dispatcher.bind('model:.view.tabs:attr-changed:active',
+                        update_unread);
     }
 
     plugin._name = 'habahaba.desktop_view';

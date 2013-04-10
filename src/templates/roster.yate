@@ -46,7 +46,11 @@ match /.roster.items (nodeset group) {
             </img>
         </div>
         <span>
-            @class = get_contact_status(.)
+            if (.unread) {
+                @class = "unread"
+            } else {
+                @class = get_contact_status(.)
+            }
         </span>
         <h5>
         get_contact_display(.)

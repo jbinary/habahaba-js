@@ -144,7 +144,11 @@ match /.view.tabs {
         }
         @onclick = "habahaba.view.activate_tab({ .pk }); return false"
         <span class="contact-status ">
-            @class += get_contact_status(contact)
+            @class += if (contact.unread) {
+                "unread"
+            } else {
+                get_contact_status(contact)
+            }
         </span>
         get_contact_display(contact)
         <a href="#" class="close-button">

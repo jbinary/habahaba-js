@@ -214,35 +214,41 @@ html, body {
                             }
 
                         #contact-block #container .group-list .contact span {
-                            width: 10px;
+                            width: 13px;
                             height: 10px;
                             display: block;
                             float: left;
                             margin: 6px 6px 2px 6px;
+                            background-repeat: no-repeat;
+                            background-position: center center;
                             }
 
                         #contact-block #container .group-list .contact .online {
-                            background: url(../img/available-circle-status.png);
+                            background-image: url(../img/available-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .chat {
-                            background: url(../img/chat-circle-status.png);
+                            background-image: url(../img/chat-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .away {
-                            background: url(../img/away-circle-status.png);
+                            background-image: url(../img/away-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .xa {
-                            background: url(../img/notavailable-circle-status.png);
+                            background-image: url(../img/notavailable-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .dnd {
-                            background: url(../img/dnd-circle-status.png);
+                            background-image: url(../img/dnd-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .offline {
-                            background: url(../img/offline-circle-status.png);
+                            background-image: url(../img/offline-circle-status.png);
+                            }
+
+                        #contact-block #container .group-list .contact .unread {
+                            background-image: url(../img/unread-message-ico-roster.png);
                             }
 
                         #contact-block #container .group-list .contact h5 {
@@ -390,34 +396,40 @@ html, body {
             height: 13px;
             display: block;
             float: left;
+            background-repeat: no-repeat;
+            background-position: center bottom;
             }
 
         .contact-status.online {
-            background: url(../img/available-tab-status.png);
+            background-image: url(../img/available-tab-status.png);
             }
 
         .contact-status.away {
-            background: url(../img/away-tab-status.png);
+            background-image: url(../img/away-tab-status.png);
             }
 
         .contact-status.dnd {
-            background: url(../img/dnd-tab-status.png);
+            background-image: url(../img/dnd-tab-status.png);
             }
 
         .contact-status.chat {
-            background: url(../img/chat-tab-status.png);
+            background-image: url(../img/chat-tab-status.png);
             }
 
         .contact-status.offline {
-            background: url(../img/offline-tab-status.png);
+            background-image: url(../img/offline-tab-status.png);
             }
 
         .contact-status.xa {
-            background: url(../img/notavailable-tab-status.png);
+            background-image: url(../img/notavailable-tab-status.png);
             }
 
         .contact-status.room {
-            background: url(../img/room-tab-status.png);
+            background-image: url(../img/room-tab-status.png);
+            }
+
+        .contact-status.unread {
+            background-image: url(../img/unread-message-ico-tab.png);
             }
 
         #bookmarks li .close-button {
