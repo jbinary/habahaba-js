@@ -150,7 +150,9 @@ match /.view.tabs {
                 get_contact_status(contact)
             }
         </span>
-        get_contact_display(contact)
+        <div class="contact-display">
+            get_contact_display(contact)
+        </div>
         <a href="#" class="close-button">
             @onclick="habahaba.view.close_tab({ .pk }); return false"
         </a>

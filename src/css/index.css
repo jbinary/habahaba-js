@@ -381,7 +381,15 @@ html, body {
         line-height: 34px;
         z-index: 100;
         position: relative;
+        max-width: 165px;
         }
+
+    #bookmarks div.contact-display {
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: left;
+    }
 
     #bookmarks .active {
         opacity: 1;
