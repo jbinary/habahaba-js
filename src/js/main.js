@@ -215,7 +215,7 @@ var patch = function(rendered, existent) {
         for (var pi=0; pi<paths.length; pi++) {
             var path = paths[pi];
             if (!path) continue;
-            var e1 = rendered, e2 = existend;
+            var e1 = rendered, e2 = existent;
             for (var p=0; p<path.length - 1; p++) {
                 var c = path[p];
                 var e1 = getChild(e1, c[0]);
