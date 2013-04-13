@@ -32,6 +32,10 @@ var DOMdiff = (function() {
       return 0;
     }
 
+    if (!e1 || !e2) {
+        return -1;
+    }
+
     // different element (1)?
     if(e1.nodeType !== e2.nodeType) {
       return -1;
@@ -48,25 +52,6 @@ var DOMdiff = (function() {
     // different element (2)?
     if(e1.nodeName.toLowerCase() !== e2.nodeName.toLowerCase()) {
       return -1;
-    }
-
-    // different content?
-    /*var l1 = $(e1).children().not('*[removed]').size();
-    var l2 = $(e2).children().not('*[removed]').size();*/
-
-    var count_children = function(node) {
-        var l = 0;
-        for (var i=0; i<node.childNodes.length; i++) {
-            var child = node.childNodes[i];
-            if (!(child.hasAttribute && child.hasAttribute('removed'))) l++;
-        }
-        return l;
-    }
-
-    var l1 = count_children(e1),
-        l2 = count_children(e2);
-    if(l1 != l2) {
-        return -1;
     }
 
     // different attributes?
@@ -112,15 +97,15 @@ var DOMdiff = (function() {
     // Find where the first difference is
     var i1 = 0, last1 = e1.childNodes.length, eq, ret;
     var i2 = 0, last2 = e2.childNodes.length;
-    while (i1 < last1 && i2 < last2) {
+    while (i1 < last1 || i2 < last2) {
       // recurse to see if these children differ
       var node1 = e1.childNodes[i1];
-      if (node1.hasAttribute && node1.hasAttribute('removed')) {
+      if (node1 && node1.hasAttribute && node1.hasAttribute('removed')) {
         i1++;
         continue;
       }
       var node2 = e2.childNodes[i2];
-      if (node2.hasAttribute && node2.hasAttribute('removed')) {
+      if (node2 && node2.hasAttribute && node2.hasAttribute('removed')) {
         i2++;
         continue;
       }

@@ -111,54 +111,6 @@ var handlers;
 
 var update_world = function(rendered) {
     handlers = [];
-    var replaceWith = function(with_, what, parent) {
-        var new_child = with_.cloneNode(true);
-        what.parentElement.replaceChild(new_child, what);
-    }
-
-    var replace = function(wrapper_el, doc_el, parent) {
-        if (wrapper_el) {
-            var cloned = wrapper_el.cloneNode(true);
-        }
-        if (wrapper_el && doc_el) {
-            parent.replaceChild(cloned, doc_el);
-        } else if (wrapper_el) {
-            parent.appendChild(cloned);
-        } else if (doc_el) {
-            parent.removeChild(doc_el);
-        }
-    }
-
-    var check_attributes = function() {
-        // Check attributes
-        if (!e1.attributes || !e2.attributes) return;
-        // Are there any new attributes?
-        var id_changed = false;
-        for (var a=0, len=e1.attributes.length; a<len; a++) {
-            var attr = e1.attributes[a];
-            var _attr = e2.attributes.getNamedItem(attr.name);
-            if (!_attr || _attr.nodeValue != attr.nodeValue) {
-                var _attr = document.createAttribute(attr.name);
-                _attr.nodeValue = attr.nodeValue;
-                e2.attributes.setNamedItem(_attr);
-                if (attr.name === 'id')  {
-                    id_changed = true;
-                }
-            }
-        }
-        // Are there any obsolete attributes?
-        for (var a=e2.attributes.length-1; a>=0; a--) {
-            var attr = e2.attributes[a];
-            if (!e1.attributes.getNamedItem(attr.name)) {
-                e2.attributes.removeNamedItem(attr.name);
-            }
-        }
-        if (id_changed) {
-            restore_preserved_attrs(e2.id);
-            apply_bubbledown_handler(e2, 'oncreate');
-        }
-    }
-
     var wrapper = document.implementation.createHTMLDocument('');
     wrapper.body.innerHTML = rendered;
     rendered = wrapper.body;
@@ -174,8 +126,83 @@ var update_world = function(rendered) {
         });
     });
 
-    var d1 = rendered.firstChild,
-        d2 = document.getElementsByTagName('body')[0].firstChild;
+    var rendered = rendered.firstChild,
+        existent = document.getElementsByTagName('body')[0].firstChild;
+    patch(rendered, existent);
+    really_apply_handlers();
+}
+
+var patch = function(rendered, existent) {
+    var replaceWith = function(with_, what, parent) {
+        var new_child = with_.cloneNode(true);
+        what.parentElement.replaceChild(new_child, what);
+    }
+
+    var check_attributes = function() {
+        // Check attributes
+        if (!e1.attributes || !e2.attributes) return;
+        // Are there any new attributes?
+        for (var a=0, len=e1.attributes.length; a<len; a++) {
+            var attr = e1.attributes[a];
+            var _attr = e2.attributes.getNamedItem(attr.name);
+            if (!_attr || _attr.nodeValue != attr.nodeValue) {
+                var _attr = document.createAttribute(attr.name);
+                _attr.nodeValue = attr.nodeValue;
+                e2.attributes.setNamedItem(_attr);
+            }
+        }
+        // Are there any obsolete attributes?
+        for (var a=e2.attributes.length-1; a>=0; a--) {
+            var attr = e2.attributes[a];
+            if (attr.name === 'removed') continue;
+            if (!e1.attributes.getNamedItem(attr.name)) {
+                e2.attributes.removeNamedItem(attr.name);
+            }
+        }
+    }
+
+    var getAttribute = function(el, name) {
+        if (!el || !el.getAttribute) return null;
+        return el.getAttribute(name);
+    }
+
+    var getChild = function(el, i) {
+        if (el.childNodes[i]) return el.childNodes[i];
+        return {
+            'parentElement': el,
+            'parentNode': el,
+            'fake': true
+        }
+    }
+
+    var removeElement = function(el) {
+        if (el.setAttribute) {
+            // Remove
+            el.setAttribute('removed', true);
+            apply_event_handler(el, 'onhide');
+            push_handler(function(el) {
+                $(el).promise().done(function() {
+                    if (this[0].hasAttribute('removed')) {
+                        try {
+                            this[0].parentElement.removeChild(this[0]);
+                            _apply_event_handler(this[0], 'onremove');
+                        } catch (e) {}
+                    }
+                });
+            }, [el]);
+        } else {
+            el.parentNode.removeChild(el);
+        }
+    }
+
+    var appendElement = function(parent, el) {
+        var cloned = el.cloneNode(true);
+        parent.appendChild(cloned);
+        restore_preserved_attrs(cloned);
+        apply_event_handler(cloned, 'onshow');
+        apply_bubbledown_handler(cloned, 'oncreate');
+    }
+
     var zzz = 0;
     while (true) {
         zzz++;
@@ -183,114 +210,67 @@ var update_world = function(rendered) {
                                 // by checking if elements are changed
                                 // internally when reallocate them
                                 // in the DOM tree
-        var paths = DOMdiff.getDiff(d1, d2);
+        var paths = DOMdiff.getDiff(rendered, existent);
         if (!paths[0]) break;
         for (var pi=0; pi<paths.length; pi++) {
             var path = paths[pi];
             if (!path) continue;
-            var e1 = d1, e2 = d2;
+            var e1 = rendered, e2 = existend;
             for (var p=0; p<path.length - 1; p++) {
                 var c = path[p];
-                var e1 = e1.childNodes[c[0]];
-                var e2 = e2.childNodes[c[1]];
+                var e1 = getChild(e1, c[0]);
+                var e2 = getChild(e2, c[1]);
             }
+            paths[pi] = [e1, e2];
+        }
+        for (var pi=0; pi<paths.length; pi++) {
+            var e1 = paths[pi][0],
+                e2 = paths[pi][1],
+                id1 = getAttribute(e1, 'id'),
+                id2 = getAttribute(e2, 'id');
 
-            check_attributes();
-            if (e1.childNodes.length == e2.childNodes.length && 
-                e1.childNodes.length == 0) {
-                replaceWith(e1, e2);
+            if (e1.fake) {
+                removeElement(e2);
                 continue;
-            }
-
+            } else if (e2.fake) {
+                appendElement(e2.parentElement, e1);
+                continue;
+            } else if (id1 == id2) {
+                check_attributes();
+                if (id1 && id2) {
+                    patch(e1, e2);
+                } else {
+                    replaceWith(e1, e2);
+                }
+                continue;
             // Check if two elements were swapped under the same parent
-            var id1 = e1.getAttribute('id');
-            var id2 = e2.getAttribute('id');
-            if (id1 && id2 && id1 != id2) {
+            } else if (id1 && id2 && id1 != id2) {
                 var _e1 = document.getElementById(id1);
-                var _e2 = wrapper.getElementById(id2);
+                if (!_e1) {
+                    appendElement(e2.parentNode, e1);
+                }
+                var _e2 = e1.ownerDocument.getElementById(id2);
+                if (!_e2) {
+                    removeElement(e2);
+                    continue;
+                }
                 var i1 = $(e1.parentElement).children().index($(e1));
                 var i2 = $(e1.parentElement).children().index($(_e2));
-                if (i1 >= 0 && i2 >= 0) {
+                if (i1 >= 0 && i2 >= 0 && _e1 && _e2) {
+                    // Indexes were swapped and both are actually exist
                     // They are actually swapped!
                     var parent = e2.parentElement;
                     _moveNode(parent, _e1, i1);
                     _moveNode(parent, e2, i2);
+                    continue;
                 }
+                if (!_e1) continue;
             }
-
-            for (var c=0, len=e1.childNodes.length; c<len; c++) {
-                var child = e1.childNodes[c];
-                var _child = e2.childNodes[c];
-                if (_child) {
-                    if (_child.hasAttribute && _child.hasAttribute('removed')) {
-                        $(_child).stop(true, true);
-                        $(_child).show();
-                        _child.removeAttribute('removed');
-                    }
-                    var _p = DOMdiff.equal(child, _child);
-                    if (_p === 0) continue;
-                }
-                var id = undefined;
-                if (child.getAttribute)
-                    id = child.getAttribute('id');
-                if (!id) {
-                    replace(child, _child, e2);
-                    break;
-                }
-                var old_el = document.getElementById(id);
-                if (old_el && old_el.parent != e2) {
-                    // Move TODO
-                } else if (!old_el) {
-                    // Add
-                    var cloned = child.cloneNode(true);
-                    var next = undefined;
-                    if (len != 1 && c<len-1) {
-                        next = e1.childNodes[c+1].getAttribute('id');
-                        next = document.getElementById(next);
-                    }
-                    if (!next) {
-                        var showed = e2.appendChild(cloned);
-                    } else {
-                        next.parentElement.insertBefore(cloned, next);
-                    }
-                    restore_preserved_attrs(cloned);
-                    apply_event_handler(cloned, 'onshow');
-                    apply_bubbledown_handler(cloned, 'oncreate');
-                } else {
-                    console.log('Something went wrong');
-                    break;
-                }
-            }
-            for (var len=e2.childNodes.length - 1, c=len; c>=0; c--) {
-                var child = e2.childNodes[c];
-                var _child = e1.childNodes[c];
-                if (_child) {
-                    var _p = DOMdiff.equal(child, _child);
-                    if (_p === 0) continue;
-                    // TODO: optimisation: don't look through elements
-                    // that were processed in the previous loop
-                } else {
-                    if (child.setAttribute) {
-                        // Remove
-                        child.setAttribute('removed', true);
-                        apply_event_handler(child, 'onhide');
-                        push_handler(function(child) {
-                            $(child).promise().done(function() {
-                                if (this[0].hasAttribute('removed')) {
-                                    try {
-                                        this[0].parentElement.removeChild(this[0]);
-                                    } catch (e) {}
-                                }
-                            });
-                        }, [child]);
-                    } else {
-                        child.parentNode.removeChild(child);
-                    }
-                }
-            }
+            console.log('Something went wrong');
+            debugger;
+            return;
         }
     }
-    really_apply_handlers();
 }
 
 dispatcher.bind('world:changed', function() {
