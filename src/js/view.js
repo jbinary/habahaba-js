@@ -23,7 +23,7 @@
                     var tab = new Model('.view.tabs').new();
                     tab.type = 'contact';
                     tab.roster_item_id = item_id;
-                    tab.set(!!activate);
+                    tab.set();
                 } else {
                     tab = tab[0];
                 }
@@ -49,19 +49,58 @@
                 return true;
             },
             activate_tab: function(tab_id) {
+                // Activate tab with given id, make it visible if needed
                 var tab = new Model('.view.tabs').get(tab_id);
                 if (!tab) return;
+                var lis = $('#tabs li');
                 var tabs = new Model('.view.tabs').getAll();
+                var tab_index = null;
+                // Deactivate the tab that was active before
                 for (var i=0; i<tabs.length; i++) {
                     var ctab = tabs[i];
                     if (ctab.active && ctab.pk != tab.pk) {
                         ctab.active = false;
                         ctab.set(true);
-                        break;
-                    } else if (ctab.active && ctab.pk == tab.pk) {
-                        return true;
+                        // break; TODO: uncomment this break and use an order field to order tabs
+                        // maybe we need to use get({active: true}) instead of getAll here?
+                    } else if (ctab.pk == tab.pk) {
+                        tab_index = i;
                     }
                 }
+
+                var offset = undefined;
+                // Tab is hidden, so we need to scroll tab list left
+                if (lis.eq(tab_index).is(':hidden')) {
+                    var hidden_tabs = lis.filter(':hidden');
+                    offset = -(hidden_tabs.size() - tab_index);
+                } else {
+                // Check if we need to scroll tab list right. The tab won't
+                // be hidden in such case. To ensure the tab is hidden we'll
+                // check that it's offsetTop is higher than the same thing
+                // of the currently visible tab, i.e. the first visible
+                    var lis_visible = lis.filter(':visible');
+                    var sample_offsetTop = lis_visible[0].offsetTop;
+                    if (lis[tab_index].offsetTop > sample_offsetTop) {
+                    // Tab is really invisible, let's calc how far away it is
+                        offset = 0;
+                        lis_visible.each(function() {
+                            // If the tab is invisible, we need to scroll it
+                            if (this.offsetTop > sample_offsetTop) {
+                                offset++;
+                            }
+                            // But don't scroll after the tab we need to show
+                            if (this == lis[tab_index]) {
+                                return false;
+                            }
+                        });
+                    }
+                }
+                // Do actual scrolling if it's needed
+                if (offset !== undefined) {
+                    habahaba.view.tab_scroll(offset, true);
+                }
+
+                // Activate tab and update chatstate for the contact
                 tab.active = true;
                 tab.set();
                 update_chatstate({tab: tab, state: 'active'});
@@ -119,7 +158,7 @@
                 $hidden.hide();
                 state.set();
             },
-            tab_scroll: function(offset) {
+            tab_scroll: function(offset, silently) {
                 // Scroll tab bar for some number of tabs
                 var state = new Model('.view.tabs_state').get(),
                     position = state.position,
@@ -143,7 +182,7 @@
                 }
                 state.scrollable_right = panel.scrollHeight >
                                             panel.clientHeight;
-                state.set();
+                state.set(silently);
             }
         }
 
