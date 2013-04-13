@@ -37,7 +37,7 @@ html: init index.html
 
 img: init img/*
 	mkdir -p $(BUILDDIR)/img
-	cp img/* $(BUILDDIR)/img
+	cp -R img/* $(BUILDDIR)/img
 
 clean:
 	rm -Rf $(BUILDDIR)
