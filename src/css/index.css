@@ -338,6 +338,10 @@ html, body {
     height: 100%;
     }
 
+    #right-column .border {
+        min-width: 295px;
+        }
+
     #right-column #right-block-size {
         position: absolute;
         top: 60px;
