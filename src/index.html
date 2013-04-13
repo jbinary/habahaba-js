@@ -129,7 +129,7 @@
         <div id="err"></div>
 
         <div id="login_pane">
-            <form name="loginForm" onSubmit="return doLogin(this);" action="#">
+            <form name="loginForm" onSubmit="try {return doLogin(this);} catch (e) { return false; }" action="#">
                 <table>
                     <tr>
                         <th><label for="http_base">HTTP Base</label></th><td>
