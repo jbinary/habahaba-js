@@ -88,11 +88,6 @@ var DOMdiff = (function() {
       return -1;
     }
 
-    // different values?
-    if (e1.value !== e2.value) {
-        return -1;
-    }
-
     // Different child node list?
     // Find where the first difference is
     var i1 = 0, last1 = e1.childNodes.length, eq, ret;
