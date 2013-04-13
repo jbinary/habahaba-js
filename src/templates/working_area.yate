@@ -3,9 +3,31 @@ key roster_item_messages(.messages.contacts, .roster_item_id) { . }
 match / working_area {
     <div id="right-column">
         <div class="border" id="right-block-size">
-            <ul id="bookmarks">
+            tabs_state = /.view.tabs_state[0]
+            if (tabs_state.scrolling) {
+                <div class="scroll-btn left " id="tabs-scroll-btn-left">
+                    if (tabs_state.position > 0) {
+                        @onclick = "habahaba.view.tab_scroll(-1)"
+                    } else {
+                        @class += "disabled"
+                    }
+                </div>
+            }
+            <ul id="tabs">
+                if (tabs_state.scrolling) {
+                    @class = 'with-scroll'
+                }
                 apply .view.tabs
             </ul>
+            if (tabs_state.scrolling) {
+                <div class="scroll-btn right " id="tabs-scroll-btn-right">
+                    if (tabs_state.scrollable_right) {
+                        @onclick = "habahaba.view.tab_scroll(1)"
+                    } else {
+                        @class += "disabled"
+                    }
+                </div>
+            }
             apply .view.tabs msgwindow
             apply .view.tabs inputarea
         </div>
@@ -139,6 +161,17 @@ match /.messages.contacts.history {
 match /.view.tabs {
     contact = roster_item(.roster_item_id)
     <li>
+        @data-position = /.view.tabs_state.position
+        /* FIXME: why doesn't it work without the @data-position? */
+        if (index() < /.view.tabs_state.position) {
+            @style = "display: none;"
+        }
+        create_remove_handler = :::
+            habahaba.view.check_tabs_scrollstate();
+            habahaba.view.tab_scroll(0);
+        :::
+        @oncreate = create_remove_handler
+        @onremove = create_remove_handler
         if .active {
             @class = 'active'
         }

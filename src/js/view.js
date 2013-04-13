@@ -102,8 +102,55 @@
                 } else {
                     update_chatstate({tab: tab, state: 'composing'});
                 }
+            },
+            check_tabs_scrollstate: function() {
+                // Check if tab bar needs to have scroll buttons
+                // To do so, we'll need temporary show hidden tabs
+                // to calculate sizes properly. Then we can hide them back.
+                var panel = document.getElementById('tabs'),
+                    $hidden = $('li:hidden', panel);
+                var state = new Model('.view.tabs_state').get();
+                $hidden.show();
+                state.scrolling = panel.scrollHeight > panel.clientHeight;
+                // If we don't need any scrolling, move tab bar to a first tab
+                if (!state.scrolling) {
+                    state.position = 0;
+                }
+                $hidden.hide();
+                state.set();
+            },
+            tab_scroll: function(offset) {
+                // Scroll tab bar for some number of tabs
+                var state = new Model('.view.tabs_state').get(),
+                    position = state.position,
+                    tabs_count = new Model('.view.tabs').getCollection().length,
+                    panel = document.getElementById('tabs');
+                position += offset;
+                // Check that we won't quit the borders
+                if (position < 0) {
+                    position = 0;
+                } else if (position > tabs_count - 1) {
+                    position = tabs_count - 1;
+                }
+                state.position = position;
+                // We'll need to update scrollable flag
+                // To do this, we'll need to update visibility of tabs
+                // accordingly
+                if (offset != 0) {
+                    $('li', panel).show();
+                    var to_hide = $('li:visible:lt(' + position + ')', panel);
+                    to_hide.hide();
+                }
+                state.scrollable_right = panel.scrollHeight >
+                                            panel.clientHeight;
+                state.set();
             }
         }
+
+        $(window).resize(function() {
+            habahaba.view.check_tabs_scrollstate();
+            habahaba.view.tab_scroll(0);
+        });
 
         var _modelEngine = habahaba.view_start();
         var Model = _modelEngine.Model;

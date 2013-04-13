@@ -364,13 +364,60 @@ html, body {
             overflow: hidden;
             }
 
-#bookmarks {
+        #right-column #right-block-size div.scroll-btn {
+            width: 32px;
+            height: 32px;
+            position: absolute;
+            top: 2px;
+            }
+
+        #right-column #right-block-size div.scroll-btn.disabled {
+            background-repeat: no-repeat;
+            background-position: center center;
+            }
+
+        #right-column #right-block-size div.scroll-btn.left {
+            background-image: url(../img/tabs/arrow-left-button.png);
+            left: 4px;
+            }
+
+        #right-column #right-block-size div.scroll-btn.left.disabled {
+            background-image: url(../img/tabs/arrow-left.png);
+            }
+
+        #right-column #right-block-size div.scroll-btn.left:not(.disabled):hover {
+            background-image: url(../img/tabs/arrow-left-button-hover.png);
+            }
+
+        #right-column #right-block-size div.scroll-btn.right {
+            background-image: url(../img/tabs/arrow-right-button.png);
+            right: 4px;
+            }
+
+        #right-column #right-block-size div.scroll-btn.right.disabled {
+            background-image: url(../img/tabs/arrow-right.png);
+            }
+
+        #right-column #right-block-size div.scroll-btn.right:not(.disabled):hover {
+            background-image: url(../img/tabs/arrow-right-button-hover.png);
+            }
+
+#tabs.with-scroll {
+    padding: 0 35px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    }
+
+#tabs {
     list-style: none;
     margin: 0;
     padding: 0;
+    height: 35px;
+    width: 100%;
+    overflow: hidden;
     }
 
-    #bookmarks li {
+    #tabs li {
         float: left;
         background: white;
         opacity: 0.5;
@@ -382,16 +429,17 @@ html, body {
         z-index: 100;
         position: relative;
         max-width: 165px;
+        overflow: hidden;
         }
 
-    #bookmarks div.contact-display {
+    #tabs div.contact-display {
         max-width: 110px;
         overflow: hidden;
         text-overflow: ellipsis;
         float: left;
     }
 
-    #bookmarks .active {
+    #tabs .active {
         opacity: 1;
         border-top: 1px solid #bdbdbd;
         border-left: 1px solid #bdbdbd;
@@ -440,7 +488,7 @@ html, body {
             background-image: url(../img/unread-message-ico-tab.png);
             }
 
-        #bookmarks li .close-button {
+        #tabs li .close-button {
             display: block;
             width: 7px;
             height: 7px;

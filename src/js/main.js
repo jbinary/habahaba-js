@@ -29,7 +29,9 @@
             tabs: [],
             tabs_state: [{
                 pk: 'singleton',
-                scrolling: false
+                scrolling: false,
+                position: 0,
+                scrollable_right: true
             }]
         }
         var _modelEngine = modelEngine(data);
