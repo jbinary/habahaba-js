@@ -2,6 +2,7 @@ modelEngine = function(data) {
     var dispatcher = {
         signals: {},
         data: data || {},
+        _handlers_queue: [],
         //views: {},
         bind: function(signals, handler) {
             if (!(signals instanceof Array)) {
@@ -17,7 +18,19 @@ modelEngine = function(data) {
             var signals = this.signals[signal] || [];
             for (var i=0; i<signals.length; i++) {
                 var handler = signals[i];
-                handler.apply(handler, [sender].concat(params));
+                this._handlers_queue.push({
+                    handler: handler,
+                    sender: sender,
+                    params: params
+                });
+            }
+        },
+        actually_fire: function() {
+            var queue = this._handlers_queue;
+            this._handlers_queue = [];
+            for (var i=0; i<queue.length; i++) {
+                var s = queue[i];
+                s.handler.apply(s.handler, [s.sender].concat(s.params));
             }
         },
         registerView: function(view) {
@@ -66,6 +79,9 @@ modelEngine = function(data) {
         _pk_counter++;
         collection._pk_counter = _pk_counter;
         this.pk = _pk_counter;
+        this._old = {
+            pk: this.pk
+        }
         return this;
     }
 
@@ -140,6 +156,7 @@ modelEngine = function(data) {
         if (!_raw) {
             for (var i=0; i<results.length; i++) {
                 results[i] = new Model(this._model_name).fromDocument(results[i]);
+                results[i]._old = new Model(this._model_name).fromDocument(results[i]);
             }
         }
         return results;
@@ -167,6 +184,7 @@ modelEngine = function(data) {
         }
     }
 
+    var c =0;
     Model.prototype.set = function(silently) {
         var obj = this.toDocument();
         var old_obj = new Model(this._model_name).get(this.pk, true);
@@ -180,22 +198,23 @@ modelEngine = function(data) {
         if (old_obj && this.pk && this._model_name) {
             var anything_changed = false;
             var test = function(k) {
-                if (k[0] != '_' && old_obj[k] != that[k] && !(that[k] instanceof Function)) {
+                if (k[0] != '_' && that._old[k] != that[k] && !(that[k] instanceof Function)) {
                     dispatcher.fire('model:' + that._model_name + ':attr-changed:' + k,
-                                    that, old_obj[k]);
+                                    that, old_obj[k]); // XXX: or that._old[k]?
                     anything_changed = true;
                     old_obj[k] = that[k];
                 }
             };
             for (var key in this) test(key);
-            for (var key in old_obj) {
+            for (var key in this._old) {
                 if (this[key] === undefined) test(key);
             };
             if (anything_changed) {
                 this.fireChanged(silently);
             }
         } else if (!silently) dispatcher.fire('world:changed');
-
+        if (!silently) dispatcher.actually_fire();
+        this._old = new Model(this._model_name).fromDocument(this);
     }
 
     var _removeFromArray = function(array, index) {
@@ -228,7 +247,11 @@ modelEngine = function(data) {
     Model.prototype.getAll = function() {
         var collection = this.getCollection().slice();
         for (var i=0; i<collection.length; i++) {
-            collection[i] = new Model(this._model_name).fromDocument(collection[i]);
+            // XXX: should use execute as well
+            collection[i] = new Model(this._model_name).
+                                fromDocument(collection[i]);
+            collection[i]._old = new Model(this._model_name).
+                                fromDocument(collection[i]);
         }
         return collection;
     }
