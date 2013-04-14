@@ -94,16 +94,19 @@
             if (typeof(node) === 'string') {
                 node = document.getElementById(node);
             }
-            $(node).parent().find('*[data-preserve][id]').each(function() {
-                var attrs = $(this).attr('data-preserve').split(',');
-                var that = this;
-                $.each(attrs, function(_i, attr) {
-                    if (preserves[that.id] && preserves[that.id][attr]) {
-                        that[attr] = preserves[that.id][attr];
-                        delete preserves[that.id][attr];
-                    }
-                });
-            });
+            $(node).parent().find('*[data-preserve][id]').not('[removed]').each(
+                function() {
+                    var attrs = $(this).attr('data-preserve').split(',');
+                    var that = this;
+                    $.each(attrs, function(_i, attr) {
+                        if (preserves[that.id] &&
+                            preserves[that.id][attr] !== undefined) {
+                            that[attr] = preserves[that.id][attr];
+                            delete preserves[that.id][attr];
+                        }
+                    });
+                }
+            );
         }
 
         var really_apply_handlers = function() {
@@ -160,7 +163,7 @@
                 // Are there any obsolete attributes?
                 for (var a=e2.attributes.length-1; a>=0; a--) {
                     var attr = e2.attributes[a];
-                    if (attr.name === 'removed') continue;
+                    if (['removed', 'style'].indexOf(attr.name) > -1) continue;
                     if (!e1.attributes.getNamedItem(attr.name)) {
                         e2.attributes.removeNamedItem(attr.name);
                     }
@@ -236,6 +239,7 @@
                         id2 = getAttribute(e2, 'id');
 
                     if (e1.fake) {
+                        // TODO: check if it just was moved?
                         removeElement(e2);
                         continue;
                     } else if (e2.fake) {
