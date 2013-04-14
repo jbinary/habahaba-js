@@ -23,6 +23,8 @@
                     var tab = new Model('.view.tabs').new();
                     tab.type = 'contact';
                     tab.roster_item_id = item_id;
+                    tab.set(true);
+                    tab.order = tab.pk;
                     tab.set();
                 } else {
                     tab = tab[0];
@@ -54,6 +56,9 @@
                 if (!tab) return;
                 var lis = $('#tabs li');
                 var tabs = new Model('.view.tabs').getAll();
+                tabs = tabs.sort(function(tab1, tab2) {
+                    return tab1.order - tab2.order;
+                });
                 var tab_index = null;
                 // Deactivate the tab that was active before
                 for (var i=0; i<tabs.length; i++) {
@@ -61,8 +66,6 @@
                     if (ctab.active && ctab.pk != tab.pk) {
                         ctab.active = false;
                         ctab.set(true);
-                        // break; TODO: uncomment this break and use an order field to order tabs
-                        // maybe we need to use get({active: true}) instead of getAll here?
                     } else if (ctab.pk == tab.pk) {
                         tab_index = i;
                     }
@@ -183,8 +186,76 @@
                 state.scrollable_right = panel.scrollHeight >
                                             panel.clientHeight;
                 state.set(silently);
+            },
+            tab_start_move: function(event) {
+                is_tab_moving = true;
+                var $this = $(this);
+                tab_zindex = $this.css('z-index');
+                $this.css('position', 'relative');
+                $this.css('top', 0).css('left', 0);
+                var _tab_zindex = parseInt(tab_zindex);
+                if (!isNaN(_tab_zindex)) {
+                    $this.css('z-index', _tab_zindex + 1);
+                }
+                tab_moving_pageX = event.pageX;
+                tab_moving = new Model('.view.tabs').get(
+                    $this.attr('data-tab-id')
+                );
+                left = 0;
+            },
+            tab_stop_move: function(event) {
+                if (!is_tab_moving) {
+                    return;
+                }
+                is_tab_moving = false;
+                $(this).css('top', 0).css('left', 0).css('z-index', tab_zindex);
+            },
+            tab_move: function(event) {
+                if (is_tab_moving) {
+                    if (!tab_moving.active) {
+                        habahaba.view.activate_tab(tab_moving.pk);
+                        tab_moving.active = true;
+                    }
+                    left = left + event.pageX - tab_moving_pageX;
+                    tab_moving_pageX = event.pageX;
+                    var neighbor = undefined;
+                    var $this = $(this);
+                    $(this).css('left', left);
+                    if (left > 0) {
+                        neighbor = $this.next();
+                    } else if (left < 0) {
+                        neighbor = $this.prev();
+                    }
+                    if (neighbor && neighbor.size()) {
+                        var neighbor_width = neighbor.outerWidth(true);
+                        var treshold = (neighbor_width / 2);
+                        if (Math.abs(left) > treshold) {
+                            var lis = $('#tabs li');
+                            var tab1 = new Model('.view.tabs').get(
+                                    $this.attr('data-tab-id')
+                                ),
+                                tab2 = new Model('.view.tabs').get(
+                                    neighbor.attr('data-tab-id')
+                                );
+                            left = -left;
+                            $this.css('left', left);
+                            var o1 = tab1.order;
+                            tab1.order = tab2.order;
+                            tab2.order = o1;
+                            tab1.set(true);
+                            tab2.set();
+                            //$this.insertAfter(neighbor);
+                        }
+                    }
+                }
             }
         }
+
+        var is_tab_moving = false,
+            tab_moving = undefined,
+            tab_moving_pageX,
+            tab_zindex,
+            left;
 
         $(window).resize(function() {
             habahaba.view.check_tabs_scrollstate();

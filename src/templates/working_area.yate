@@ -17,7 +17,7 @@ match / working_area {
                 if (tabs_state.scrolling) {
                     @class = 'with-scroll'
                 }
-                apply .view.tabs
+                apply sort(.view.tabs, .order)
             </ul>
             if (tabs_state.scrolling) {
                 <div class="scroll-btn right " id="tabs-scroll-btn-right">
@@ -117,7 +117,7 @@ match /.view.tabs[.active] msgwindow {
                         $this.scrollTop() + $this.height() != $this.prop('scrollHeight');
                     var tab = new Model('.view.tabs').get($this.attr('data-tab'));
                     tab.prevent_auto_scroll = prevent_auto_scroll;
-                    tab.set(true);
+                    tab.set();
                 });
                 var roster_item = $this.attr('data-rosteritem');
                 var roster_item = new Model('.roster.items').get(roster_item);
@@ -160,7 +160,7 @@ match /.messages.contacts.history {
 
 match /.view.tabs {
     contact = roster_item(.roster_item_id)
-    <li>
+    <li id="tab-{ .pk }" data-tab-id="{ .pk }">
         @data-position = /.view.tabs_state.position
         /* FIXME: why doesn't it work without the @data-position? */
         if (index() < /.view.tabs_state.position) {
@@ -170,12 +170,19 @@ match /.view.tabs {
             habahaba.view.check_tabs_scrollstate();
             habahaba.view.tab_scroll(0);
         :::
-        @oncreate = create_remove_handler
+        create_handler = :::
+            var $this = $(this);
+            $this.mousedown(habahaba.view.tab_start_move);
+            $this.mousemove(habahaba.view.tab_move);
+            $this.mouseup(habahaba.view.tab_stop_move);
+            $this.mouseleave(habahaba.view.tab_stop_move);
+        :::
+        @oncreate = create_remove_handler + create_handler
         @onremove = create_remove_handler
         if .active {
             @class = 'active'
         }
-        @onclick = "habahaba.view.activate_tab({ .pk }); return false"
+        @onclick = "habahaba.view.activate_tab({ .pk })"
         <span class="contact-status ">
             @class += if (contact.unread) {
                 "unread"
