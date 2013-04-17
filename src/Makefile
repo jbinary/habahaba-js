@@ -18,15 +18,15 @@ css: init css/*.css
 	mkdir -p $(BUILDDIR)/css
 	cp css/*.css $(BUILDDIR)/css
 
-libs: init libs/*
+libs: init ../libs/*
 	mkdir -p $(BUILDDIR)/js/libs
 	mkdir -p $(BUILDDIR)/js/libs/jslix/
-	cp -R libs/jslix/src/* $(BUILDDIR)/js/libs/jslix/
+	cp -R ../libs/jslix/src/* $(BUILDDIR)/js/libs/jslix/
 	mkdir -p $(BUILDDIR)/js/libs/cryptojs
-	cp -R libs/crypto-js-read-only/build/* $(BUILDDIR)/js/libs/cryptojs/
-	cp libs/js-signals/dist/signals.js $(BUILDDIR)/js/libs/signals.js
-	cp libs/moment.min.js $(BUILDDIR)/js/libs/moment.min.js
-	cp libs/yate/lib/runtime.js $(BUILDDIR)/js/libs/yate-runtime.js
+	cp -R ../libs/crypto-js-read-only/build/* $(BUILDDIR)/js/libs/cryptojs/
+	cp ../libs/js-signals/dist/signals.js $(BUILDDIR)/js/libs/signals.js
+	cp ../libs/moment.min.js $(BUILDDIR)/js/libs/moment.min.js
+	cp ../libs/yate/lib/runtime.js $(BUILDDIR)/js/libs/yate-runtime.js
 
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js

@@ -1,9 +1,9 @@
 [submodule "yate"]
-	path = src/libs/yate
+	path = libs/yate
 	url = git@github.com:pasaran/yate.git
 [submodule "jslix"]
-	path = src/libs/jslix
+	path = libs/jslix
 	url = git@github.com:jbinary/jslix.git
 [submodule "js-signals"]
-	path = src/libs/js-signals
+	path = libs/js-signals
 	url = git://github.com/millermedeiros/js-signals

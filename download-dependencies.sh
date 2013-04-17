@@ -1,5 +1,5 @@
 #!/bin/bash
-DIR=src/libs
+DIR=libs
 
 cd $DIR && \
 echo "CryptoJS" && \
