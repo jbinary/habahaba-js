@@ -7,3 +7,6 @@
 [submodule "js-signals"]
 	path = libs/js-signals
 	url = git://github.com/millermedeiros/js-signals
+[submodule "jQuery-contextMenu"]
+	path = libs/jQuery-contextmenu
+	url = git://github.com/medialize/jQuery-contextMenu.git
