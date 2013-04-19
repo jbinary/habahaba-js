@@ -1,43 +1,58 @@
 SHELL := /bin/bash
-BUILDDIR=../build
+BUILDDIR=$(realpath ..)/build
+BUILDDIR_TEMPLATES=$(BUILDDIR)/templates
+BUILDDIR_LIBS=$(BUILDDIR)/js/libs
+BUILDDIR_CSS=$(BUILDDIR)/css
+BUILDDIR_IMAGES=$(BUILDDIR)/img
+export BUILDDIR BUILDDIR_TEMPLATES BUILDDIR_LIBS BUILDDIR_CSS\
+	   BUILDDIR_IMAGES
 
-all: html css img templates js libs
+.PHONY:
+all: templates libs css
 
-init:
-	mkdir $(BUILDDIR) 2>/dev/null || true
+templates:
+	$(MAKE) -C templates
 
-templates: init templates/main.yate
-	mkdir -p $(BUILDDIR)/templates
-	for template in templates/main.yate; \
-	do \
-	    yate $$template > $(BUILDDIR)/$$template.js; \
-	done
-	rm templates/*.obj
+css: css/*.css
+	$(MAKE) -C css
 
-css: init css/*.css
-	mkdir -p $(BUILDDIR)/css
-	cp css/*.css $(BUILDDIR)/css
+libs:
+	$(MAKE) -C ../libs/
 
-libs: init ../libs/*
-	mkdir -p $(BUILDDIR)/js/libs
-	mkdir -p $(BUILDDIR)/js/libs/jslix/
-	cp -R ../libs/jslix/src/* $(BUILDDIR)/js/libs/jslix/
-	mkdir -p $(BUILDDIR)/js/libs/cryptojs
-	cp -R ../libs/crypto-js-read-only/build/* $(BUILDDIR)/js/libs/cryptojs/
-	cp ../libs/js-signals/dist/signals.js $(BUILDDIR)/js/libs/signals.js
-	cp ../libs/moment.min.js $(BUILDDIR)/js/libs/moment.min.js
-	cp ../libs/yate/lib/runtime.js $(BUILDDIR)/js/libs/yate-runtime.js
-
-js: init js/*.js
+js: js/*.js
 	mkdir -p $(BUILDDIR)/js
 	cp js/*.js $(BUILDDIR)/js
 
-html: init index.html
+html: index.html
 	cp index.html $(BUILDDIR)
 
-img: init img/*
+img: img/*
 	mkdir -p $(BUILDDIR)/img
 	cp -R img/* $(BUILDDIR)/img
 
+PHONY += clean
 clean:
-	rm -Rf $(BUILDDIR)
+	$(MAKE) -C templates clean
+	$(MAKE) -C ../libs clean
+	$(MAKE) -C css clean
+	$(MAKE) -C img clean
+
+PHONY += uninstall
+uninstall:
+	-rm -Rf $(BUILDDIR)
+
+PHONY += _install_init
+_install_init:
+	-mkdir $(BUILDDIR)
+
+PHONY += install
+install: all _install_init
+	$(MAKE) -C templates install
+	$(MAKE) -C ../libs install
+	$(MAKE) -C css install
+	$(MAKE) -C img install
+
+PHONY += uninstall
+# TODO: this is dirty
+uninstall:
+	-$(RM) -Rf $(BUILDDIR)
