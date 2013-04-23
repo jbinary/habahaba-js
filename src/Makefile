@@ -1,5 +1,7 @@
 SHELL := /bin/bash
 BUILDDIR=../build
+JSDIR=$(BUILDDIR)/js
+LIBDIR=$(JSDIR)/libs
 
 all: html css img templates js libs
 
@@ -19,14 +21,16 @@ css: init css/*.css
 	cp css/*.css $(BUILDDIR)/css
 
 libs: init ../libs/*
-	mkdir -p $(BUILDDIR)/js/libs
-	mkdir -p $(BUILDDIR)/js/libs/jslix/
-	cp -R ../libs/jslix/src/* $(BUILDDIR)/js/libs/jslix/
-	mkdir -p $(BUILDDIR)/js/libs/cryptojs
-	cp -R ../libs/crypto-js-read-only/build/* $(BUILDDIR)/js/libs/cryptojs/
-	cp ../libs/js-signals/dist/signals.js $(BUILDDIR)/js/libs/signals.js
-	cp ../libs/moment.min.js $(BUILDDIR)/js/libs/moment.min.js
-	cp ../libs/yate/lib/runtime.js $(BUILDDIR)/js/libs/yate-runtime.js
+	mkdir -p $(LIBDIR)
+	mkdir -p $(LIBDIR)/jslix/
+	cp -R ../libs/jslix/src/* $(LIBDIR)/jslix/
+	mkdir -p $(LIBDIR)/cryptojs
+	cp -R ../libs/crypto-js-read-only/build/* $(LIBDIR)/cryptojs/
+	cp ../libs/js-signals/dist/signals.js $(LIBDIR)/signals.js
+	cp ../libs/moment.min.js $(LIBDIR)/moment.min.js
+	cp ../libs/yate/lib/runtime.js $(LIBDIR)/yate-runtime.js
+	# XXX: will we separate css and images? Will we use require-js?
+	cp -R ../libs/jQuery-contextmenu/src $(LIBDIR)/jQuery-contextmenu
 
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js
