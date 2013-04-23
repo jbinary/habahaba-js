@@ -30,7 +30,7 @@ libs: init ../libs/*
 	cp ../libs/moment.min.js $(LIBDIR)/moment.min.js
 	cp ../libs/yate/lib/runtime.js $(LIBDIR)/yate-runtime.js
 	# XXX: will we separate css and images? Will we use require-js?
-	cp -R ../libs/jQuery-contextmenu/src $(LIBDIR)/jQuery-contextmenu
+	cp -TR ../libs/jQuery-contextmenu/src/ $(LIBDIR)/jQuery-contextmenu
 
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js
