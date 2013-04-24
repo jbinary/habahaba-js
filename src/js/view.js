@@ -2,13 +2,14 @@
 (function() {
     var plugin = function(jslix_dispatcher, data) {
         habahaba.view = {
-            collapse_group: function(gpk) {
+            collapse_group: function(gpk, flags) {
+                flags = flags || {};
                 var collapsedGroup = new Model('.view.collapsed_groups').get(gpk);
-                if (!collapsedGroup) {
+                if (!collapsedGroup && !flags.only_expand) {
                     var collapsedGroup = new Model('.view.collapsed_groups');
                     collapsedGroup.pk = gpk;
                     collapsedGroup.set();
-                } else {
+                } else if (!flags.only_collapse) {
                     collapsedGroup.del();
                 }
             },
@@ -358,7 +359,9 @@
 
                 // We want also to expand the group if the tab was not opened
                 if (!tab && roster_item.groups.length) {
-                    habahaba.view.collapse_group(roster_item.groups[0]);
+                    habahaba.view.collapse_group(roster_item.groups[0], {
+                                                    only_expand: true
+                                                 });
                 }
             }
 
