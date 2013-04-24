@@ -1,7 +1,21 @@
 "use strict";
 (function() {
+    var roster_search_timer;
     var plugin = function(jslix_dispatcher, data) {
         habahaba.view = {
+            roster_search: function() {
+                // We don't want to search too often because it can hurt
+                // the performance
+                if (roster_search_timer) {
+                    return;
+                }
+                roster_search_timer = setTimeout(function() {
+                    roster_search_timer = undefined;
+                    var settings = new Model('.view.roster_settings').get();
+                    settings.search_string = $('div#search input').val();
+                    settings.set();
+                }, 250);
+            },
             collapse_group: function(gpk, flags) {
                 flags = flags || {};
                 var collapsedGroup = new Model('.view.collapsed_groups').get(gpk);

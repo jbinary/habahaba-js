@@ -115,7 +115,7 @@ match .roster render_roster {
         <div id="contact-block">
             <div id="container">
                 <div id="search">
-                    <input type="text"/>
+                    <input type="text" onkeydown="habahaba.view.roster_search()"/>
                 </div>
                 <div id="roster">
                     apply sort(.groups[.special_group != 'self-contact'], .name)
