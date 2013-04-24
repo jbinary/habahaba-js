@@ -80,7 +80,12 @@
         var _apply_event_handler = function(node, event_name) {
             var handler = get_event_handler(node, event_name);
             if (!handler) return;
-            handler.apply(node);
+            try {
+                handler.apply(node);
+            } catch(e) {
+                console.log('Event', event_name, 'on node', node, 'has failed',
+                            e, e.stack);
+            }
         }
 
         var _apply_bubbledown_handler = function(node, event_name) {
@@ -116,7 +121,7 @@
         }
 
         var preserves = {};
-        var handlers;
+        var handlers = [];
 
         var update_world = function(rendered) {
             handlers = [];
@@ -288,6 +293,8 @@
 
             if ($('#wrapper').size() == 0) {
                 $('body').html(rendered);
+                apply_bubbledown_handler($('body')[0], 'oncreate');
+                really_apply_handlers();
             } else {
                 update_world(rendered);
             }
