@@ -64,24 +64,32 @@ match /.roster.groups {
     gpk = group.pk
     contacts = ..items[ .groups == gpk ]
     if exists(contacts) {
-        <div class="group" id="group-{ gpk }">
-            <div class="group-name">
-                @onclick = (
-                    "habahaba.view.collapse_group({ gpk });"
-                )
-                <h4>{ .name }</h4>
-                overall = count(contacts)
-                online = count(contacts[ .presences ][ exists(.presences[.type != 'unavailable']) ])
-                <p>(<strong>{ online }</strong>/{ overall })</p>
+        online_contacts = contacts[ .presences ][ exists(.presences[.type != 'unavailable']) ]
+        online = count(online_contacts)
+        if (online || !/.view.roster_settings.hide_offline_users) {
+            <div class="group" id="group-{ gpk }">
+                slideAnimation()
+                <div class="group-name">
+                    @onclick = (
+                        "habahaba.view.collapse_group({ gpk });"
+                    )
+                    <h4>{ .name }</h4>
+                    overall = count(contacts)
+                    <p>(<strong>{ online }</strong>/{ overall })</p>
+                </div>
+                if !exists(...view.collapsed_groups[.pk == gpk]) {
+                    <div class="group-list" id="group-list-{ gpk }">
+                        slideAnimation()
+                        sorted_contacts = if (/.view.roster_settings.hide_offline_users) {
+                            sort(online_contacts, .nick)
+                        } else {
+                            sort(contacts, .nick)
+                        }
+                        apply sorted_contacts (group)
+                    </div>
+                }
             </div>
-            if !exists(...view.collapsed_groups[.pk == gpk]) {
-                <div class="group-list" id="group-list-{ gpk }">
-                    slideAnimation()
-                    sorted_contacts = sort(contacts, .nick)
-                    apply sorted_contacts (group)
-            </div>
-            }
-        </div>
+        }
     }
 }
 
@@ -98,9 +106,35 @@ match .roster render_roster {
                 <div id="roster-buttons">
                     /*<button id="add-contact-button">Добавить контакт</button>
                     <button id="join-room-button">Войти в комнату</button>*/
-                    <button id="settings-button"></button>
+                    <button id="settings-button" contextmenu="roster-settings-button-menu">
+                    @oncreate = :::
+                        $.contextMenu({
+                            selector: '#roster-buttons #settings-button',
+                            items: $.contextMenu.fromMenu($('#roster-settings-button-menu')),
+                            trigger: 'left',
+                            events: {
+                                show: function(opt) {
+                                    $.contextMenu.setInputValues(opt, $(this).data());
+                                },
+                                hide: function(opt) {
+                                    $.contextMenu.getInputValues(opt, $(this).data());
+                                }
+                            }
+                        });
+                    :::
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    <menu id="roster-settings-button-menu" type="context">
+        <command>
+            @label = "Hide offline contacts"
+            @type = "checkbox"
+            if (/.view.roster_settings.hide_offline_users) {
+                @checked = "checked"
+            }
+            @onclick = "habahaba.view.toggle_hide_offline();"
+        </command>
+    </menu>
 }

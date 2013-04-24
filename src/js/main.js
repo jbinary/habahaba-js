@@ -32,6 +32,10 @@
                 scrolling: false,
                 position: 0,
                 scrollable_right: true
+            }],
+            roster_settings: [{
+                pk: 'singleton',
+                hide_offline_users: false
             }]
         }
         var _modelEngine = modelEngine(data);

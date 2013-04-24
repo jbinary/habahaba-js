@@ -248,6 +248,11 @@
                         }
                     }
                 }
+            },
+            toggle_hide_offline: function() {
+                var roster_settings = new Model('.view.roster_settings').get();
+                roster_settings.hide_offline_users = !roster_settings.hide_offline_users;
+                roster_settings.set();
             }
         }
 
@@ -334,6 +339,8 @@
                 }
             });
         }
+
+        // Bind necessary signals handlers
 
         // When .messages.contacts is updated, we need to autoscroll
         // and update unread status
