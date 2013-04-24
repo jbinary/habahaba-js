@@ -63,6 +63,7 @@ var DOMdiff = (function() {
                  "href",
                  "src",
                  "rel",
+                 "checked",
                  "__more__attributes__here__"],
         ignore_attrs = [
             'onshow',
