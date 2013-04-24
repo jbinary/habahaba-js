@@ -317,6 +317,26 @@
             return res;
         }
 
+        yr.externals.contains = function(nodeset, scalar, case_insense) {
+            var r = [];
+            for (var i = 0; i < nodeset.length; i++) {
+                var node = nodeset[i];
+                var search_in = yr.nodeValue(node);
+                if (case_insense) {
+                    search_in = search_in.toLowerCase();
+                    scalar = scalar.toLowerCase();
+                }
+                if (search_in.indexOf(scalar) > -1) {
+                    r.push(node);
+                }
+            }
+            return r;
+        }
+
+        yr.externals.icontains = function(nodeset, scalar) {
+            return yr.externals.contains(nodeset, scalar, true);
+        }
+
         var require = function(plugin_name, to_execute) {
             if (data.loaded_plugins[plugin_name]) {
                 to_execute(data.loaded_plugins[plugin_name]);
