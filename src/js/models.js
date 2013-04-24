@@ -224,7 +224,7 @@ modelEngine = function(data) {
         return array;
     }
 
-    Model.prototype.del = function() {
+    Model.prototype.del = function(silently) {
         var collection = this.getCollection();
         var raw = this.get(this.pk, true);
         var index = collection.indexOf(raw);
@@ -233,7 +233,10 @@ modelEngine = function(data) {
         var pk = this.pk;
         this.pk = null;
         dispatcher.fire('model:' + this._model_name + ':deleted', this, pk);
-        dispatcher.fire('world:changed');
+        if (!silently) {
+            dispatcher.fire('world:changed');
+            dispatcher.actually_fire();
+        }
     }
 
     Model.prototype.get_html_id = function() {
