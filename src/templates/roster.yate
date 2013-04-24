@@ -66,7 +66,21 @@ match /.roster.groups {
     if exists(contacts) {
         online_contacts = contacts[ .presences ][ exists(.presences[.type != 'unavailable']) ]
         online = count(online_contacts)
-        if (online || !/.view.roster_settings.hide_offline_users) {
+
+        filter_string =/.view.roster_settings.search_string 
+        filtered = if (filter_string) {
+            contacts[.nick == filter_string]
+        } else {
+            contacts[false()]
+        }
+
+        is_group_visible = if (filter_string) {
+            filtered
+        } else {
+            online || !/.view.roster_settings.hide_offline_users
+        }
+
+        if (is_group_visible) {
             <div class="group" id="group-{ gpk }">
                 slideAnimation()
                 <div class="group-name">
@@ -80,12 +94,14 @@ match /.roster.groups {
                 if !exists(...view.collapsed_groups[.pk == gpk]) {
                     <div class="group-list" id="group-list-{ gpk }">
                         slideAnimation()
-                        sorted_contacts = if (/.view.roster_settings.hide_offline_users) {
-                            sort(online_contacts, .nick)
+                        to_show = if (filter_string) {
+                            filtered
+                        } else if (/.view.roster_settings.hide_offline_users) {
+                            online_contacts
                         } else {
-                            sort(contacts, .nick)
+                            contacts
                         }
-                        apply sorted_contacts (group)
+                        apply sort(to_show, .nick) (group)
                     </div>
                 }
             </div>

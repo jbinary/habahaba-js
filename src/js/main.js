@@ -35,7 +35,8 @@
             }],
             roster_settings: [{
                 pk: 'singleton',
-                hide_offline_users: false
+                hide_offline_users: false,
+                search_string: ""
             }]
         }
         var _modelEngine = modelEngine(data);
