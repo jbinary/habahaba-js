@@ -130,7 +130,11 @@ match .roster render_roster {
                             trigger: 'left',
                             events: {
                                 show: function(opt) {
-                                    $.contextMenu.setInputValues(opt, $(this).data());
+                                    if ($(this).data('_already_shown')) {
+                                        $.contextMenu.setInputValues(opt, $(this).data());
+                                    } else {
+                                        $(this).data('_already_shown', true);
+                                    }
                                 },
                                 hide: function(opt) {
                                     $.contextMenu.getInputValues(opt, $(this).data());

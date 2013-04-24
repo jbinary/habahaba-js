@@ -35,7 +35,7 @@
             }],
             roster_settings: [{
                 pk: 'singleton',
-                hide_offline_users: false,
+                hide_offline_users: true,
                 search_string: ""
             }]
         }
