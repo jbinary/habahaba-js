@@ -55,29 +55,27 @@ var DOMdiff = (function() {
     }
 
     // different attributes?
-    var attrs = ["id",     // ids MUST be identical, nice and simple
-                 //"style",  // this one's tricky, and I don't want to write a full CSS parser right now. FIXME: later
-                 "class",  // this one's less tricky, but still requires split/sort comparison. FIXME: later
-                 "type",
-                 "value",
-                 "href",
-                 "src",
-                 "rel",
-                 "checked",
-                 "__more__attributes__here__"],
-        ignore_attrs = [
-            'onshow',
-            'oncreate',
-            'onhide'
-        ],
+    var attrs = {"id": null,     // ids MUST be identical, nice and simple
+                 "class": null,  // still requires split/sort comparison. FIXME: later
+                 "type": null,
+                 "value": null,
+                 "href": null,
+                 "src": null,
+                 "rel": null,
+                 "checked": null},
+        ignore_attrs = {
+            'onshow': null,
+            'oncreate': null,
+            'onhide': null
+        },
         a, attr, a1, a2;
 
     var names = {};
     $.each([e1, e2], function(i, e) { 
         for (a=0; a<e.attributes.length; a++) {
             var name = e.attributes[a].name;
-            if ((name.slice(0, 5) == 'data-' || attrs.indexOf(name) !== -1 ||
-                 name.slice(0, 2) == 'on') && ignore_attrs.indexOf(name) === -1) {
+            if ((name.slice(0, 5) == 'data-' || name in attrs ||
+                 name.slice(0, 2) == 'on') && !name in ignore_attrs) {
                 names[name] = null;
             }
         }
