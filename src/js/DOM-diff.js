@@ -75,7 +75,7 @@ var DOMdiff = (function() {
         for (a=0; a<e.attributes.length; a++) {
             var name = e.attributes[a].name;
             if ((name.slice(0, 5) == 'data-' || name in attrs ||
-                 name.slice(0, 2) == 'on') && !name in ignore_attrs) {
+                 name.slice(0, 2) == 'on') && !(name in ignore_attrs)) {
                 names[name] = null;
             }
         }
