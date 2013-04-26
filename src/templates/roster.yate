@@ -65,7 +65,7 @@ match /.roster.groups {
     gpk = group.pk
     contacts = ..items[ .groups == gpk ]
     if exists(contacts) {
-        online_contacts = contacts[ .presences ][ exists(.presences[.type != 'unavailable']) ]
+        online_contacts = contacts[ (.presences && exists(.presences[.type != 'unavailable'])) || .unread ]
         online = count(online_contacts)
 
         filter_string =/.view.roster_settings.search_string 
