@@ -83,7 +83,7 @@
                         _remove_avatar_but_not_hash();
                     }
                 }).fail(function(failure) {
-                    if (!update.photo) s.del();
+                    if (!update.photo) hash.del();
                 });
             }
         }
@@ -126,8 +126,8 @@
             } else if (item.avatar_hash) {
                 delete item.avatar_hash;
             }
+            item.set(silently);
         }
-        item.set(silently);
     }
 
     yr.externals.get_avatar_uri = function(jid) {
