@@ -66,7 +66,7 @@
             value = null;
         } else if (type == 'plain') {
         } else {
-            throw "Unknown type " + type;
+            throw new Error("Unknown type " + type);
         }
         return value;
     }
