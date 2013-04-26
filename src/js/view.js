@@ -23,7 +23,7 @@
                     var collapsedGroup = new Model('.view.collapsed_groups');
                     collapsedGroup.pk = gpk;
                     collapsedGroup.set();
-                } else if (!flags.only_collapse) {
+                } else if (collapsedGroup && !flags.only_collapse) {
                     collapsedGroup.del();
                 }
             },
