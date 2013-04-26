@@ -44,10 +44,11 @@
         var Model = _modelEngine.Model;
 
         var _moveNode = function(parent, node, i) {
-            if (i == parent.childNodes.length - 1) {
+            parent.removeChild(node);
+            if (i == parent.childNodes.length) {
                 parent.appendChild(node);
             } else {
-                parent.insertBefore(node, parent.childNodes[i+1]);
+                parent.insertBefore(node, parent.childNodes[i]);
             }
         }
 
@@ -195,6 +196,11 @@
             }
 
             var removeElement = function(el) {
+                var id = getAttribute(el, 'id');
+                var exist = rendered.ownerDocument.getElementById(id);
+                if (exist) {
+                    return exist;
+                }
                 if (el.setAttribute) {
                     // Remove
                     el.setAttribute('removed', true);
@@ -215,20 +221,29 @@
             }
 
             var appendElement = function(parent, el) {
-                var cloned = el.cloneNode(true);
+                var cloned = el.cloneNode(true),
+                    id = getAttribute(cloned, 'id'),
+                    exist = id && parent.ownerDocument.getElementById(id);
+                if (exist) {
+                    return exist;
+                }
                 parent.appendChild(cloned);
                 restore_preserved_attrs(cloned);
                 apply_event_handler(cloned, 'onshow');
                 apply_bubbledown_handler(cloned, 'oncreate');
+                return cloned;
+            }
+
+            var get_new_index = function(parent, el) {
+                var i = $(el).parent().children().index($(el)),
+                    childs = $(parent).children(),
+                    res = childs.index(childs.not('[removed]').eq(i));
+                return res;
             }
 
             var zzz = 0;
+            var paths_history = [];
             while (true) {
-                zzz++;
-                if (zzz > 30) debugger; // XXX: we can avoid this infinite loop
-                                        // by checking if elements are changed
-                                        // internally when reallocate them
-                                        // in the DOM tree
                 var paths = DOMdiff.getDiff(rendered, existent);
                 if (!paths[0]) break;
                 for (var pi=0; pi<paths.length; pi++) {
@@ -242,18 +257,29 @@
                     }
                     paths[pi] = [e1, e2];
                 }
+                paths_history.push(paths);
+                if (zzz > 0) debugger;  // XXX: we can avoid this infinite loop
+                zzz++;                  // by checking if elements are changed
+                                        // internally when reallocate them
+                                        // in the DOM tree
                 for (var pi=0; pi<paths.length; pi++) {
                     var e1 = paths[pi][0],
                         e2 = paths[pi][1],
                         id1 = getAttribute(e1, 'id'),
-                        id2 = getAttribute(e2, 'id');
+                        id2 = getAttribute(e2, 'id'),
+                        parent = e2.parentElement;
 
                     if (e1.fake) {
                         // TODO: check if it just was moved?
-                        removeElement(e2);
+                        var _e2 = removeElement(e2);
+                        if (_e2) {
+                            patch(_e2, e2);
+                        }
                         continue;
                     } else if (e2.fake) {
-                        appendElement(e2.parentElement, e1);
+                        e2 = appendElement(parent, e1);
+                        var index = get_new_index(parent, e1);
+                        _moveNode(parent, e2, index);
                         continue;
                     } else if (id1 == id2) {
                         check_attributes();
@@ -267,21 +293,20 @@
                     } else if (id1 && id2 && id1 != id2) {
                         var _e1 = document.getElementById(id1);
                         if (!_e1) {
-                            appendElement(e2.parentNode, e1);
+                            _e1 = appendElement(e2.parentNode, e1);
                         }
                         var _e2 = e1.ownerDocument.getElementById(id2);
                         if (!_e2) {
                             removeElement(e2);
-                            continue;
                         }
-                        var i1 = $(e1.parentElement).children().index($(e1));
-                        var i2 = $(e1.parentElement).children().index($(_e2));
-                        if (i1 >= 0 && i2 >= 0 && _e1 && _e2) {
-                            // Indexes were swapped and both are actually exist
+                        var index = get_new_index(parent, e1);
+                        if (index >= 0 && _e1) {
                             // They are actually swapped!
-                            var parent = e2.parentElement;
-                            _moveNode(parent, _e1, i1);
-                            _moveNode(parent, e2, i2);
+                            _moveNode(parent, _e1, index);
+                            patch(e1, _e1);
+                            if (_e2) {
+                                patch(_e2, e2);
+                            }
                             continue;
                         }
                         if (!_e1) continue;
