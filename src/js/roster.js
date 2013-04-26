@@ -103,12 +103,18 @@
     }
 
     Client.prototype.get_roster_item = function(jid) {
-        var all_items = new Model('.roster.items').getAll();
-        if (jid.getBareJID) jid = jid.getBareJID();
-        var the_item = all_items.filter(function(citem) {
-            return (citem.jid.getBareJID() == jid)
+        // TODO: indexes may be useful here to make it faster
+        var all_items = new Model('.roster.items').getCollection();
+        if (typeof(jid) == 'string') {
+            jid = new jslix.JID(jid);
+        }
+        var the_item;
+        $.each(all_items, function() {
+            the_item = (this.jid._node == jid._node && 
+                    this.jid._domain == jid._domain) ? this : undefined;
+            if (the_item) return false;
         });
-        if (the_item.length) return the_item[0];
+        return new Model('.roster.items').get(the_item.pk);
     }
 
     Client.prototype.roster_updated = function(items) {
