@@ -114,7 +114,7 @@
                     this.jid._domain == jid._domain) ? this : undefined;
             if (the_item) return false;
         });
-        return new Model('.roster.items').get(the_item.pk);
+        return the_item && new Model('.roster.items').get(the_item.pk);
     }
 
     Client.prototype.roster_updated = function(items) {
