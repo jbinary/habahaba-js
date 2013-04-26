@@ -83,7 +83,13 @@
                         _remove_avatar_but_not_hash();
                     }
                 }).fail(function(failure) {
-                    if (!update.photo) hash.del();
+                    // If we have failed to fetch vcard but there is no
+                    // any avatar announced then we won't want to fetch it
+                    // again, huh?
+                    if (!update.photo) {
+                        hash.set(update.photo);
+                        _remove_avatar_but_not_hash();
+                    }
                 });
             }
         }
