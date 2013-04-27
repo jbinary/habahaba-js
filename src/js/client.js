@@ -16,7 +16,7 @@
         jslix.Client.apply(this, arguments);
         this.data = data;
         this.data.my_jid = this.connection.jid;
-        this.storage = new Storage(sessionStorage, 'habahaba');
+        this.storage = new Storage(localStorage, 'habahaba');
         this.account_storage = this.storage.chroot(
             'accounts',
             this.dispatcher.connection.jid.getBareJID()
