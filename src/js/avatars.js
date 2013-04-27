@@ -51,9 +51,9 @@
             var storage = this.storage.chroot(jid);
             var hash = storage.path('hash');
             var self = this;
+            var binval = storage.path('binval');
             if (!hash.exists() || hash.get() != update.photo) {
                 var type = storage.path('type');
-                var binval = storage.path('binval');
                 var avatars_available = this.avatars_available.get();
                 this.vcard.get(jid).done(function(result) {
                     if (result.photo && result.photo.binval && update.photo) {
@@ -91,6 +91,9 @@
                         _remove_avatar_but_not_hash();
                     }
                 });
+            } else if (hash.exists() && binval.exists()) {
+                // TODO: do it on startup and not only when a presence has come
+                self.update_avatar_availability(jid, hash.get());
             }
         }
     });
