@@ -181,16 +181,23 @@
         }
 
         var appendElement = function(parent, el) {
-            var cloned = el.cloneNode(true),
-                id = getAttribute(cloned, 'id'),
-                exist = id && parent.ownerDocument.getElementById(id);
-            if (exist) {
+            var id = getAttribute(el, 'id'),
+                exist = id && parent.ownerDocument.getElementById(id),
+                removed = exist && exist.getAttribute('removed'),
+                cloned;
+            if (exist && !removed) {
                 return exist;
+            } else if (exist && removed) {
+                exist.removeAttribute('removed');
+                $(exist).stop();
+                cloned = exist;
+            } else {
+                cloned = el.cloneNode(true);
+                parent.appendChild(cloned);
+                restore_preserved_attrs(cloned);
+                apply_bubbledown_handler(cloned, 'oncreate');
             }
-            parent.appendChild(cloned);
-            restore_preserved_attrs(cloned);
             apply_event_handler(cloned, 'onshow');
-            apply_bubbledown_handler(cloned, 'oncreate');
             return cloned;
         }
 
