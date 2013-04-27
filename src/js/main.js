@@ -263,7 +263,10 @@
                     var index = get_new_index(parent, e1);
                     if (index >= 0 && _e1) {
                         // They are actually swapped!
+                        var _index = $(parent).children().index(_e1);
+                        var _swap_with = parent.childNodes[index];
                         _moveNode(parent, _e1, index);
+                        _moveNode(parent, _swap_with, _index);
                         patch(e1, _e1);
                         if (_e2) {
                             patch(_e2, e2);
