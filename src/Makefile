@@ -31,6 +31,7 @@ libs: init ../libs/*
 	cp ../libs/yate/lib/runtime.js $(LIBDIR)/yate-runtime.js
 	# XXX: will we separate css and images? Will we use require-js?
 	cp -TR ../libs/jQuery-contextmenu/src/ $(LIBDIR)/jQuery-contextmenu
+	cp ../libs/jquery.js $(LIBDIR)
 
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js
