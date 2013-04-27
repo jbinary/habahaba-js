@@ -189,6 +189,8 @@
                 return exist;
             } else if (exist && removed) {
                 exist.removeAttribute('removed');
+                // TODO: still need to think up how to start the show animation
+                // after the stop animation has been stopped.
                 $(exist).stop();
                 cloned = exist;
             } else {
