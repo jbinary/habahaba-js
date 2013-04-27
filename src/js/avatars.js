@@ -60,7 +60,7 @@
                     if (result.photo && result.photo.binval && update.photo) {
                         var _binval = result.photo.binval.replace(/[^a-z0-9+/=]/gi, '');
                         var raw_length = _binval.length * 3 / 4;
-                        if (raw_length <= 16 * 1024) { // TODO: setting
+                        if (raw_length <= 32 * 1024) { // TODO: setting
                             var raw_photo = CryptoJS.enc.Base64.parse(_binval);
                             var comp_hash = CryptoJS.SHA1(raw_photo);
                             comp_hash = CryptoJS.enc.Hex.stringify(comp_hash);
