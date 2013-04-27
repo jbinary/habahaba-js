@@ -201,84 +201,75 @@
             return res;
         }
 
-        var zzz = 0;
-        var paths_history = [];
-        while (true) {
-            var paths = DOMdiff.getDiff(rendered, existent);
-            if (!paths[0]) break;
-            for (var pi=0; pi<paths.length; pi++) {
-                var path = paths[pi];
-                if (!path) continue;
-                var e1 = rendered, e2 = existent;
-                for (var p=0; p<path.length - 1; p++) {
-                    var c = path[p];
-                    var e1 = getChild(e1, c[0]);
-                    var e2 = getChild(e2, c[1]);
-                }
-                paths[pi] = [e1, e2];
+        var paths = DOMdiff.getDiff(rendered, existent);
+        if (!paths[0]) {
+            return;
+        }
+        for (var pi=0; pi<paths.length; pi++) {
+            var path = paths[pi];
+            if (!path) continue;
+            var e1 = rendered, e2 = existent;
+            for (var p=0; p<path.length - 1; p++) {
+                var c = path[p];
+                var e1 = getChild(e1, c[0]);
+                var e2 = getChild(e2, c[1]);
             }
-            paths_history.push(paths);
-            if (zzz > 0) {
-                debugger;
-                throw new Error();
-            }
-            zzz++;
-            for (var pi=0; pi<paths.length; pi++) {
-                var e1 = paths[pi][0],
-                    e2 = paths[pi][1],
-                    id1 = getAttribute(e1, 'id'),
-                    id2 = getAttribute(e2, 'id'),
-                    parent = e2.parentElement;
+            paths[pi] = [e1, e2];
+        }
+        for (var pi=0; pi<paths.length; pi++) {
+            var e1 = paths[pi][0],
+                e2 = paths[pi][1],
+                id1 = getAttribute(e1, 'id'),
+                id2 = getAttribute(e2, 'id'),
+                parent = e2.parentElement;
 
-                if (e1.fake) {
-                    // TODO: check if it just was moved?
-                    var _e2 = removeElement(e2);
+            if (e1.fake) {
+                // TODO: check if it just was moved?
+                var _e2 = removeElement(e2);
+                if (_e2) {
+                    patch(_e2, e2);
+                }
+            } else if (e2.fake) {
+                e2 = appendElement(parent, e1);
+                var index = get_new_index(parent, e1);
+                _moveNode(parent, e2, index);
+            } else if (id1 == id2) {
+                check_attributes();
+                if (id1 && id2) {
+                    patch(e1, e2);
+                } else {
+                    replaceWith(e1, e2);
+                }
+            // Check if two elements were swapped under the same parent
+            } else if (id1 && id2 && id1 != id2) {
+                var _e1 = document.getElementById(id1);
+                if (!_e1) {
+                    _e1 = appendElement(e2.parentNode, e1);
+                }
+                var _e2 = e1.ownerDocument.getElementById(id2);
+                if (!_e2) {
+                    removeElement(e2);
+                }
+                var index = get_new_index(parent, e1);
+                if (index >= 0 && _e1) {
+                    // They are actually swapped!
+                    var _index = $(parent).children().index(_e1);
+                    var _swap_with = parent.childNodes[index];
+                    _moveNode(parent, _e1, index);
+                    _moveNode(parent, _swap_with, _index);
+                    patch(e1, _e1);
                     if (_e2) {
                         patch(_e2, e2);
                     }
-                    continue;
-                } else if (e2.fake) {
-                    e2 = appendElement(parent, e1);
-                    var index = get_new_index(parent, e1);
-                    _moveNode(parent, e2, index);
-                    continue;
-                } else if (id1 == id2) {
-                    check_attributes();
-                    if (id1 && id2) {
-                        patch(e1, e2);
-                    } else {
-                        replaceWith(e1, e2);
-                    }
-                    continue;
-                // Check if two elements were swapped under the same parent
-                } else if (id1 && id2 && id1 != id2) {
-                    var _e1 = document.getElementById(id1);
-                    if (!_e1) {
-                        _e1 = appendElement(e2.parentNode, e1);
-                    }
-                    var _e2 = e1.ownerDocument.getElementById(id2);
-                    if (!_e2) {
-                        removeElement(e2);
-                    }
-                    var index = get_new_index(parent, e1);
-                    if (index >= 0 && _e1) {
-                        // They are actually swapped!
-                        var _index = $(parent).children().index(_e1);
-                        var _swap_with = parent.childNodes[index];
-                        _moveNode(parent, _e1, index);
-                        _moveNode(parent, _swap_with, _index);
-                        patch(e1, _e1);
-                        if (_e2) {
-                            patch(_e2, e2);
-                        }
-                        continue;
-                    }
-                    if (!_e1) continue;
                 }
-                console.log('Something went wrong');
-                debugger;
-                return;
+            } else {
+                throw new Error('Something went wrong');
             }
+        }
+        // TODO: this check is only needed while debugging
+        var paths = DOMdiff.getDiff(rendered, existent);
+        if (paths[0]) {
+            throw new Error('Something went wrong');
         }
     }
 
