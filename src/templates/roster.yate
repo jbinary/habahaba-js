@@ -40,11 +40,9 @@ match /.roster.items (nodeset group) {
         slideAnimation()
         jid = get_contact_jid(.)
         <div class="avatar">
-            <img alt="contact ava" src="img/userpic.png">
-                if .avatar_hash {
-                    @src = get_avatar_uri(jid)
-                }
-            </img>
+            if .avatar_hash {
+                @class += ' ' + .avatar_hash
+            }
         </div>
         <span>
             if (.unread) {

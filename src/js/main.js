@@ -153,6 +153,8 @@
         }
 
         var patch = function(rendered, existent) {
+            var orig_rendered = rendered.cloneNode(true),
+                orig_existent = rendered.cloneNode(true);
             var replaceWith = function(with_, what, parent) {
                 var new_child = with_.cloneNode(true);
                 what.parentElement.replaceChild(new_child, what);

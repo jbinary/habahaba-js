@@ -5,6 +5,12 @@ html, body {
     height: 100%;
     }
 
+.avatar {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url(../img/userpic.png);
+}
 
 #wrapper {
     height: 100%;
@@ -206,12 +212,6 @@ html, body {
                             float: left;
                             margin-left: 15px;
                         }
-
-                        #contact-block #container .group-list .contact .avatar img {
-                            max-width: 50px;
-                            max-height: 50px;
-                            margin: 0 auto;
-                            }
 
                         #contact-block #container .group-list .contact span {
                             width: 13px;
@@ -514,9 +514,9 @@ html, body {
         height: 95px;
         }
 
-        #message-window .companion-block img {
-            max-height: 70px;
-            max-width: 70px;
+        #message-window .companion-block div.avatar {
+            height: 70px;
+            width: 70px;
             margin: 13px auto auto 13px;
             float: left;
             }

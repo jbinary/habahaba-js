@@ -53,11 +53,11 @@ match /.view.tabs[.active] msgwindow {
         jid = get_contact_jid(contact)
         presence = max_priority(contact.presences)
         <div class="companion-block">
-            <img alt="ava" src="img/userpic.png">
+            <div class="avatar">
                 if contact.avatar_hash {
-                    @src = get_avatar_uri(jid)
+                    @class += ' ' + contact.avatar_hash
                 }
-            </img>
+            </div>
             <div class="status-messages">
                 <p>
                     @title = "{ presence.status }"
@@ -140,11 +140,9 @@ match /.messages.contacts.history {
     sender_jid = get_contact_jid(sender)
     <div class="message">
         <div class="avatar">
-            <img alt="ava" src="img/userpic.png">
-                if sender.avatar_hash {
-                    @src = get_avatar_uri(sender_jid)
-                }
-            </img>
+            if sender.avatar_hash {
+                @class += ' ' + sender.avatar_hash
+            }
         </div>
         <h5>{ get_contact_display(sender) }</h5>
         <span class="timestamp">

@@ -33,7 +33,7 @@
         // TODO photo should be a special node which should make difference
         // between absence of the tag and self-closing tag
         photo: new jslix.fields.StringNode('photo'),
-        
+
         anyHandler: function(update, top) {
             var _remove_avatar_but_not_hash = function() {
                 type.del();
@@ -43,6 +43,7 @@
                     _removeFromArray(avatars_available, i);
                     self.avatars_available.set(avatars_available);
                     self.update_avatar_availability(jid, false);
+                    hash.exists() && removeCSSClass(hash.get());
                 }
             }
 
@@ -127,11 +128,31 @@
         }
     }
 
+    var createCSSClass = function(selector, style) {
+        var style_el = document.createElement('style');
+        style_el.id = 'injected-style-' + selector;
+        style_el.type = 'text/css';
+        style_el.innerHTML = selector + ' { ' + style + ' }';
+        document.getElementsByTagName('head')[0].appendChild(style_el);
+    }
+
+    var removeCSSClass = function(selector) {
+        var style = document.getElementById('injected-style-' + selector);
+        if (style) {
+            style.parentElement.removeChild(style);
+        }
+    }
+
     avatars.prototype.update_avatar_availability = function(jid, hash, silently) {
         var item = this.client.get_roster_item(jid);
         if (item) {
             if (hash) {
                 item.avatar_hash = hash;
+                var avatar_uri = yr.externals.get_avatar_uri(jid);
+                if (avatar_uri) {
+                    createCSSClass('div.avatar.' + hash,
+                                'background-image: url(' + avatar_uri + ')');
+                }
             } else if (item.avatar_hash) {
                 delete item.avatar_hash;
             }
@@ -146,6 +167,7 @@
             var storage = client.avatars.storage.chroot(jid);
             var type = storage.path('type').get();
             var binval = storage.path('binval').get();
+            binval = binval.replace(/[^a-z0-9+/=]/gi, '');
             result = 'data:';
             if (type) result += type;
             result += ';base64,' + binval;
