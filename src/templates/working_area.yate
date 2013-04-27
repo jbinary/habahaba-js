@@ -55,7 +55,7 @@ match /.view.tabs[.active] msgwindow {
         <div class="companion-block">
             <div class="avatar">
                 if contact.avatar_hash {
-                    @class += ' ' + contact.avatar_hash
+                    @class += ' hash-' + contact.avatar_hash
                 }
             </div>
             <div class="status-messages">
@@ -141,7 +141,7 @@ match /.messages.contacts.history {
     <div class="message">
         <div class="avatar">
             if sender.avatar_hash {
-                @class += ' ' + sender.avatar_hash
+                @class += ' hash-' + sender.avatar_hash
             }
         </div>
         <h5>{ get_contact_display(sender) }</h5>

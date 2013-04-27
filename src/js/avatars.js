@@ -129,11 +129,14 @@
     }
 
     var createCSSClass = function(selector, style) {
-        var style_el = document.createElement('style');
-        style_el.id = 'injected-style-' + selector;
-        style_el.type = 'text/css';
-        style_el.innerHTML = selector + ' { ' + style + ' }';
-        document.getElementsByTagName('head')[0].appendChild(style_el);
+        var id = 'injected-style-' + selector;
+        if (!document.getElementById(id)) {
+            var style_el = document.createElement('style');
+            style_el.id = id;
+            style_el.type = 'text/css';
+            style_el.innerHTML = selector + ' { ' + style + ' }';
+            document.getElementsByTagName('head')[0].appendChild(style_el);
+        }
     }
 
     var removeCSSClass = function(selector) {
@@ -143,14 +146,28 @@
         }
     }
 
+    var get_avatar_uri = function(roster_item) {
+        var result;
+        if (roster_item && roster_item.avatar_hash) {
+            var storage = client.avatars.storage.chroot(roster_item.jid.getBareJID());
+            var type = storage.path('type').get();
+            var binval = storage.path('binval').get();
+            binval = binval.replace(/[^a-z0-9+/=]/gi, '');
+            result = 'data:';
+            if (type) result += type;
+            result += ';base64,' + binval;
+        }
+        return result;
+    }
+
     avatars.prototype.update_avatar_availability = function(jid, hash, silently) {
         var item = this.client.get_roster_item(jid);
         if (item) {
             if (hash) {
                 item.avatar_hash = hash;
-                var avatar_uri = yr.externals.get_avatar_uri(jid);
+                var avatar_uri = get_avatar_uri(item);
                 if (avatar_uri) {
-                    createCSSClass('div.avatar.' + hash,
+                    createCSSClass('div.avatar.hash-' + hash,
                                 'background-image: url(' + avatar_uri + ')');
                 }
             } else if (item.avatar_hash) {
@@ -162,16 +179,6 @@
 
     yr.externals.get_avatar_uri = function(jid) {
         var item = client.get_roster_item(jid);
-        var result;
-        if (item && item.avatar_hash) {
-            var storage = client.avatars.storage.chroot(jid);
-            var type = storage.path('type').get();
-            var binval = storage.path('binval').get();
-            binval = binval.replace(/[^a-z0-9+/=]/gi, '');
-            result = 'data:';
-            if (type) result += type;
-            result += ';base64,' + binval;
-        }
-        return result;
+        return get_avatar_uri(item);
     }
 })();

@@ -41,7 +41,7 @@ match /.roster.items (nodeset group) {
         jid = get_contact_jid(.)
         <div class="avatar">
             if .avatar_hash {
-                @class += ' ' + .avatar_hash
+                @class += ' hash-' + .avatar_hash
             }
         </div>
         <span>
