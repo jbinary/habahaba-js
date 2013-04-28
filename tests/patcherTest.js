@@ -31,22 +31,22 @@ data.rendered = '\
 
 data.existent1 = '\
 <div id="group-list-5">\
-<div id="contact-5-142"></div>\
-<div id="contact-5-98"></div>\
-<div id="contact-5-197"></div>\
-<div id="contact-5-110"></div>\
-<div id="contact-5-13"></div>\
-<div id="contact-5-84"></div>\
-<div id="contact-5-218"></div>\
+    <div id="contact-5-142"></div>\
+    <div id="contact-5-98"></div>\
+    <div id="contact-5-197"></div>\
+    <div id="contact-5-110"></div>\
+    <div id="contact-5-13"></div>\
+    <div id="contact-5-84"></div>\
+    <div id="contact-5-218"></div>\
 </div>';
 data.rendered1 = '\
 <div id="group-list-5">\
-<div id="contact-5-98"></div>\
-<div id="contact-5-197"></div>\
-<div id="contact-5-110"></div>\
-<div id="contact-5-13"></div>\
-<div id="contact-5-84"></div>\
-<div id="contact-5-218"></div>\
+    <div id="contact-5-98"></div>\
+    <div id="contact-5-197"></div>\
+    <div id="contact-5-110"></div>\
+    <div id="contact-5-13"></div>\
+    <div id="contact-5-84"></div>\
+    <div id="contact-5-218"></div>\
 </div>';
 
 var PatcherTest = buster.testCase("PatcherTest", {

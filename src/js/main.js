@@ -266,18 +266,17 @@
                 var _e2 = e1.ownerDocument.getElementById(id2);
                 if (!_e2) {
                     removeElement(e2);
-                } else {
-                    var index = get_new_index(parent, e1);
-                    if (index >= 0 && _e1) {
-                        // They are actually swapped!
-                        var _index = get_el_index(_e1),
-                            _swap_with = parent.childNodes[index];
-                        _moveNode(parent, _e1, index);
-                        _moveNode(parent, _swap_with, _index);
-                        patch(e1, _e1);
-                        if (_e2) {
-                            patch(_e2, e2);
-                        }
+                }
+                var index = get_new_index(parent, e1);
+                if (index >= 0 && _e1) {
+                    // They are actually swapped!
+                    var _index = get_el_index(_e1),
+                        _swap_with = parent.childNodes[index];
+                    _moveNode(parent, _e1, index);
+                    _moveNode(parent, _swap_with, _index);
+                    patch(e1, _e1);
+                    if (_e2) {
+                        patch(_e2, e2);
                     }
                 }
             } else {
