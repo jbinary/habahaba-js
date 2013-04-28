@@ -100,7 +100,7 @@ match /.roster.groups {
                         } else {
                             contacts
                         }
-                        apply sort(to_show, .nick) (group)
+                        apply sort(to_show, get_contact_display(.)) (group)
                     </div>
                 }
             </div>
