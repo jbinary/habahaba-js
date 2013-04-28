@@ -110,9 +110,6 @@
     }
 
     var patch = function(rendered, existent) {
-        var s = new XMLSerializer(),
-            orig_rendered = JSON.stringify(s.serializeToString(rendered)),
-            orig_existent = JSON.stringify(s.serializeToString(existent));
         var replaceWith = function(with_, what, parent) {
             var new_child = with_.cloneNode(true);
             what.parentElement.replaceChild(new_child, what);
@@ -205,8 +202,11 @@
 
         var get_new_index = function(parent, el) {
             var i = get_el_index(el),
-                removed_count = $(parent).children('[removed]').size();
-            return i - removed_count;
+                without_removed = Array.prototype.filter.call(parent.childNodes,
+                function(e) { return !e.getAttribute ||
+                                     !e.getAttribute('removed'); }),
+                real_el = without_removed[i];
+            return Array.prototype.indexOf.call(parent.childNodes, real_el);
         }
 
         var get_el_index = function(el) {
@@ -214,21 +214,25 @@
             return Array.prototype.indexOf.call(parent.childNodes, el);
         }
 
+        var convert_paths_to_elements = function(paths) {
+            for (var pi=0; pi<paths.length; pi++) {
+                var path = paths[pi];
+                if (!path) continue;
+                var e1 = rendered, e2 = existent;
+                for (var p=0; p<path.length - 1; p++) {
+                    var c = path[p];
+                    var e1 = getChild(e1, c[0]);
+                    var e2 = getChild(e2, c[1]);
+                }
+                paths[pi] = [e1, e2];
+            }
+        }
+
         var paths = DOMdiff.getDiff(rendered, existent);
         if (!paths[0]) {
             return;
         }
-        for (var pi=0; pi<paths.length; pi++) {
-            var path = paths[pi];
-            if (!path) continue;
-            var e1 = rendered, e2 = existent;
-            for (var p=0; p<path.length - 1; p++) {
-                var c = path[p];
-                var e1 = getChild(e1, c[0]);
-                var e2 = getChild(e2, c[1]);
-            }
-            paths[pi] = [e1, e2];
-        }
+        convert_paths_to_elements(paths);
         for (var pi=0; pi<paths.length; pi++) {
             var e1 = paths[pi][0],
                 e2 = paths[pi][1],
@@ -277,12 +281,14 @@
                     }
                 }
             } else {
+                debugger;
                 throw new Error('Something went wrong');
             }
         }
         // TODO: this check is only needed while debugging
-        var paths = DOMdiff.getDiff(rendered, existent);
-        if (paths[0]) {
+        var path = DOMdiff.getDiff(rendered, existent);
+        if (path[0]) {
+            debugger;
             throw new Error('Something went wrong');
         }
     }
