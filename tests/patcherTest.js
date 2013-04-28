@@ -28,28 +28,50 @@ data.rendered = '\
     <div id="contact-0-249"></div>\
     <div id="contact-0-24"></div>\
 </div>';
+
+data.existent1 = '\
+<div id="group-list-5">\
+<div id="contact-5-142"></div>\
+<div id="contact-5-98"></div>\
+<div id="contact-5-197"></div>\
+<div id="contact-5-110"></div>\
+<div id="contact-5-13"></div>\
+<div id="contact-5-84"></div>\
+<div id="contact-5-218"></div>\
+</div>';
+data.rendered1 = '\
+<div id="group-list-5">\
+<div id="contact-5-98"></div>\
+<div id="contact-5-197"></div>\
+<div id="contact-5-110"></div>\
+<div id="contact-5-13"></div>\
+<div id="contact-5-84"></div>\
+<div id="contact-5-218"></div>\
+</div>';
+
 var PatcherTest = buster.testCase("PatcherTest", {
     setUp: function() {
+        this._genericPatcherTest = function(existent, rendered) {
+            assert(existent != rendered);
+            var wrapper = document.implementation.createHTMLDocument('');
+            wrapper.body.innerHTML = rendered;
+            rendered = wrapper.body.firstChild;
 
+            var wrapper = document.implementation.createHTMLDocument('');
+            wrapper.body.innerHTML = existent;
+            existent = wrapper.body.firstChild;
+
+            var rendered = rendered,
+                existent = existent;
+            habahaba._patch(rendered, existent);
+            assert(!DOMdiff.getDiff(rendered, existent)[0]);
+        }
     },
     testGoneToOffline: function() {
-        assert(data.existent);
-        assert(data.rendered);
-        var existent = data.existent;
-        var rendered = data.rendered;
-        assert(existent != rendered);
-        var wrapper = document.implementation.createHTMLDocument('');
-        wrapper.body.innerHTML = rendered;
-        rendered = wrapper.getElementById('group-list-0');
-
-        var wrapper = document.implementation.createHTMLDocument('');
-        wrapper.body.innerHTML = existent;
-        existent = wrapper.getElementById('group-list-0');
-
-        var rendered = rendered,
-            existent = existent;
+        this._genericPatcherTest(data.existent, data.rendered);
+    },
+    testGoneToOffline1: function() {
         debugger;
-        habahaba._patch(rendered, existent);
-        assert(!DOMdiff.getDiff(rendered, existent)[0]);
+        this._genericPatcherTest(data.existent1, data.rendered1);
     }
 });
