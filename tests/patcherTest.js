@@ -56,7 +56,7 @@ data.existent2 = '\
 <div id="contact-0-191"></div>\
 <div id="contact-0-252"></div>\
 <div id="contact-0-14"></div>\
-<div id="contact-0-237" removed="true"></div>\
+<div id="contact-0-237" data-removed="true"></div>\
 <div id="contact-0-32"></div>\
 <div id="contact-0-181"></div>\
 <div id="contact-0-28"></div>\

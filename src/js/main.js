@@ -62,7 +62,7 @@
         if (typeof(node) === 'string') {
             node = document.getElementById(node);
         }
-        $(node).parent().find('*[data-preserve][id]').not('[removed]').each(
+        $(node).parent().find('*[data-preserve][id]').not('[data-removed]').each(
             function() {
                 var attrs = $(this).attr('data-preserve').split(',');
                 var that = this;
@@ -134,7 +134,7 @@
             // Are there any obsolete attributes?
             for (var a=e2.attributes.length-1; a>=0; a--) {
                 var attr = e2.attributes[a];
-                if (['removed', 'style'].indexOf(attr.name) > -1) continue;
+                if (['data-removed', 'style'].indexOf(attr.name) > -1) continue;
                 if (!e1.attributes.getNamedItem(attr.name)) {
                     e2.attributes.removeNamedItem(attr.name);
                 }
@@ -163,11 +163,11 @@
             }
             if (el.setAttribute) {
                 // Remove
-                el.setAttribute('removed', true);
+                el.setAttribute('data-removed', true);
                 apply_event_handler(el, 'onhide');
                 push_handler(function(el) {
                     $(el).promise().done(function() {
-                        if (this[0].hasAttribute('removed')) {
+                        if (this[0].hasAttribute('data-removed')) {
                             try {
                                 this[0].parentElement.removeChild(this[0]);
                                 _apply_event_handler(this[0], 'onremove');
@@ -183,12 +183,12 @@
         var appendElement = function(parent, el) {
             var id = getAttribute(el, 'id'),
                 exist = id && parent.ownerDocument.getElementById(id),
-                removed = exist && exist.getAttribute('removed'),
+                removed = exist && exist.getAttribute('data-removed'),
                 cloned;
             if (exist && !removed) {
                 return exist;
             } else if (exist && removed) {
-                exist.removeAttribute('removed');
+                exist.removeAttribute('data-removed');
                 // TODO: still need to think up how to start the show animation
                 // after the stop animation has been stopped.
                 $(exist).stop();
@@ -207,7 +207,7 @@
             var i = get_el_index(el),
                 without_removed = Array.prototype.filter.call(parent.childNodes,
                 function(e) { return !e.getAttribute ||
-                                     !e.getAttribute('removed'); }),
+                                     !e.getAttribute('data-removed'); }),
                 real_el = without_removed[i];
             return Array.prototype.indexOf.call(parent.childNodes, real_el);
         }
@@ -254,9 +254,9 @@
                 var index = get_new_index(parent, e1);
                 _moveNode(parent, e2, index);
             } else if (id1 == id2) {
-                check_attributes();
                 if (id1 && id2) {
-                    patch(e1, e2);
+                    check_attributes();
+                    //patch(e1, e2);
                 } else {
                     replaceWith(e1, e2);
                 }

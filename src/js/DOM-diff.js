@@ -96,12 +96,12 @@ var DOMdiff = (function() {
     while (i1 < last1 || i2 < last2) {
       // recurse to see if these children differ
       var node1 = e1.childNodes[i1];
-      if (node1 && node1.hasAttribute && node1.hasAttribute('removed')) {
+      if (node1 && node1.hasAttribute && node1.hasAttribute('data-removed')) {
         i1++;
         continue;
       }
       var node2 = e2.childNodes[i2];
-      if (node2 && node2.hasAttribute && node2.hasAttribute('removed')) {
+      if (node2 && node2.hasAttribute && node2.hasAttribute('data-removed')) {
         i2++;
         continue;
       }
