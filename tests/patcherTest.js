@@ -92,6 +92,23 @@ data.rendered3 = '\
     <div id="contact-5-23"></div>\
 </div>';
 
+data.existent4 = '\
+<div id="group-list-12">\
+<div id="contact-12-98" data-removed="true" style="smth important">\
+<div class="avatar"></div>\
+<span class="away"></span>\
+<h5>fake@gmail.com</h5>\
+<p></p>\
+</div>\
+</div>';
+data.rendered4 = '\
+<div id="group-list-12">\
+<div class="avatar"></div>\
+<span class="dnd"></span>\
+<h5>fake@gmail.com</h5>\
+<p></p>\
+</div>';
+
 var PatcherTest = buster.testCase("PatcherTest", {
     setUp: function() {
         this._genericPatcherTest = function(existent, rendered) {
@@ -121,5 +138,8 @@ var PatcherTest = buster.testCase("PatcherTest", {
     },
     testSearch: function() {
         this._genericPatcherTest(data.existent3, data.rendered3);
+    },
+    testContactOfflineThenOnlineWithAnotherStatus: function() {
+        this._genericPatcherTest(data.existent4, data.rendered4);
     }
 });
