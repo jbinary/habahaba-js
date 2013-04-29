@@ -256,7 +256,6 @@
             } else if (id1 == id2) {
                 if (id1 && id2) {
                     check_attributes();
-                    //patch(e1, e2);
                 } else {
                     replaceWith(e1, e2);
                 }
