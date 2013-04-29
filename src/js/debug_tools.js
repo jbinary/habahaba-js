@@ -2,7 +2,7 @@ debug_tools = {
     getIDs: function(el) {
         var r = [];
         for (var i=0; i<el.childNodes.length; i++) {
-            r.push(el.childNodes[i].id + ' ' +  el.childNodes[i].getAttribute('removed'))
+            r.push(el.childNodes[i].id + ' ' +  el.childNodes[i].getAttribute('data-removed'))
         }
         return r;
     },
