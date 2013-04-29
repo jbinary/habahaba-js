@@ -118,7 +118,7 @@
             what.parentElement.replaceChild(new_child, what);
         }
 
-        var check_attributes = function() {
+        var check_attributes = function(e1, e2) {
             // Check attributes
             if (!e1.attributes || !e2.attributes) return;
             // Are there any new attributes?
@@ -189,6 +189,8 @@
                 return exist;
             } else if (exist && removed) {
                 exist.removeAttribute('data-removed');
+                check_attributes(el, exist);
+                patch(el, exist);
                 // TODO: still need to think up how to start the show animation
                 // after the stop animation has been stopped.
                 $(exist).stop();
@@ -255,14 +257,15 @@
                 _moveNode(parent, e2, index);
             } else if (id1 == id2) {
                 if (id1 && id2) {
-                    check_attributes();
+                    check_attributes(e1, e2);
+                    patch(e1, e2);
                 } else {
                     replaceWith(e1, e2);
                 }
             // Check if two elements were swapped under the same parent
             } else if (id1 && id2 && id1 != id2) {
                 var _e1 = document.getElementById(id1);
-                if (!_e1) {
+                if (!_e1 || _e1.hasAttribute('data-removed')) {
                     _e1 = appendElement(e2.parentNode, e1);
                 }
                 var _e2 = e1.ownerDocument.getElementById(id2);
