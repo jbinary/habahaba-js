@@ -49,6 +49,49 @@ data.rendered1 = '\
     <div id="contact-5-218"></div>\
 </div>';
 
+data.existent2 = '\
+<div id="group-list-0">\
+<div id="contact-0-250"></div>\
+<div id="contact-0-26"></div>\
+<div id="contact-0-191"></div>\
+<div id="contact-0-252"></div>\
+<div id="contact-0-14"></div>\
+<div id="contact-0-237" removed="true"></div>\
+<div id="contact-0-32"></div>\
+<div id="contact-0-181"></div>\
+<div id="contact-0-28"></div>\
+</div>';
+data.rendered2 = '\
+<div id="group-list-0">\
+<div id="contact-0-250"></div>\
+<div id="contact-0-26"></div>\
+<div id="contact-0-191"></div>\
+<div id="contact-0-252"></div>\
+<div id="contact-0-14"></div>\
+<div id="contact-0-237"></div>\
+<div id="contact-0-32"></div>\
+<div id="contact-0-181"></div>\
+<div id="contact-0-28"></div>\
+</div>';
+
+data.existent3 = '\
+<div id="group-list-5">\
+    <div id="contact-5-19"></div>\
+    <div id="contact-5-8"></div>\
+    <div id="contact-5-247"></div>\
+    <div id="contact-5-23"></div>\
+</div>';
+data.rendered3 = '\
+<div id="group-list-5">\
+    <div id="contact-5-122"></div>\
+    <div id="contact-5-8"></div>\
+    <div id="contact-5-177"></div>\
+    <div id="contact-5-29"></div>\
+    <div id="contact-5-151"></div>\
+    <div id="contact-5-93"></div>\
+    <div id="contact-5-23"></div>\
+</div>';
+
 var PatcherTest = buster.testCase("PatcherTest", {
     setUp: function() {
         this._genericPatcherTest = function(existent, rendered) {
@@ -71,7 +114,12 @@ var PatcherTest = buster.testCase("PatcherTest", {
         this._genericPatcherTest(data.existent, data.rendered);
     },
     testGoneToOffline1: function() {
-        debugger;
         this._genericPatcherTest(data.existent1, data.rendered1);
+    },
+    testAppearOnline: function() {
+        this._genericPatcherTest(data.existent2, data.rendered2);
+    },
+    testSearch: function() {
+        this._genericPatcherTest(data.existent3, data.rendered3);
     }
 });

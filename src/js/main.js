@@ -110,6 +110,9 @@
     }
 
     var patch = function(rendered, existent) {
+        // TODO: needed only when debugging
+        var orig_rendered = rendered.cloneNode(true),
+            orig_existent = existent.cloneNode(true);
         var replaceWith = function(with_, what, parent) {
             var new_child = with_.cloneNode(true);
             what.parentElement.replaceChild(new_child, what);
@@ -270,10 +273,11 @@
                 var index = get_new_index(parent, e1);
                 if (index >= 0 && _e1) {
                     // They are actually swapped!
-                    var _index = get_el_index(_e1),
-                        _swap_with = parent.childNodes[index];
                     _moveNode(parent, _e1, index);
-                    _moveNode(parent, _swap_with, _index);
+                    if (_e2) {
+                        var _index = get_new_index(parent, _e2);
+                        _moveNode(parent, e2, _index);
+                    }
                     patch(e1, _e1);
                     if (_e2) {
                         patch(_e2, e2);
