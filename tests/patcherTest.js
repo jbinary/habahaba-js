@@ -51,27 +51,27 @@ data.rendered1 = '\
 
 data.existent2 = '\
 <div id="group-list-0">\
-<div id="contact-0-250"></div>\
-<div id="contact-0-26"></div>\
-<div id="contact-0-191"></div>\
-<div id="contact-0-252"></div>\
-<div id="contact-0-14"></div>\
-<div id="contact-0-237" data-removed="true"></div>\
-<div id="contact-0-32"></div>\
-<div id="contact-0-181"></div>\
-<div id="contact-0-28"></div>\
+    <div id="contact-0-250"></div>\
+    <div id="contact-0-26"></div>\
+    <div id="contact-0-191"></div>\
+    <div id="contact-0-252"></div>\
+    <div id="contact-0-14"></div>\
+    <div id="contact-0-237" data-removed="true"></div>\
+    <div id="contact-0-32"></div>\
+    <div id="contact-0-181"></div>\
+    <div id="contact-0-28"></div>\
 </div>';
 data.rendered2 = '\
 <div id="group-list-0">\
-<div id="contact-0-250"></div>\
-<div id="contact-0-26"></div>\
-<div id="contact-0-191"></div>\
-<div id="contact-0-252"></div>\
-<div id="contact-0-14"></div>\
-<div id="contact-0-237"></div>\
-<div id="contact-0-32"></div>\
-<div id="contact-0-181"></div>\
-<div id="contact-0-28"></div>\
+    <div id="contact-0-250"></div>\
+    <div id="contact-0-26"></div>\
+    <div id="contact-0-191"></div>\
+    <div id="contact-0-252"></div>\
+    <div id="contact-0-14"></div>\
+    <div id="contact-0-237"></div>\
+    <div id="contact-0-32"></div>\
+    <div id="contact-0-181"></div>\
+    <div id="contact-0-28"></div>\
 </div>';
 
 data.existent3 = '\
@@ -94,19 +94,21 @@ data.rendered3 = '\
 
 data.existent4 = '\
 <div id="group-list-12">\
-<div id="contact-12-98" data-removed="true" style="smth important">\
-<div class="avatar"></div>\
-<span class="away"></span>\
-<h5>fake@gmail.com</h5>\
-<p></p>\
-</div>\
+    <div id="contact-12-98" data-removed="true" style="smth important">\
+        <div class="avatar"></div>\
+        <span class="away"></span>\
+        <h5>fake@gmail.com</h5>\
+        <p></p>\
+    </div>\
 </div>';
 data.rendered4 = '\
 <div id="group-list-12">\
-<div class="avatar"></div>\
-<span class="dnd"></span>\
-<h5>fake@gmail.com</h5>\
-<p></p>\
+    <div id="contact-12-98">\
+        <div class="avatar"></div>\
+        <span class="dnd"></span>\
+        <h5>fake@gmail.com</h5>\
+        <p></p>\
+    </div>\
 </div>';
 
 var PatcherTest = buster.testCase("PatcherTest", {

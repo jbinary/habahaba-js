@@ -263,15 +263,9 @@
                     replaceWith(e1, e2);
                 }
             // Check if two elements were swapped under the same parent
-            } else if (id1 && id2 && id1 != id2) {
-                var _e1 = document.getElementById(id1);
-                if (!_e1 || _e1.hasAttribute('data-removed')) {
-                    _e1 = appendElement(e2.parentNode, e1);
-                }
-                var _e2 = e1.ownerDocument.getElementById(id2);
-                if (!_e2) {
-                    removeElement(e2);
-                }
+            } else if (id1 != id2) {
+                var _e1 = appendElement(e2.parentNode, e1);
+                var _e2 = removeElement(e2);
                 var index = get_new_index(parent, e1);
                 if (index >= 0 && _e1) {
                     // They are actually swapped!
