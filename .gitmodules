@@ -10,3 +10,6 @@
 [submodule "jQuery-contextMenu"]
 	path = libs/jQuery-contextmenu
 	url = git@github.com:jbinary/jQuery-contextMenu.git
+[submodule "jquery.transit"]
+	path = libs/jquery.transit
+	url = git://github.com/rstacruz/jquery.transit.git
