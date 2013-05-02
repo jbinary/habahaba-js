@@ -23,17 +23,8 @@ func selected() {
 }
 
 func slideAnimation() {
-    @onshow = (
-    :::
-        $(this).hide();
-        $(this).slideDown('slow');
-    :::
-    )
-    @onhide = (
-    :::
-        $(this).slideUp('slow');
-    :::
-    )
+    @onshow = "$(this).hide(); $(this).slideDown('slow');"
+    @onhide = "$(this).slideUp('slow');"
 }
 
 match / render_my_presence {

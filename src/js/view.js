@@ -416,6 +416,42 @@
                         update_unread);
         dispatcher.bind('model:.view.tabs:attr-changed:active',
                         update_unread);
+
+        // Use transitions based animations if they are supported
+        if ($.support.transition) {
+            // Use transition-based slideUp and slideDown animations
+            var styles = ['padding-top', 'padding-bottom', 'height'];
+            $.fn['slideUp'] = function(speed, easing, fn) {
+                this.css('overflow', 'hidden');
+                var animate = {}, self=this;
+                $.each(styles, function(i, style) {
+                    animate[style] = 0;
+                    self.css(style, self.css(style));
+                });
+                this.transition(animate, speed, easing, fn);
+            }
+            $.fn['slideDown'] = function(speed, easing, fn) {
+                if (this.filter(':hidden').size()) {
+                    var animate = {}, self=this;
+                    $.each(styles, function(i, style) {
+                        self.css(style, '');
+                        animate[style] = self.css(style);
+                    });
+                    this.css('overflow', 'hidden')
+                    $.each(styles, function(i, style) {
+                        self.css(style, 0);
+                    });
+                    this.show();
+                    this.transition(animate, speed, easing, fn);
+                    this.promise().done(function() {
+                        self.css('overflow', '');
+                        $.each(styles, function(i, style) {
+                            self.css(style, '');
+                        });
+                    });
+                }
+            }
+        }
     }
 
     plugin._name = 'habahaba.desktop_view';
