@@ -421,14 +421,41 @@
         if ($.support.transition) {
             // Use transition-based slideUp and slideDown animations
             var styles = ['padding-top', 'padding-bottom', 'height'];
+            var reset_styles = function(self, old_overflow) {
+                self.css('overflow', old_overflow);
+                $.each(styles, function(i, style) {
+                    self.css(style, '');
+                });
+            }
             $.fn['slideUp'] = function(speed, easing, fn) {
+                var old_overflow = this.css('overflow');
                 this.css('overflow', 'hidden');
                 var animate = {}, self=this;
                 $.each(styles, function(i, style) {
                     animate[style] = 0;
                     self.css(style, self.css(style));
                 });
-                this.transition(animate, speed, easing, fn);
+                var cb_decorator = function(fn) {
+                    return function() {
+                        reset_styles(this, old_overflow);
+                        this.hide();
+                        fn.apply(this);
+                    }
+                }
+                var args = {
+                    speed: speed,
+                    easing: easing,
+                    fn: fn
+                }
+                $.each(args, function(key) {
+                    if (typeof(this) == 'function') {
+                        args[key] = cb_decorator(this);
+                        return false;
+                    } else if (key == 'fn') {
+                        args[key] = cb_decorator(function() {});
+                    }
+                });
+                this.transition(animate, args.speed, args.easing, args.fn);
             }
             $.fn['slideDown'] = function(speed, easing, fn) {
                 if (this.filter(':hidden').size()) {
@@ -437,6 +464,7 @@
                         self.css(style, '');
                         animate[style] = self.css(style);
                     });
+                    var old_overflow = this.css('overflow');
                     this.css('overflow', 'hidden')
                     $.each(styles, function(i, style) {
                         self.css(style, 0);
@@ -444,10 +472,7 @@
                     this.show();
                     this.transition(animate, speed, easing, fn);
                     this.promise().done(function() {
-                        self.css('overflow', '');
-                        $.each(styles, function(i, style) {
-                            self.css(style, '');
-                        });
+                        reset_styles(self, old_overflow);
                     });
                 }
             }
