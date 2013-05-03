@@ -428,53 +428,62 @@
                 });
             }
             $.fn['slideUp'] = function(speed, easing, fn) {
-                var old_overflow = this.css('overflow');
-                this.css('overflow', 'hidden');
-                var animate = {}, self=this;
-                $.each(styles, function(i, style) {
-                    animate[style] = 0;
-                    self.css(style, self.css(style));
-                });
-                var cb_decorator = function(fn) {
-                    return function() {
-                        reset_styles(this, old_overflow);
-                        this.hide();
-                        fn.apply(this);
+                var self = this;
+                // TODO: make it possible to use another queue or no queue
+                this.queue(function(next) {
+                    var old_overflow = self.css('overflow');
+                    self.css('overflow', 'hidden');
+                    var animate = {};
+                    $.each(styles, function(i, style) {
+                        animate[style] = 0;
+                        self.css(style, self.css(style));
+                    });
+                    var cb_decorator = function(fn) {
+                        return function() {
+                            reset_styles(this, old_overflow);
+                            this.hide();
+                            fn.apply(this);
+                        }
                     }
-                }
-                var args = {
-                    speed: speed,
-                    easing: easing,
-                    fn: fn
-                }
-                $.each(args, function(key) {
-                    if (typeof(this) == 'function') {
-                        args[key] = cb_decorator(this);
-                        return false;
-                    } else if (key == 'fn') {
-                        args[key] = cb_decorator(function() {});
+                    var args = {
+                        speed: speed,
+                        easing: easing,
+                        fn: fn
                     }
+                    // TODO: callback also could be passed as a "complete"
+                    // option
+                    $.each(args, function(key) {
+                        if (typeof(this) == 'function') {
+                            args[key] = cb_decorator(this);
+                            return false;
+                        } else if (key == 'fn') {
+                            args[key] = cb_decorator(function() {});
+                        }
+                    });
+                    self.transition(animate, args.speed, args.easing, args.fn);
+                    next();
                 });
-                this.transition(animate, args.speed, args.easing, args.fn);
             }
             $.fn['slideDown'] = function(speed, easing, fn) {
-                if (this.filter(':hidden').size()) {
-                    var animate = {}, self=this;
+                var self = this;
+                this.queue(function(next) {
+                    var animate = {};
                     $.each(styles, function(i, style) {
                         self.css(style, '');
                         animate[style] = self.css(style);
                     });
-                    var old_overflow = this.css('overflow');
-                    this.css('overflow', 'hidden')
+                    var old_overflow = self.css('overflow');
+                    self.css('overflow', 'hidden')
                     $.each(styles, function(i, style) {
                         self.css(style, 0);
                     });
-                    this.show();
-                    this.transition(animate, speed, easing, fn);
-                    this.promise().done(function() {
+                    self.show();
+                    self.transition(animate, speed, easing, fn);
+                    self.promise().done(function() {
                         reset_styles(self, old_overflow);
                     });
-                }
+                    next();
+                });
             }
         }
     }

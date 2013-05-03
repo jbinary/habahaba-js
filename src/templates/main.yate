@@ -23,7 +23,7 @@ func selected() {
 }
 
 func slideAnimation() {
-    @onshow = "$(this).hide(); $(this).slideDown('slow');"
+    @onshow = "$(this).slideDown('slow');"
     @onhide = "$(this).slideUp('slow');"
 }
 

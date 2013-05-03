@@ -191,9 +191,6 @@
                 exist.removeAttribute('data-removed');
                 check_attributes(el, exist);
                 patch(el, exist);
-                // TODO: still need to think up how to start the show animation
-                // after the stop animation has been stopped.
-                $(exist).stop();
                 cloned = exist;
             } else {
                 cloned = el.cloneNode(true);
