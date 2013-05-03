@@ -369,10 +369,10 @@ html, body {
             }
 
         #right-column #right-block-size div.scroll-btn {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 27px;
             position: absolute;
-            top: 2px;
+            top: 5px;
             }
 
         #right-column #right-block-size div.scroll-btn.disabled {
@@ -407,7 +407,7 @@ html, body {
             }
 
 #tabs.with-scroll {
-    padding: 0 35px;
+    padding: 0 32px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     }
