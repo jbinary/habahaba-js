@@ -317,7 +317,6 @@
         var data = habahaba.client.data;
         data['__main__'] = {}
         data.view = {
-            collapsed_groups: [],
             tabs: [],
             tabs_state: [{
                 pk: 'singleton',
@@ -328,6 +327,7 @@
             roster_settings: [{
                 pk: 'singleton',
                 hide_offline_users: true,
+                collapsed_groups: [],
                 search_string: ""
             }]
         }

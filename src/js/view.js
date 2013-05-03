@@ -18,14 +18,16 @@
             },
             collapse_group: function(gpk, flags) {
                 flags = flags || {};
-                var collapsedGroup = new Model('.view.collapsed_groups').get(gpk);
-                if (!collapsedGroup && !flags.only_expand) {
-                    var collapsedGroup = new Model('.view.collapsed_groups');
-                    collapsedGroup.pk = gpk;
-                    collapsedGroup.set();
-                } else if (collapsedGroup && !flags.only_collapse) {
-                    collapsedGroup.del();
+                var roster_settings = new Model('.view.roster_settings').get(),
+                    collapsedGroup = roster_settings.collapsed_groups,
+                    groupIndex = collapsedGroup.indexOf(gpk),
+                    groupIsThere = groupIndex > -1;
+                if (!groupIsThere && !flags.only_expand) {
+                    roster_settings.collapsed_groups.push(gpk);
+                } else if (groupIsThere && !flags.only_collapse) {
+                    roster_settings.collapsed_groups.splice(groupIndex, 1)
                 }
+                roster_settings.set();
             },
             open_contact: function(item_id, activate) {
                 var contact = new Model('.roster.items').get(item_id);

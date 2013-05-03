@@ -90,7 +90,7 @@ match /.roster.groups {
                     overall = count(contacts)
                     <p>(<strong>{ online }</strong>/{ overall })</p>
                 </div>
-                if !exists(...view.collapsed_groups[.pk == gpk]) {
+                if !...view.roster_settings.collapsed_groups[. == gpk] {
                     <div class="group-list" id="group-list-{ gpk }">
                         slideAnimation()
                         to_show = if (filter_string) {
