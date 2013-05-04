@@ -9,7 +9,6 @@
     var habahaba = window.habahaba;
     var jslix = window.jslix;
     var WrongElement = jslix.exceptions.WrongElement;
-    var Client = habahaba.Client;
 
     var presence = jslix.Element({
         clean_type: function(value) {
@@ -100,33 +99,34 @@
         }
     });
 
-    Client.prototype.init_avatars = function() {
-        this.avatars = new avatars(this);
-        this.avatars.init();
-    }
-
-    var client;
-    Client.avatars = function(client_) {
-        this.client = client_;
-        client = client_;
-        this.dispatcher = client.dispatcher;
+    var plugin = function(dispatcher, data, storage, account_storage) {
+        this.dispatcher = dispatcher;
         this.vcard = new jslix.vcard(this.dispatcher);
+        this.storage = account_storage;
+        this.roster = data.loaded_plugins.roster;
+    }
+    plugin._name = 'avatars';
+    plugin.weak_dependecies = ['vcard'];
+    plugin.depends = ['view.avatars', 'roster'];
+
+    plugin.prototype.load = function() {
+        this.dispatcher.addHandler(update_request, this, 'habahaba.avatars');
+        this.avatars_available = this.storage.path('avatars_available');
+        if (!this.avatars_available.exists()) {
+            this.avatars_available.set([]);
+        }
+        var avatars_available = this.avatars_available.get();
+        this.roster.signals.got.add(function () {
+            for (var i=0; i<avatars_available.length; i++) {
+                var jid = avatars_available[i];
+                var hash = this.storage.path(jid, 'hash').get();
+                this.update_avatar_availability(jid, hash, true);
+            }
+        }, this);
     }
 
-    var avatars = Client.avatars;
-
-    avatars.prototype.init = function() {
-        this.dispatcher.addHandler(update_request, this, 'client.avatars');
-        this.storage = this.client.account_storage.chroot('avatars');
-        this.avatars_available = this.storage.path('avatars_available');
-        if (!this.avatars_available.exists())
-            this.avatars_available.set([]);
-        var avatars_available = this.avatars_available.get();
-        for (var i=0; i<avatars_available.length; i++) {
-            var jid = avatars_available[i];
-            var hash = this.storage.path(jid, 'hash').get();
-            this.update_avatar_availability(jid, hash, true);
-        }
+    plugin.prototype.unload = function() {
+        this.dispatcher.unregisterPlugin(this);
     }
 
     var createCSSClass = function(selector, style) {
@@ -147,10 +147,10 @@
         }
     }
 
-    var get_avatar_uri = function(roster_item) {
+    plugin.prototype.get_avatar_uri = function(roster_item) {
         var result;
         if (roster_item && roster_item.avatar_hash) {
-            var storage = client.avatars.storage.chroot(roster_item.jid.getBareJID());
+            var storage = this.storage.chroot(roster_item.jid.getBareJID());
             var type = storage.path('type').get();
             var binval = storage.path('binval').get();
             binval = binval.replace(/[^a-z0-9+/=]/gi, '');
@@ -161,12 +161,12 @@
         return result;
     }
 
-    avatars.prototype.update_avatar_availability = function(jid, hash, silently) {
-        var item = this.client.get_roster_item(jid);
+    plugin.prototype.update_avatar_availability = function(jid, hash, silently) {
+        var item = this.roster.get_roster_item(jid);
         if (item) {
             if (hash) {
                 item.avatar_hash = hash;
-                var avatar_uri = get_avatar_uri(item);
+                var avatar_uri = this.get_avatar_uri(item);
                 if (avatar_uri) {
                     createCSSClass('div.avatar.hash-' + hash,
                                 'background-image: url(' + avatar_uri + ')');
@@ -178,8 +178,7 @@
         }
     }
 
-    yr.externals.get_avatar_uri = function(jid) {
-        var item = client.get_roster_item(jid);
-        return get_avatar_uri(item);
-    }
+    habahaba.plugins[plugin._name] = plugin;
+    // TODO: dependency engine
+    habahaba.plugins_init_order.push(plugin._name);
 })();
