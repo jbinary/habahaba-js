@@ -30,21 +30,18 @@
     Client.prototype.constructor = Client;
 
     Client.prototype.init = function() {
-        this.init_roster(); // TODO: init roster only if appropriate file is
-                            // loaded
         this.messages = new habahaba.Client.Messages(this.dispatcher, this.data);
         this.messages.init();
 
         var that = this;
-        this.roster.signals.got.add(function() {
-            that.changeStatus();
-        });
-
         // Init plugins
         // TODO: dependency engine
-        this.roster.init();
         $.each(habahaba.plugins_init_order, function() {
-            var plugin = new habahaba.plugins[this](that.dispatcher, data);
+            var storage = that.storage.chroot(this),
+                account_storage = that.account_storage.chroot(this),
+                plugin = new habahaba.plugins[this](that.dispatcher, data,
+                                                    storage,
+                                                    account_storage);
             if (plugin.load) {
                 plugin.load(); // TODO: handle errors
             }
@@ -62,10 +59,6 @@
             d.reject.apply(d, arguments);
         });
         return d;
-    }
-
-    Client.prototype.changeStatus = function() {
-        this.dispatcher.send(jslix.stanzas.presence.create({}));
     }
 
 })();
