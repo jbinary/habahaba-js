@@ -5,7 +5,7 @@
     var habahaba = window.habahaba;
     var jslix = window.jslix;
     var WrongElement = jslix.exceptions.WrongElement;
-    var Client = habahaba.Client;
+    var Signal = signals.Signal;
 
     var presence = jslix.Element({
         clean_type: function(value) {
@@ -37,8 +37,18 @@
         }
     }, [jslix.stanzas.presence]);
 
-    var that;
-    Client.prototype.init_roster = function() {
+    var plugin = function(dispatcher, data) {
+        this.dispatcher = dispatcher;
+        this.data = data;
+    }
+    plugin._name = 'roster';
+    plugin.weak_dependecies = ['view.roster'];
+
+    plugin.prototype.signals = {
+        got: new Signal()
+    };
+
+    plugin.prototype.load = function() {
         this.data.roster = {
             items: [
                 {
@@ -65,10 +75,14 @@
             ]
         };
         this.roster = new jslix.roster(this.dispatcher);
-        this.roster.signals.got.add(this.got_roster);
-        this.roster.signals.updated.add(this.roster_updated);
-        this.dispatcher.addHandler(presence, this, 'client.roster');
-        that = this;
+        this.roster.signals.got.add(this.got_roster, this);
+        this.roster.signals.updated.add(this.roster_updated, this);
+        this.dispatcher.addHandler(presence, this, 'habahaba.roster');
+        this.roster.init();
+    }
+
+    plugin.prototype.unload = function() {
+        this.dispatcher.unregisterPlugin('habahaba.roster');
     }
 
     var _prepare_roster_item = function(item, silently, old_item) {
@@ -102,7 +116,7 @@
         }
     }
 
-    Client.prototype.get_roster_item = function(jid) {
+    plugin.prototype.get_roster_item = function(jid) {
         // TODO: indexes may be useful here to make it faster
         var all_items = new Model('.roster.items').getCollection();
         if (typeof(jid) == 'string') {
@@ -117,19 +131,28 @@
         return the_item && new Model('.roster.items').get(the_item.pk);
     }
 
-    Client.prototype.roster_updated = function(items) {
+    plugin.prototype.roster_updated = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
-            var the_item = that.get_roster_item(item.jid);
+            var the_item = this.get_roster_item(item.jid);
             _prepare_roster_item(item, false, the_item);
         }
     }
 
-    Client.prototype.got_roster = function(items) {
+    plugin.prototype.got_roster = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
             _prepare_roster_item(item, i<items.length-1);
         }
-        that.init_avatars(); // TODO: the same as for init_roster
+        this.changeStatus();
+        this.signals.got.dispatch();
     }
+
+    plugin.prototype.changeStatus = function() {
+        this.dispatcher.send(jslix.stanzas.presence.create({}));
+    }
+
+    habahaba.plugins[plugin._name] = plugin;
+    // TODO: dependency engine
+    habahaba.plugins_init_order.push(plugin._name);
 })();
