@@ -491,7 +491,10 @@
     }
 
     plugin._name = 'habahaba.desktop_view';
-    plugin.provides = ['view', 'view.chatstates'];
+    plugin.provides = ['view',
+                       'view.chatstates',
+                       'view.roster',
+                       'view.avatars'];
     habahaba.plugins[plugin._name] = plugin;
     // TODO: dependency engine
     habahaba.plugins_init_order.push(plugin._name);
