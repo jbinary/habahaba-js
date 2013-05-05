@@ -1,7 +1,8 @@
 "use strict";
 (function() {
     var roster_search_timer;
-    var plugin = function(jslix_dispatcher, data) {
+    var plugin = function(jslix_dispatcher, data, storage, account_storage) {
+        var that = this;
         habahaba.view = {
             roster_search: function() {
                 // We don't want to search too often because it can hurt
@@ -17,15 +18,18 @@
                 }, 250);
             },
             collapse_group: function(gpk, flags) {
+                var group = new Model('.roster.groups').get(gpk);
+                if (!group) return;
                 flags = flags || {};
                 var roster_settings = new Model('.view.roster_settings').get(),
                     collapsedGroup = roster_settings.collapsed_groups,
-                    groupIndex = collapsedGroup.indexOf(gpk),
+                    groupName = group.name,
+                    groupIndex = collapsedGroup.indexOf(groupName),
                     groupIsThere = groupIndex > -1;
                 if (!groupIsThere && !flags.only_expand) {
-                    roster_settings.collapsed_groups.push(gpk);
+                    roster_settings.collapsed_groups.push(groupName);
                 } else if (groupIsThere && !flags.only_collapse) {
-                    roster_settings.collapsed_groups.splice(groupIndex, 1)
+                    roster_settings.collapsed_groups.splice(groupIndex, 1);
                 }
                 roster_settings.set();
             },
@@ -418,6 +422,29 @@
                         update_unread);
         dispatcher.bind('model:.view.tabs:attr-changed:active',
                         update_unread);
+
+        // Save view state across sessions
+        var saves = {
+            '.view.roster_settings': [
+                'collapsed_groups',
+                'hide_offline_users',
+                'search_string'
+            ]
+        };
+        $.each(saves, function(model_name, attrs) {
+            var model = new Model(model_name).get();
+            $.each(attrs, function(i, attr) {
+                var storage = account_storage.path(model_name + '.' + attr);
+                if (storage.exists()) {
+                    model[attr] = storage.get();
+                }
+                dispatcher.bind('model:' + model_name +
+                                ':attr-changed:' + attr, function(model) {
+                    storage.set(model[attr]);
+                });
+            });
+            model.set();
+        });
 
         // Use transitions based animations if they are supported
         if ($.support.transition) {

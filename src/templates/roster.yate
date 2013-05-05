@@ -66,7 +66,7 @@ match /.roster.groups {
         online_contacts = contacts[ (.presences && exists(.presences[.type != 'unavailable'])) || .unread ]
         online = count(online_contacts)
 
-        filter_string =/.view.roster_settings.search_string 
+        filter_string = /.view.roster_settings.search_string
         filtered = if (filter_string) {
             contacts[icontains(.nick, filter_string) || icontains(.jid._node, filter_string)]
         } else {
@@ -90,7 +90,7 @@ match /.roster.groups {
                     overall = count(contacts)
                     <p>(<strong>{ online }</strong>/{ overall })</p>
                 </div>
-                if !...view.roster_settings.collapsed_groups[. == gpk] {
+                if !...view.roster_settings.collapsed_groups[. == group.name] {
                     <div class="group-list" id="group-list-{ gpk }">
                         slideAnimation()
                         to_show = if (filter_string) {
@@ -113,7 +113,9 @@ match .roster render_roster {
         <div id="contact-block">
             <div id="container">
                 <div id="search">
-                    <input type="text" onkeydown="habahaba.view.roster_search()"/>
+                    <input type="text" onkeydown="habahaba.view.roster_search()">
+                        @value = /.view.roster_settings.search_string
+                    </input>
                 </div>
                 <div id="roster">
                     apply sort(.groups[.special_group != 'self-contact'], .name)
