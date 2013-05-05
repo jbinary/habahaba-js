@@ -72,7 +72,7 @@
     }
 
     Element.prototype.set = function(value) {
-        if (value instanceof Object) {
+        if (value instanceof Object || typeof(value) == 'boolean') {
             value = 'json.' + JSON.stringify(value);
         } else if (value === undefined) {
             value = 'undefined.';
