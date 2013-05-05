@@ -37,8 +37,8 @@
         // Init plugins
         // TODO: dependency engine
         $.each(habahaba.plugins_init_order, function() {
-            var storage = that.storage.chroot(this),
-                account_storage = that.account_storage.chroot(this),
+            var storage = that.storage.chroot('plugins', this),
+                account_storage = that.account_storage.chroot('plugins', this),
                 plugin = new habahaba.plugins[this](that.dispatcher, data,
                                                     storage,
                                                     account_storage);
