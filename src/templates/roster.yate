@@ -115,6 +115,7 @@ match .roster render_roster {
                 <div id="search">
                     <input type="text" onkeydown="habahaba.view.roster_search()">
                         @value = /.view.roster_settings.search_string
+                        @id = "roster-search-input"
                     </input>
                 </div>
                 <div id="roster">
