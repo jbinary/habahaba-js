@@ -70,7 +70,8 @@
                 {
                     name: 'Self contact',
                     pk: -1,
-                    special_group: 'self-contact'
+                    special_group: 'self-contact',
+                    hidden: true
                 }
             ]
         };

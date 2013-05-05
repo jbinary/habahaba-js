@@ -17,6 +17,19 @@
                     settings.set();
                 }, 250);
             },
+            collapse_all_groups: function() {
+                var groups = new Model('.roster.groups').getAll().filter(
+                    function(group) { return !group.hidden }),
+                    roster_settings = new Model('.view.roster_settings').get();
+                if (groups.length <= roster_settings.collapsed_groups.length) {
+                    roster_settings.collapsed_groups.length = 0;
+                } else {
+                    $.each(groups, function() {
+                        roster_settings.collapsed_groups.push(this.name);
+                    });
+                }
+                roster_settings.set();
+            },
             collapse_group: function(gpk, flags) {
                 var group = new Model('.roster.groups').get(gpk);
                 if (!group) return;

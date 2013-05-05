@@ -118,7 +118,7 @@ match .roster render_roster {
                     </input>
                 </div>
                 <div id="roster">
-                    apply sort(.groups[.special_group != 'self-contact'], .name)
+                    apply sort(.groups[!.hidden], .name)
                 </div>
                 <div id="roster-buttons">
                     /*<button id="add-contact-button">Добавить контакт</button>
@@ -156,6 +156,10 @@ match .roster render_roster {
                 @checked = "checked"
             }
             @onclick = "habahaba.view.toggle_hide_offline();"
+        </command>
+        <command>
+            @label = "Show/collapse all groups"
+            @onclick = "habahaba.view.collapse_all_groups();"
         </command>
     </menu>
 }
