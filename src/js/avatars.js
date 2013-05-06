@@ -37,6 +37,7 @@
             var _remove_avatar_but_not_hash = function() {
                 type.del();
                 binval.del();
+                var avatars_available = self.avatars_available.get();
                 var i = avatars_available.indexOf(jid);
                 if (i != -1) {
                     _removeFromArray(avatars_available, i);
@@ -54,7 +55,6 @@
             var binval = storage.path('binval');
             if (!hash.exists() || hash.get() != update.photo) {
                 var type = storage.path('type');
-                var avatars_available = this.avatars_available.get();
                 this.vcard.get(jid).done(function(result) {
                     if (result.photo && result.photo.binval && update.photo) {
                         var _binval = result.photo.binval.replace(/[^a-z0-9+/=]/gi, '');
@@ -67,6 +67,7 @@
                                 hash.set(comp_hash);
                                 type.set(result.photo.type);
                                 binval.set(result.photo.binval);
+                                var avatars_available = self.avatars_available.get();
                                 if (avatars_available.indexOf(jid) == -1) {
                                     avatars_available.push(jid);
                                     self.avatars_available.set(avatars_available);
