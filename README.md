@@ -1,7 +1,7 @@
 habahaba-js
 ===========
 
-Habahaba is an experimental Web XMPP client based on JSLiX — XMPP library for JS based on the XML ORM approach and yate — JS template engine which is similar to XSLT but based on JSON.
+Habahaba is an experimental Web XMPP client based on JSLiX — XMPP library for JS based on the XML ORM approach and yate — JS template engine which is similar to XSLT but based on JSON. It uses MVC approach to build user interface and a system of plugins to extend it's functionality.
 
 building and installing
 ------------------------
