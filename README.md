@@ -3,8 +3,8 @@ habahaba-js
 
 Habahaba is an experimental Web XMPP client based on JSLiX — XMPP library for JS based on the XML ORM approach and yate — JS template engine which is similar to XSLT but based on JSON.
 
-building
-========
+building and installing
+------------------------
 
 At the very first you'll need:
 
@@ -43,3 +43,5 @@ make all
 ```
 
 Now you have the build in the build directory, you can point your web server's root to this directory.
+
+Also, you'll need to setup a BOSH-server to make it possible to reach XMPP servers through HTTP. Please, refer [this page](https://github.com/jappix/jappix/wiki/BoshServer) for it.
