@@ -1,7 +1,7 @@
 habahaba-js
 ===========
 
-Habahaba is an experimental Web XMPP client based on JSLiX — XMPP library for JS based on the XML ORM approach and yate — JS template engine which is similar to XSLT but based on JSON. It uses MVC approach to build user interface and a system of plugins to extend it's functionality.
+Habahaba is an experimental Web XMPP client based on JSLiX — XMPP library for JS based on the XML ORM approach and yate — JS template engine which is similar to XSLT but based on JSON. It uses MVC pattern, strictly separating logic from view, so new views can be written easily, and a system of plugins to extend it's functionality.
 
 building and installing
 ------------------------
@@ -13,7 +13,7 @@ At the very first you'll need:
 * yate:
 
 ```
-npm install -g yate
+sudo npm install -g yate
 ```
 
 First, clone the repo:
@@ -32,7 +32,7 @@ git submodule update
 Dependencies that couldn't be added as submodules are needed to be downloaded, we have a script that can do it for you:
 
 ```
-download-dependencies.sh
+./download-dependencies.sh
 ```
 
 Now you can build the build:
