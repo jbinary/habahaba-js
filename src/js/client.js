@@ -31,6 +31,7 @@
 
     Client.prototype.init = function() {
         var that = this;
+        this.data.nickname = this.dispatcher.connection.jid._node;
         // Init plugins
         // TODO: dependency engine
         $.each(habahaba.plugins_init_order, function() {
