@@ -4,7 +4,7 @@
     var jslix = window.jslix;
     var WrongElement = jslix.exceptions.WrongElement;
 
-    plugin = function(dispatcher, data) {
+    var plugin = function(dispatcher, data) {
         this.data = data;
         this.dispatcher = dispatcher;
     }
