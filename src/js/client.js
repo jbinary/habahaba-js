@@ -30,9 +30,6 @@
     Client.prototype.constructor = Client;
 
     Client.prototype.init = function() {
-        this.messages = new habahaba.Client.Messages(this.dispatcher, this.data);
-        this.messages.init();
-
         var that = this;
         // Init plugins
         // TODO: dependency engine

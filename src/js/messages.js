@@ -2,25 +2,27 @@
 (function() {
     var habahaba = window.habahaba;
     var jslix = window.jslix;
-    var Client = habahaba.Client;
     var WrongElement = jslix.exceptions.WrongElement;
 
-    Client.Messages = function(dispatcher, data) {
+    plugin = function(dispatcher, data) {
         this.data = data;
         this.dispatcher = dispatcher;
     }
 
-    var Messages = Client.Messages;
-    Messages._name = 'Client.Messages';
+    plugin._name = 'messages';
 
-    Messages.prototype.init = function() {
+    plugin.prototype.load = function() {
         this.data.messages = {
             contacts: []
         }
-        this.dispatcher.addHandler(this.message_stanza, this, Messages._name);
+        this.dispatcher.addHandler(this.message_stanza, this, plugin._name);
     }
 
-    Messages.prototype.message_stanza = jslix.Element({
+    plugin.prototype.unload = function() {
+        this.dispatcher.unregisterPlugin(plugin._name);
+    }
+
+    plugin.prototype.message_stanza = jslix.Element({
         clean_body: function(value) {
             if (!value && value !== '')
                 throw new WrongElement('Body is absent')
@@ -51,7 +53,7 @@
         }
     }, [jslix.stanzas.message, jslix.delayed.stanzas.mixin]);
 
-    Messages.prototype.update_chat_history = function(message, roster_item) {
+    plugin.prototype.update_chat_history = function(message, roster_item) {
         var messages = new Model('.messages.contacts');
         messages = messages.filter({
             roster_item_id: roster_item.pk
@@ -68,7 +70,7 @@
         messages.set();
     }
 
-    Messages.prototype.send_chat_message = function(text, roster_item) {
+    plugin.prototype.send_chat_message = function(text, roster_item) {
         var msg = this.message_stanza.create({
             type: 'chat',
             to: roster_item.jid,
@@ -81,4 +83,7 @@
         this.update_chat_history(msg, roster_item);
     }
 
+    habahaba.plugins[plugin._name] = plugin;
+    // TODO: dependency engine
+    habahaba.plugins_init_order.push(plugin._name);
 })();
