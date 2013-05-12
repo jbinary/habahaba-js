@@ -94,7 +94,6 @@
                     }
                 });
             } else if (hash.exists() && binval.exists()) {
-                // TODO: do it on startup and not only when a presence has come
                 self.update_avatar_availability(jid, hash.get());
             }
         }
