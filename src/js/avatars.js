@@ -17,14 +17,6 @@
         }
     }, [jslix.stanzas.presence]);
 
-    // XXX: merge with the same function in models.js
-    var _removeFromArray = function(array, index) {
-        var rest = array.slice(index + 1 || array.length);
-        array.length = index < 0 ? array.length + index: index;
-        array.push.apply(array, rest);
-        return array;
-    }
-
     var update_request = jslix.Element({
         parent_element: presence,
         element_name: 'x',
@@ -40,7 +32,7 @@
                 var avatars_available = self.avatars_available.get();
                 var i = avatars_available.indexOf(jid);
                 if (i != -1) {
-                    _removeFromArray(avatars_available, i);
+                    avatars_available.splice(i, 1);
                     self.avatars_available.set(avatars_available);
                     self.update_avatar_availability(jid, false);
                     hash.exists() && removeCSSClass(hash.get());

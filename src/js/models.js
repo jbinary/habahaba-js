@@ -217,18 +217,11 @@ modelEngine = function(data) {
         this._old = new Model(this._model_name).fromDocument(this);
     }
 
-    var _removeFromArray = function(array, index) {
-        var rest = array.slice(index + 1 || array.length);
-        array.length = index < 0 ? array.length + index: index;
-        array.push.apply(array, rest);
-        return array;
-    }
-
     Model.prototype.del = function(silently) {
         var collection = this.getCollection();
         var raw = this.get(this.pk, true);
         var index = collection.indexOf(raw);
-        collection = _removeFromArray(collection, index);
+        collection.splice(index, 1);
         this.getCollection(collection);
         var pk = this.pk;
         this.pk = null;
