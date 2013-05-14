@@ -55,7 +55,7 @@
 
     Element.prototype.get = function() {
         // TODO: caching
-        var value = this._storage[this._key];
+        var value = this._storage.getItem(this._key);
         var type = value.split('.', 1)[0];
         var value = value.slice(type.length + 1);
         if (type == 'json') {
@@ -81,7 +81,7 @@
         } else {
             value = 'plain.' + value;
         }
-        this._storage[this._key] = value;
+        this._storage.setItem(this._key, value);
     }
 
     Element.prototype.unescape = function(string) {
