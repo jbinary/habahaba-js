@@ -37,13 +37,20 @@
         $.each(habahaba.plugins_init_order, function() {
             var storage = that.storage.chroot('plugins', this),
                 account_storage = that.account_storage.chroot('plugins', this),
+                provides = habahaba.plugins[this].provides || [],
                 plugin = new habahaba.plugins[this](that.dispatcher, data,
                                                     storage,
                                                     account_storage);
             if (plugin.load) {
                 plugin.load(); // TODO: handle errors
             }
-            data.loaded_plugins[this] = plugin;
+            $.each(provides.concat(this), function() {
+                if (this in data.loaded_plugins) {
+                    throw new Error('Conflict detected while loading plugins');
+                } else {
+                    data.loaded_plugins[this] = plugin;
+                }
+            });
         });
     }
 
