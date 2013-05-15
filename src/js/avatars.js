@@ -17,7 +17,39 @@
         }
     }, [jslix.stanzas.presence]);
 
-    var update_request = jslix.Element({
+    var plugin = function(dispatcher, data, storage, account_storage) {
+        this.dispatcher = dispatcher;
+        this.vcard = new jslix.vcard(this.dispatcher);
+        this.storage = account_storage;
+        this.roster = data.loaded_plugins.roster;
+    }
+    plugin._name = 'avatars';
+    plugin.weak_dependecies = ['vcard'];
+    plugin.depends = ['view.avatars', 'roster'];
+
+    plugin.prototype.load = function() {
+        this.dispatcher.addHandler(this.update_request, this,
+                                   'habahaba.avatars');
+        this.avatars_available = this.storage.path('avatars_available');
+        if (!this.avatars_available.exists()) {
+            this.avatars_available.set([]);
+        }
+        var avatars_available = this.avatars_available.get();
+        this.roster.signals.got.add(function () {
+            for (var i=0; i<avatars_available.length; i++) {
+                var jid = avatars_available[i];
+                var hash = this.storage.path(jid, 'hash').get();
+                this.update_avatar_availability(jid, hash, true);
+            }
+        }, this);
+    }
+
+    plugin.prototype.unload = function() {
+        this.dispatcher.unregisterPlugin(this);
+        // XXX TODO: don't listen to any signals anymore
+    }
+
+    plugin.prototype.update_request = jslix.Element({
         parent_element: presence,
         element_name: 'x',
         xmlns: 'vcard-temp:x:update',
@@ -35,7 +67,7 @@
                     avatars_available.splice(i, 1);
                     self.avatars_available.set(avatars_available);
                     self.update_avatar_availability(jid, false);
-                    hash.exists() && removeCSSClass(hash.get());
+                    hash.exists() && self._removeCSSClass(hash.get());
                 }
             }
 
@@ -91,37 +123,7 @@
         }
     });
 
-    var plugin = function(dispatcher, data, storage, account_storage) {
-        this.dispatcher = dispatcher;
-        this.vcard = new jslix.vcard(this.dispatcher);
-        this.storage = account_storage;
-        this.roster = data.loaded_plugins.roster;
-    }
-    plugin._name = 'avatars';
-    plugin.weak_dependecies = ['vcard'];
-    plugin.depends = ['view.avatars', 'roster'];
-
-    plugin.prototype.load = function() {
-        this.dispatcher.addHandler(update_request, this, 'habahaba.avatars');
-        this.avatars_available = this.storage.path('avatars_available');
-        if (!this.avatars_available.exists()) {
-            this.avatars_available.set([]);
-        }
-        var avatars_available = this.avatars_available.get();
-        this.roster.signals.got.add(function () {
-            for (var i=0; i<avatars_available.length; i++) {
-                var jid = avatars_available[i];
-                var hash = this.storage.path(jid, 'hash').get();
-                this.update_avatar_availability(jid, hash, true);
-            }
-        }, this);
-    }
-
-    plugin.prototype.unload = function() {
-        this.dispatcher.unregisterPlugin(this);
-    }
-
-    var createCSSClass = function(selector, style) {
+    plugin.prototype._createCSSClass = function(selector, style) {
         var id = 'injected-style-' + selector;
         if (!document.getElementById(id)) {
             var style_el = document.createElement('style');
@@ -132,7 +134,7 @@
         }
     }
 
-    var removeCSSClass = function(selector) {
+    plugin.prototype._removeCSSClass = function(selector) {
         var style = document.getElementById('injected-style-' + selector);
         if (style) {
             style.parentElement.removeChild(style);
@@ -160,7 +162,7 @@
                 item.avatar_hash = hash;
                 var avatar_uri = this.get_avatar_uri(item);
                 if (avatar_uri) {
-                    createCSSClass('div.avatar.hash-' + hash,
+                    this._createCSSClass('div.avatar.hash-' + hash,
                                 'background-image: url(' + avatar_uri + ')');
                 }
             } else if (item.avatar_hash) {
