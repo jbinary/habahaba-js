@@ -53,8 +53,6 @@
         parent_element: presence,
         element_name: 'x',
         xmlns: 'vcard-temp:x:update',
-        // TODO photo should be a special node which should make difference
-        // between absence of the tag and self-closing tag
         photo: new jslix.fields.StringNode('photo'),
 
         anyHandler: function(update, top) {
