@@ -1,5 +1,3 @@
-// TODO: Make a separate roster class instead of extending Client
-
 "use strict";
 (function(){
     var habahaba = window.habahaba;
