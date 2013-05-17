@@ -1,16 +1,35 @@
 "use strict";
 (function(){
-    var habahaba = window.habahaba;
-    var jslix = window.jslix;
-    var data = {
-        nickname: "Binary",
-        my_presence: {
-            priority: 0,
-            status: 'Hey ho!',
-            show: 'dnd'
-        },
-        loaded_plugins: {}
+    var habahaba = {
+        plugins: {},
+        plugins_init_order: [], // TODO: dependency engine
+        onlyFields: function(stanza) {
+            var res = {};
+            var definition = stanza.__definition__;
+            for (var k in definition) {
+                if (definition[k].field) {
+                    var value = stanza[k];
+                    if (value && value.__definition__)
+                        res[k] = habahaba.onlyFields(value)
+                    else
+                        res[k] = value;
+                }
+            }
+            return res;
+        }
     };
+    window.habahaba = habahaba;
+
+    var jslix = window.jslix,
+        data = {
+            nickname: "Binary",
+            my_presence: {
+                priority: 0,
+                status: 'Hey ho!',
+                show: 'dnd'
+            },
+            loaded_plugins: {}
+        };
 
     habahaba.Client = function() {
         jslix.Client.apply(this, arguments);

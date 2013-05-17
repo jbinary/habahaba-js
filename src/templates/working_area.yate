@@ -110,19 +110,7 @@ match /.view.tabs[.active] msgwindow {
         </div>
         <div id="dialog-block-{ .pk }" class="dialog-block" data-tab="{ .pk }" data-rosteritem="{ .roster_item_id }">
             @data-preserve = "scrollTop"
-            @oncreate = :::
-                var $this = $(this);
-                $this.scroll(function() {
-                    var prevent_auto_scroll = 
-                        $this.scrollTop() + $this.height() != $this.prop('scrollHeight');
-                    var tab = new Model('.view.tabs').get($this.attr('data-tab'));
-                    tab.prevent_auto_scroll = prevent_auto_scroll;
-                    tab.set();
-                });
-                var roster_item = $this.attr('data-rosteritem');
-                var roster_item = new Model('.roster.items').get(roster_item);
-                habahaba.view.autoscroll(roster_item);
-            :::
+            @oncreate = "habahaba.view.setup_dialog_block.call(this)"
             messages = roster_item_messages(.roster_item_id)
             apply messages.history
             <br class="clr"/>

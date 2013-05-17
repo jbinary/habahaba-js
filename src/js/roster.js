@@ -1,9 +1,10 @@
 "use strict";
 (function(){
-    var habahaba = window.habahaba;
-    var jslix = window.jslix;
-    var WrongElement = jslix.exceptions.WrongElement;
-    var Signal = signals.Signal;
+    var habahaba = window.habahaba,
+        jslix = window.jslix,
+        WrongElement = jslix.exceptions.WrongElement,
+        Signal = signals.Signal,
+        Model;
 
     var presence = jslix.Element({
         clean_type: function(value) {
@@ -41,12 +42,14 @@
     }
     plugin._name = 'roster';
     plugin.weak_dependecies = ['view.roster'];
+    plugin.depends = ['view'];
 
     plugin.prototype.signals = {
         got: new Signal()
     };
 
     plugin.prototype.load = function() {
+        this.Model = Model = this.data.loaded_plugins.view.Model;
         this.data.roster = {
             items: [
                 {

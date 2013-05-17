@@ -1,8 +1,9 @@
 "use strict";
 (function() {
-    var habahaba = window.habahaba;
-    var jslix = window.jslix;
-    var WrongElement = jslix.exceptions.WrongElement;
+    var habahaba = window.habahaba,
+        jslix = window.jslix,
+        WrongElement = jslix.exceptions.WrongElement,
+        Model;
 
     var plugin = function(dispatcher, data) {
         this.data = data;
@@ -10,8 +11,10 @@
     }
 
     plugin._name = 'messages';
+    plugin.depends = ['view'];
 
     plugin.prototype.load = function() {
+        this.Model = Model = this.data.loaded_plugins.view.Model;
         this.data.messages = {
             contacts: []
         }

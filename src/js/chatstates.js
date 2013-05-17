@@ -1,14 +1,16 @@
 "use strict";
 (function() {
-    var plugin = function(dispatcher, data) {
+    var Model,
+        plugin = function(dispatcher, data) {
         this._dispatcher = dispatcher;
         this.data = data;
     }
     plugin._name = 'chatstates';
-    plugin.weak_dependecies = ['disco', 'view'];
-    plugin.depends = ['view.chatstates'];
+    plugin.weak_dependecies = ['disco'];
+    plugin.depends = ['view.chatstates', 'view'];
 
     plugin.prototype.load = function() {
+        this.Model = Model = this.data.loaded_plugins.view.Model;
         // TODO: check that jslix.Chatstates was loaded
         var options = {};
         var disco_plugin = this.data.loaded_plugins.disco;

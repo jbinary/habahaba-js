@@ -1,9 +1,23 @@
 "use strict";
 (function() {
-    var roster_search_timer;
+    var roster_search_timer, Model, dispatcher;
     var plugin = function(jslix_dispatcher, data, storage, account_storage) {
+        this.account_storage = account_storage;
         var that = this;
         habahaba.view = {
+            setup_dialog_block: function() {
+                var $this = $(this);
+                $this.scroll(function() {
+                    var prevent_auto_scroll = 
+                        $this.scrollTop() + $this.height() != $this.prop('scrollHeight');
+                    var tab = new Model('.view.tabs').get($this.attr('data-tab'));
+                    tab.prevent_auto_scroll = prevent_auto_scroll;
+                    tab.set();
+                });
+                var roster_item = $this.attr('data-rosteritem');
+                var roster_item = new Model('.roster.items').get(roster_item);
+                habahaba.view.autoscroll(roster_item);
+            },
             roster_search: function() {
                 // We don't want to search too often because it can hurt
                 // the performance
@@ -148,7 +162,7 @@
                 if (!tab || tab.type != 'contact') return;
                 var contact = new Model('.roster.items').get(tab.roster_item_id);
                 if (!contact) return;
-                habahaba.client.messages.send_chat_message(text, contact);
+                data.loaded_plugins.messages.send_chat_message(text, contact);
                 return true;
             },
             autoscroll: function(roster_item) {
@@ -296,15 +310,6 @@
             tab_zindex,
             left;
 
-        $(window).resize(function() {
-            habahaba.view.check_tabs_scrollstate();
-            habahaba.view.tab_scroll(0);
-        });
-
-        var _modelEngine = habahaba.view_start();
-        var Model = _modelEngine.Model;
-        var dispatcher = _modelEngine.dispatcher;
-
         // External functions for yate
         yr.externals.count = function(nodeset) {
             return nodeset.length;
@@ -393,6 +398,49 @@
                 }
             });
         }
+    }
+
+    plugin.prototype.load = function() {
+        // TODO: unload
+        var that = this;
+        $(window).resize(function() {
+            habahaba.view.check_tabs_scrollstate();
+            habahaba.view.tab_scroll(0);
+        });
+
+        var viewModel,
+            data = habahaba.client.data;
+        data['__main__'] = {}
+        data.view = {
+            tabs: [],
+            tabs_state: [{
+                pk: 'singleton',
+                scrolling: false,
+                position: 0,
+                scrollable_right: true
+            }],
+            roster_settings: [{
+                pk: 'singleton',
+                hide_offline_users: true,
+                collapsed_groups: [],
+                search_string: ""
+            }]
+        }
+        var _modelEngine = modelEngine(data);
+        dispatcher = this.dispatcher = _modelEngine.dispatcher;
+        Model = this.Model = _modelEngine.Model;
+
+        dispatcher.bind('world:changed', function() {
+            var rendered = dispatcher.render(new Model('__main__'));
+
+            if ($('#wrapper').size() == 0) {
+                $('body').html(rendered);
+                DOM_patcher.apply_bubbledown_handler($('body')[0], 'oncreate');
+                DOM_patcher.really_apply_handlers();
+            } else {
+                DOM_patcher.update_world(rendered);
+            }
+        });
 
         // Bind necessary signals handlers
 
@@ -431,6 +479,7 @@
                 roster_item.set(false);
             }
         }
+
         dispatcher.bind('model:.view.tabs:attr-changed:prevent_auto_scroll',
                         update_unread);
         dispatcher.bind('model:.view.tabs:attr-changed:active',
@@ -447,7 +496,7 @@
         $.each(saves, function(model_name, attrs) {
             var model = new Model(model_name).get();
             $.each(attrs, function(i, attr) {
-                var storage = account_storage.path(model_name + '.' + attr);
+                var storage = that.account_storage.path(model_name + '.' + attr);
                 if (storage.exists()) {
                     model[attr] = storage.get();
                 }
@@ -458,6 +507,7 @@
             });
             model.set();
         });
+        dispatcher.start();
 
         // Use transitions based animations if they are supported
         if ($.support.transition) {

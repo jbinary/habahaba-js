@@ -289,66 +289,10 @@
         }
     }
 
-    var habahaba = {
-        plugins: {},
-        plugins_init_order: [], // TODO: dependency engine
-        onlyFields: function(stanza) {
-            var res = {};
-            var definition = stanza.__definition__;
-            for (var k in definition) {
-                if (definition[k].field) {
-                    var value = stanza[k];
-                    if (value && value.__definition__)
-                        res[k] = habahaba.onlyFields(value)
-                    else
-                        res[k] = value;
-                }
-            }
-            return res;
-        }
-    };
-    window.habahaba = habahaba;
-
-    // TODO: don't do it if not in test
-    habahaba._patch = patch;
-
-    var viewModel;
-    habahaba.view_start = function() {
-        var data = habahaba.client.data;
-        data['__main__'] = {}
-        data.view = {
-            tabs: [],
-            tabs_state: [{
-                pk: 'singleton',
-                scrolling: false,
-                position: 0,
-                scrollable_right: true
-            }],
-            roster_settings: [{
-                pk: 'singleton',
-                hide_offline_users: true,
-                collapsed_groups: [],
-                search_string: ""
-            }]
-        }
-        var _modelEngine = modelEngine(data);
-        var dispatcher = _modelEngine.dispatcher;
-        var Model = _modelEngine.Model;
-
-        dispatcher.bind('world:changed', function() {
-            var rendered = dispatcher.render(new Model('__main__'));
-
-            if ($('#wrapper').size() == 0) {
-                $('body').html(rendered);
-                apply_bubbledown_handler($('body')[0], 'oncreate');
-                really_apply_handlers();
-            } else {
-                update_world(rendered);
-            }
-        });
-
-        dispatcher.start();
-        window.Model = Model; // XXX: don't use window?
-        return _modelEngine;
+    window.DOM_patcher = {
+        update_world: update_world,
+        patch: patch,
+        apply_bubbledown_handler: apply_bubbledown_handler,
+        really_apply_handlers: really_apply_handlers
     }
 })();
