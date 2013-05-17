@@ -73,6 +73,11 @@
                     pk: -1,
                     special_group: 'self-contact',
                     hidden: true
+                },
+                {
+                    name: 'Not in Roster',
+                    pk: -2,
+                    special_group: 'not-in-roster'
                 }
             ]
         };

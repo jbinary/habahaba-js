@@ -76,7 +76,7 @@ match /.roster.groups {
         is_group_visible = if (filter_string) {
             filtered
         } else {
-            online || !/.view.roster_settings.hide_offline_users
+            online || !/.view.roster_settings.hide_offline_users || group.special_group == 'not-in-roster'
         }
 
         if (is_group_visible) {
@@ -95,7 +95,7 @@ match /.roster.groups {
                         slideAnimation()
                         to_show = if (filter_string) {
                             filtered
-                        } else if (/.view.roster_settings.hide_offline_users) {
+                        } else if (/.view.roster_settings.hide_offline_users && group.special_group != 'not-in-roster') {
                             online_contacts
                         } else {
                             contacts

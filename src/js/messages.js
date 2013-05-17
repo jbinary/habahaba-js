@@ -3,7 +3,8 @@
     var habahaba = window.habahaba,
         jslix = window.jslix,
         WrongElement = jslix.exceptions.WrongElement,
-        Model;
+        Model,
+        JID = jslix.JID;
 
     var plugin = function(dispatcher, data) {
         this.data = data;
@@ -44,13 +45,24 @@
             return value;
         },
         anyHandler: function(message) {
-            var roster_item = new Model('.roster.items');
+            var roster_item = new Model('.roster.items'),
+                bareJID = message.from.getBareJID();
             roster_item = roster_item.filter({
-                jid: message.from.getBareJID()
+                jid: bareJID
             }).execute();
-            if (!roster_item.length) return; // TODO: add unknown contact
-                                             // to the roster
-            roster_item = roster_item[0];
+            if (!roster_item.length) {
+                var group = new Model('.roster.groups').filter({
+                    special_group: 'not-in-roster'
+                }).execute()[0];
+                roster_item = new Model('.roster.items').new();
+                roster_item.jid = new JID(bareJID);
+                roster_item.presences = [];
+                roster_item.subscription = 'none';
+                roster_item.groups = [group.pk];
+                roster_item.set(true);
+            } else {
+                roster_item = roster_item[0];
+            }
             this.update_chat_history(message, roster_item);
             return; // TODO: EmptyStanza?
         }
