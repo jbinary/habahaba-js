@@ -55,6 +55,13 @@
         xmlns: 'vcard-temp:x:update',
         photo: new jslix.fields.StringNode('photo'),
 
+        clean_photo: function(value) {
+            if (value === undefined) {
+                throw new jslix.exceptions.WrongElement('Photo is undefined');
+            }
+            return value;
+        },
+
         anyHandler: function(update, top) {
             var _remove_avatar_but_not_hash = function() {
                 type.del();
@@ -69,7 +76,6 @@
                 }
             }
 
-            if (update.photo === undefined) return; // TODO: clean_ validation?
             var jid = top.from.getBareJID();
             var storage = this.storage.chroot(jid);
             var hash = storage.path('hash');
