@@ -7,14 +7,12 @@
         JID = jslix.JID;
 
     var plugin = function(dispatcher, data) {
-        this.data = data;
-        this.dispatcher = dispatcher;
-    }
+            this.data = data;
+            this.dispatcher = dispatcher;
+        },
+        fields = {};
 
-    plugin._name = 'messages';
-    plugin.depends = ['view'];
-
-    plugin.prototype.load = function() {
+    fields.load = function() {
         this.Model = Model = this.data.loaded_plugins.view.Model;
         this.data.messages = {
             contacts: []
@@ -22,11 +20,11 @@
         this.dispatcher.addHandler(this.message_stanza, this, plugin._name);
     }
 
-    plugin.prototype.unload = function() {
+    fields.unload = function() {
         this.dispatcher.unregisterPlugin(plugin._name);
     }
 
-    plugin.prototype.message_stanza = jslix.Element({
+    fields.message_stanza = jslix.Element({
         clean_body: function(value) {
             if (!value && value !== '')
                 throw new WrongElement('Body is absent')
@@ -68,7 +66,7 @@
         }
     }, [jslix.stanzas.message, jslix.delayed.stanzas.mixin]);
 
-    plugin.prototype.update_chat_history = function(message, roster_item) {
+    fields.update_chat_history = function(message, roster_item) {
         var messages = new Model('.messages.contacts');
         messages = messages.filter({
             roster_item_id: roster_item.pk
@@ -85,7 +83,7 @@
         messages.set();
     }
 
-    plugin.prototype.send_chat_message = function(text, roster_item) {
+    fields.send_chat_message = function(text, roster_item) {
         var msg = this.message_stanza.create({
             type: 'chat',
             to: roster_item.jid,
@@ -98,7 +96,9 @@
         this.update_chat_history(msg, roster_item);
     }
 
-    habahaba.plugins[plugin._name] = plugin;
-    // TODO: dependency engine
-    habahaba.plugins_init_order.push(plugin._name);
+    habahaba.Plugin(
+        {
+            name: 'messages',
+            depends: ['view']
+        }, plugin, fields);
 })();

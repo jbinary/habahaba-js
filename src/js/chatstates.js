@@ -2,14 +2,12 @@
 (function() {
     var Model,
         plugin = function(dispatcher, data) {
-        this._dispatcher = dispatcher;
-        this.data = data;
-    }
-    plugin._name = 'chatstates';
-    plugin.weak_dependecies = ['disco'];
-    plugin.depends = ['view.chatstates', 'view'];
+            this._dispatcher = dispatcher;
+            this.data = data;
+        },
+        fields = {};
 
-    plugin.prototype.load = function() {
+    fields.load = function() {
         this.Model = Model = this.data.loaded_plugins.view.Model;
         // TODO: check that jslix.Chatstates was loaded
         var options = {};
@@ -24,16 +22,16 @@
         jslix.Chatstates.signals.updated.add(this.updated);
     }
 
-    plugin.prototype.update_my_activity = function(state, jid) {
+    fields.update_my_activity = function(state, jid) {
         this.chatstates.update_my_activity(state, jid);
     }
 
-    plugin.prototype.unload = function() {
+    fields.unload = function() {
         this._dispatcher.unregisterPlugin(jslix.Chatstates);
         // TODO: remove signal handler?
     }
 
-    plugin.prototype.updated = function(jid, state) {
+    fields.updated = function(jid, state) {
         var contact = new Model('.roster.items').get({
             jid: jid.getBareJID()
         });
@@ -43,7 +41,12 @@
         }
     }
 
-    habahaba.plugins[plugin._name] = plugin;
-    // TODO: dependency engine
-    habahaba.plugins_init_order.push(plugin._name);
+    habahaba.Plugin(
+        {
+            name: 'chatstates',
+            weak_dependecies: ['disco'],
+            depends: ['view.chatstates', 'view']
+        },
+        plugin,
+        fields);
 })();

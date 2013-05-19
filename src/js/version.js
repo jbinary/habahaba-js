@@ -1,13 +1,12 @@
 "use strict";
 (function() {
     var plugin = function(dispatcher, data) {
-        this._dispatcher = dispatcher;
-        this.data = data;
-    }
-    plugin._name = 'version';
-    plugin.weak_dependecies = ['disco'];
+            this._dispatcher = dispatcher;
+            this.data = data;
+        },
+        fields = {};
 
-    plugin.prototype.load = function() {
+    fields.load = function() {
         // TODO: check that jslix.version was loaded
         var options = {
             name: 'Habahaba',
@@ -21,11 +20,12 @@
         this.version.init();
     }
 
-    plugin.prototype.unload = function() {
+    fields.unload = function() {
         this._dispatcher.unregisterPlugin(jslix.version);
     }
 
-    habahaba.plugins[plugin._name] = plugin;
-    // TODO: dependency engine
-    habahaba.plugins_init_order.push(plugin._name);
+    habahaba.Plugin({
+            name: 'version',
+            weak_dependecies: ['disco']
+        }, plugin, fields);
 })();

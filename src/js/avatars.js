@@ -23,11 +23,9 @@
         this.storage = account_storage;
         this.roster = data.loaded_plugins.roster;
     }
-    plugin._name = 'avatars';
-    plugin.weak_dependecies = ['vcard'];
-    plugin.depends = ['view.avatars', 'roster'];
 
-    plugin.prototype.load = function() {
+    var fields = {};
+    fields.load = function() {
         this.dispatcher.addHandler(this.update_request, this,
                                    'habahaba.avatars');
         this.avatars_available = this.storage.path('avatars_available');
@@ -44,12 +42,12 @@
         }, this);
     }
 
-    plugin.prototype.unload = function() {
+    fields.unload = function() {
         this.dispatcher.unregisterPlugin(this);
         // XXX TODO: don't listen to any signals anymore
     }
 
-    plugin.prototype.update_request = jslix.Element({
+    fields.update_request = jslix.Element({
         parent_element: presence,
         element_name: 'x',
         xmlns: 'vcard-temp:x:update',
@@ -127,7 +125,7 @@
         }
     });
 
-    plugin.prototype._createCSSClass = function(selector, style) {
+    fields._createCSSClass = function(selector, style) {
         var id = 'injected-style-' + selector;
         if (!document.getElementById(id)) {
             var style_el = document.createElement('style');
@@ -138,14 +136,14 @@
         }
     }
 
-    plugin.prototype._removeCSSClass = function(selector) {
+    fields._removeCSSClass = function(selector) {
         var style = document.getElementById('injected-style-' + selector);
         if (style) {
             style.parentElement.removeChild(style);
         }
     }
 
-    plugin.prototype.get_avatar_uri = function(roster_item) {
+    fields.get_avatar_uri = function(roster_item) {
         var result;
         if (roster_item && roster_item.avatar_hash) {
             var storage = this.storage.chroot(roster_item.jid.getBareJID());
@@ -159,7 +157,7 @@
         return result;
     }
 
-    plugin.prototype.update_avatar_availability = function(jid, hash, silently) {
+    fields.update_avatar_availability = function(jid, hash, silently) {
         var item = this.roster.get_roster_item(jid);
         if (item) {
             if (hash) {
@@ -176,7 +174,13 @@
         }
     }
 
-    habahaba.plugins[plugin._name] = plugin;
-    // TODO: dependency engine
-    habahaba.plugins_init_order.push(plugin._name);
+    habahaba.Plugin(
+        {
+            name: 'avatars',
+            weak_dependecies: ['vcard'],
+            depends: ['view.avatars', 'roster']
+        },
+        plugin,
+        fields
+    );
 })();

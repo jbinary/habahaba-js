@@ -1,6 +1,6 @@
 "use strict";
 (function() {
-    var roster_search_timer, Model, dispatcher;
+    var roster_search_timer, Model, dispatcher, fields = {};
     var plugin = function(jslix_dispatcher, data, storage, account_storage) {
         this.account_storage = account_storage;
         var that = this;
@@ -400,7 +400,7 @@
         }
     }
 
-    plugin.prototype.load = function() {
+    fields.load = function() {
         // TODO: unload
         var that = this;
         $(window).resize(function() {
@@ -580,12 +580,11 @@
         }
     }
 
-    plugin._name = 'habahaba.desktop_view';
-    plugin.provides = ['view',
+    habahaba.Plugin({
+            name: 'habahaba.desktop_view',
+            provides: ['view',
                        'view.chatstates',
                        'view.roster',
-                       'view.avatars'];
-    habahaba.plugins[plugin._name] = plugin;
-    // TODO: dependency engine
-    habahaba.plugins_init_order.push(plugin._name);
+                       'view.avatars']
+        }, plugin, fields);
 })();

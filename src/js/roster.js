@@ -6,49 +6,17 @@
         Signal = signals.Signal,
         Model;
 
-    var presence = jslix.Element({
-        clean_type: function(value) {
-            if (['unavailable', undefined].indexOf(value) == -1)
-                 throw new WrongElement();
-            return value;
-        },
-        anyHandler: function(presence) {
-            var roster_item = new Model('.roster.items').getAll();
-            roster_item = roster_item.filter(function(item) {
-                return (item.jid.getBareJID() == presence.from.getBareJID()) 
-            });
-            if (roster_item.length != 1) return; // TODO: EmptyStanza?
-            roster_item = roster_item[0];
-
-            var presences = roster_item.presences.slice();
-            var resource = presences.filter(function(p) {
-                return p.from.getResource() == presence.from.getResource();
-            });
-            presence = habahaba.onlyFields(presence);
-            if (!resource.length) {
-                presences.push(presence);
-            } else {
-                // FIXME: remove obsolete unavailable presences
-                presences[presences.indexOf(resource[0])] = presence;
-            }
-            roster_item.presences = presences;
-            roster_item.set();
-        }
-    }, [jslix.stanzas.presence]);
-
     var plugin = function(dispatcher, data) {
-        this.dispatcher = dispatcher;
-        this.data = data;
-    }
-    plugin._name = 'roster';
-    plugin.weak_dependecies = ['view.roster'];
-    plugin.depends = ['view'];
+            this.dispatcher = dispatcher;
+            this.data = data;
+        },
+        fields = {};
 
-    plugin.prototype.signals = {
+    fields.signals = {
         got: new Signal()
     };
 
-    plugin.prototype.load = function() {
+    fields.load = function() {
         this.Model = Model = this.data.loaded_plugins.view.Model;
         this.data.roster = {
             items: [
@@ -84,13 +52,43 @@
         this.roster = new jslix.roster(this.dispatcher);
         this.roster.signals.got.add(this.got_roster, this);
         this.roster.signals.updated.add(this.roster_updated, this);
-        this.dispatcher.addHandler(presence, this, 'habahaba.roster');
+        this.dispatcher.addHandler(this.Presence, this, 'habahaba.roster');
         this.roster.init();
     }
 
-    plugin.prototype.unload = function() {
+    fields.unload = function() {
         this.dispatcher.unregisterPlugin('habahaba.roster');
     }
+
+    fields.Presence = jslix.Element({
+        clean_type: function(value) {
+            if (['unavailable', undefined].indexOf(value) == -1)
+                 throw new WrongElement();
+            return value;
+        },
+        anyHandler: function(presence) {
+            var roster_item = new Model('.roster.items').getAll();
+            roster_item = roster_item.filter(function(item) {
+                return (item.jid.getBareJID() == presence.from.getBareJID()) 
+            });
+            if (roster_item.length != 1) return; // TODO: EmptyStanza?
+            roster_item = roster_item[0];
+
+            var presences = roster_item.presences.slice();
+            var resource = presences.filter(function(p) {
+                return p.from.getResource() == presence.from.getResource();
+            });
+            presence = habahaba.onlyFields(presence);
+            if (!resource.length) {
+                presences.push(presence);
+            } else {
+                // FIXME: remove obsolete unavailable presences
+                presences[presences.indexOf(resource[0])] = presence;
+            }
+            roster_item.presences = presences;
+            roster_item.set();
+        }
+    }, [jslix.stanzas.presence]);
 
     var _prepare_roster_item = function(item, silently, old_item) {
         var groups = [];
@@ -123,7 +121,7 @@
         }
     }
 
-    plugin.prototype.get_roster_item = function(jid) {
+    fields.get_roster_item = function(jid) {
         // TODO: indexes may be useful here to make it faster
         var all_items = new Model('.roster.items').getCollection();
         if (typeof(jid) == 'string') {
@@ -138,7 +136,7 @@
         return the_item && new Model('.roster.items').get(the_item.pk);
     }
 
-    plugin.prototype.roster_updated = function(items) {
+    fields.roster_updated = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
             var the_item = this.get_roster_item(item.jid);
@@ -146,7 +144,7 @@
         }
     }
 
-    plugin.prototype.got_roster = function(items) {
+    fields.got_roster = function(items) {
         for (var i=0; i<items.length; i++) {
             var item = items[i];
             _prepare_roster_item(item, i<items.length-1);
@@ -155,11 +153,13 @@
         this.signals.got.dispatch();
     }
 
-    plugin.prototype.changeStatus = function() {
+    fields.changeStatus = function() {
         this.dispatcher.send(jslix.stanzas.presence.create({}));
     }
 
-    habahaba.plugins[plugin._name] = plugin;
-    // TODO: dependency engine
-    habahaba.plugins_init_order.push(plugin._name);
+    habahaba.Plugin({
+        name: 'roster',
+        weak_dependecies: ['view.roster'],
+        depends: ['view']
+    }, plugin, fields);
 })();

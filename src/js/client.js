@@ -56,10 +56,10 @@
         $.each(habahaba.plugins_init_order, function() {
             var storage = that.storage.chroot('plugins', this),
                 account_storage = that.account_storage.chroot('plugins', this),
-                provides = habahaba.plugins[this].provides || [],
-                plugin = new habahaba.plugins[this](that.dispatcher, data,
-                                                    storage,
-                                                    account_storage);
+                Plugin = habahaba.plugins[this],
+                provides = Plugin.metadata.provides || [],
+                plugin = new Plugin.plugin(that.dispatcher, data, storage, 
+                                           account_storage);
             if (plugin.load) {
                 plugin.load(); // TODO: handle errors
             }
@@ -85,4 +85,33 @@
         return d;
     }
 
+    var RegisterPluginForLoad = function(plugin) {
+        // TODO: dependency engine
+        habahaba.plugins_init_order.push(plugin.metadata.name);
+    }
+
+    var Plugin = function(metadata, constructor, fields, parent, abstract) {
+        var parent = parent || {
+                plugin: {},
+                metadata: {}
+            },
+            fields = fields || {};
+        var metadata = new (jslix.Class(parent.metadata, function() {},
+                                        metadata));
+        fields['metadata'] = metadata;
+        var plugin = jslix.Class(parent.plugin, constructor, fields),
+            result = {
+                metadata: metadata,
+                plugin: plugin
+            }
+        if (!abstract) {
+            habahaba.plugins[metadata.name] = result;
+            // TODO: Make it possible to not load a plugin automatically
+            // need to provide some list of automatically loaded plugins
+            // someway
+            RegisterPluginForLoad(result);
+        }
+        return result;
+    }
+    habahaba.Plugin = Plugin;
 })();
