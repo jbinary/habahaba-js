@@ -20,6 +20,9 @@
             contacts: []
         }
         this.dispatcher.addHandler(this.message_stanza, this, plugin._name);
+        if ('disco' in this.data.loaded_plugins) {
+            this.data.loaded_plugins.disco.disco.registerFeature(this.XHTML_NS);
+        }
     }
 
     fields.unload = function() {
