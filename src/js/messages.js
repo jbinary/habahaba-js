@@ -68,13 +68,85 @@
             if (!message.html) {
                 message.html = this.plain_to_xhtml(message.body);
             } else {
-                // TODO XXX: sanitize incoming XHTML
-                message.html = this.plain_to_xhtml(message.body);
+                this.sanitize_xhtml(message.html);
             }
             this.update_chat_history(message, roster_item);
             return; // TODO: EmptyStanza?
         }
     }, [jslix.stanzas.message, jslix.delayed.stanzas.mixin]);
+
+    // From the XEP-0071
+    // XXX: Some attributes may need to be sanitized better. For example, id.
+    fields.xhtml_profile = {
+        'body': ['class', 'id', 'title', 'style'],
+        'head': ['profile'],
+        'html': ['version'],
+        'title': [],
+
+        'abbr': ['class', 'id', 'title', 'style'],
+        'acronym': ['class', 'id', 'title', 'style'],
+        'address': ['class', 'id', 'title', 'style'],
+        'blockquote': ['class', 'id', 'title', 'style', 'cite'],
+        'br': ['class', 'id', 'title', 'style'],
+        'cite': ['class', 'id', 'title', 'style'],
+        'code': ['class', 'id', 'title', 'style'],
+        'dfn': ['class', 'id', 'title', 'style'],
+        'div': ['class', 'id', 'title', 'style'],
+        'em': ['class', 'id', 'title', 'style'],
+        'h1': ['class', 'id', 'title', 'style'],
+        'h2': ['class', 'id', 'title', 'style'],
+        'h3': ['class', 'id', 'title', 'style'],
+        'h4': ['class', 'id', 'title', 'style'],
+        'h5': ['class', 'id', 'title', 'style'],
+        'h6': ['class', 'id', 'title', 'style'],
+        'kbd': ['class', 'id', 'title', 'style'],
+        'p': ['class', 'id', 'title', 'style'],
+        'pre': ['class', 'id', 'title', 'style'],
+        'q': ['class', 'id', 'title', 'style', 'cite'],
+        'samp': ['class', 'id', 'title', 'style'],
+        'span': ['class', 'id', 'title', 'style'],
+        'strong': ['class', 'id', 'title', 'style'],
+        'var': ['class', 'id', 'title', 'style'],
+
+        'a': ['class', 'id', 'title', 'style', 'accesskey', 'charset',
+              'href', 'hreflang', 'rel', 'rev', 'tabindex', 'type'],
+
+        'dl': ['class', 'id', 'title', 'style'],
+        'dt': ['class', 'id', 'title', 'style'],
+        'dd': ['class', 'id', 'title', 'style'],
+        'ol': ['class', 'id', 'title', 'style'],
+        'ul': ['class', 'id', 'title', 'style'],
+        'li': ['class', 'id', 'title', 'style'],
+
+        'img': ['class', 'id', 'title', 'style', 'alt', 'height', 'longdesc',
+                'src', 'width']
+    }
+
+    fields.sanitize_xhtml = function(html) {
+        // Remove all inappropriate tags and attributes from a message
+        for (var i=html.childNodes.length - 1; i>=0; i--) {
+            var el = html.childNodes[i];
+            if (el.localName in this.xhtml_profile) {
+                var allowed_attrs = this.xhtml_profile[el.localName];
+                for (var ai=el.attributes.length - 1; ai>=0; ai--) {
+                    var name = el.attributes[ai].name;
+                    // We can't allow to put foreign IDs because it can break
+                    // the DOM.
+                    if (name == 'id' || allowed_attrs.indexOf(name) == -1) {
+                        el.attributes.removeNamedItem(name);
+                    }
+                }
+                this.sanitize_xhtml(el);
+            } else if (el.nodeType == 1) {
+                html.removeChild(el);
+                for (var ci=0; ci<el.childNodes.length; ci++) {
+                    var child = el.childNodes[0];
+                    html.appendChild(child);
+                    this.sanitize_xhtml(child);
+                }
+            }
+        }
+    }
 
     fields.plain_to_xhtml = function(message) {
         var doc = $('<html>').html('<body></body>'),
@@ -100,6 +172,8 @@
         } else {
             messages = messages[0];
         }
+        // XXX: we won't be able to process body's styles and doc's head
+        // this way. What can we do?
         var message = habahaba.onlyFields(message);
         message.xhtml_string = $('body', message.html).html();
         messages.history.push(message); // TODO: collect garbage
