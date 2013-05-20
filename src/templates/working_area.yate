@@ -137,9 +137,7 @@ match /.messages.contacts.history {
             formatDate(.delay.stamp, "HH:mm")
         </span>
         <br class="clr"/>
-        for splitlines(.body) {
-            <p>{ . }</p>
-        }
+        html(.xhtml_string)
         <br class="clr"/>
     </div>
 }

@@ -12,6 +12,8 @@
         },
         fields = {};
 
+    fields.XHTML_NS = 'http://jabber.org/protocol/xhtml-im';
+
     fields.load = function() {
         this.Model = Model = this.data.loaded_plugins.view.Model;
         this.data.messages = {
@@ -25,6 +27,8 @@
     }
 
     fields.message_stanza = jslix.Element({
+        html: new jslix.fields.Node('html', fields.XHTML_NS),
+
         clean_body: function(value) {
             if (!value && value !== '')
                 throw new WrongElement('Body is absent')
@@ -61,10 +65,28 @@
             } else {
                 roster_item = roster_item[0];
             }
+            if (!message.html) {
+                message.html = this.plain_to_xhtml(message.body);
+            } else {
+                // TODO XXX: sanitize incoming XHTML
+                message.html = this.plain_to_xhtml(message.body);
+            }
             this.update_chat_history(message, roster_item);
             return; // TODO: EmptyStanza?
         }
     }, [jslix.stanzas.message, jslix.delayed.stanzas.mixin]);
+
+    fields.plain_to_xhtml = function(message) {
+        var doc = $('<html>').html('<body></body>'),
+            body = doc.find('body')[0],
+            splitted = message.split('\n');
+        for (var i=0; i<splitted.length; i++) {
+            var para = document.createElement('p');
+            $(para).text(splitted[i]);
+            body.appendChild(para);
+        }
+        return doc[0];
+    }
 
     fields.update_chat_history = function(message, roster_item) {
         var messages = new Model('.messages.contacts');
@@ -79,6 +101,7 @@
             messages = messages[0];
         }
         var message = habahaba.onlyFields(message);
+        message.xhtml_string = $('body', message.html).html();
         messages.history.push(message); // TODO: collect garbage
         messages.set();
     }
@@ -93,6 +116,7 @@
             }
         });
         this.dispatcher.send(msg);
+        msg.html = this.plain_to_xhtml(text);
         this.update_chat_history(msg, roster_item);
     }
 
