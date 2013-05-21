@@ -15,6 +15,24 @@ match / __main__ {
             apply .roster render_roster
         </div>
         apply / working_area
+        <div id="video-wrap">
+            <h2>Видеовстреча с Amy</h2>
+            <video width="600" height="380"></video>
+            <div id="controls">
+                <a href="#" id="mute"></a>
+                <a href="#" id="webcam"></a>
+                <a href="#" id="full-screen"></a>
+                <a href="#" id="settings"></a>
+            </div>
+            <a href="#" id="finish-call"></a>
+        </div>
+        <div id="incoming">
+            <h2>Вам звонит Amy</h2>
+            <img alt="avatar" />
+            <a href="#" id="answer"></a>
+            <a href="#" id="reject"></a>
+            <p>Веб-камера выключена<span></span></p>
+        </div>
     </div>
 }
 
