@@ -31,7 +31,8 @@ match / __main__ {
             <img alt="avatar" />
             <a href="#" id="answer"></a>
             <a href="#" id="reject"></a>
-            <p>Веб-камера выключена<span></span></p>
+            <p style="display:none;">Веб-камера выключена<span></span></p>
+            <p id="webon">Веб-камера включена<span></span></p>
         </div>
     </div>
 }

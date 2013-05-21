@@ -786,6 +786,7 @@ textarea.typing-window {
     #incoming p {
         font: italic 11px  Verdana;
         color: #bbbcbb;
+        margin: 0 3px;
     }
 
         #incoming p span {
@@ -794,5 +795,14 @@ textarea.typing-window {
             height: 9px;
             background: url(../img/video-icons/camera-off-icon.png);
             margin-left: 2px;
+            vertical-align: middle;
+        }
+
+    #incoming #webon {
+        color: black;
+    }
+
+        #incoming #webon span {
+            background: url(../img/video-icons/camera-on-icon.png);
         }
 
