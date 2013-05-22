@@ -7,10 +7,10 @@
         fields = {};
     
     fields.load = function() {
-        if (!jslix.disco) {
+        if (!jslix.Disco) {
             throw new Error('jslix.disco was not loaded');
         }
-        this.disco = this._dispatcher.registerPlugin(jslix.disco);
+        this.disco = this._dispatcher.registerPlugin(jslix.Disco);
         var identity = this.disco.IdentityStanza.create({
             category: 'client',
             type: 'web',

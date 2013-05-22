@@ -49,7 +49,7 @@
                 }
             ]
         };
-        this.roster = new jslix.roster(this.dispatcher);
+        this.roster = new jslix.Roster(this.dispatcher);
         this.roster.signals.got.add(this.got_roster, this);
         this.roster.signals.updated.add(this.roster_updated, this);
         this.dispatcher.addHandler(this.Presence, this, 'habahaba.roster');

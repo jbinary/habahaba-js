@@ -16,7 +16,7 @@
         if (disco_plugin) {
             options.disco_plugin = this.data.loaded_plugins.disco.disco;
         }
-        this.version = this._dispatcher.registerPlugin(jslix.version, options);
+        this.version = this._dispatcher.registerPlugin(jslix.Version, options);
         this.version.init();
     }
 

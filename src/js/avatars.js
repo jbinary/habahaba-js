@@ -19,7 +19,7 @@
 
     var plugin = function(dispatcher, data, storage, account_storage) {
         this.dispatcher = dispatcher;
-        this.vcard = new jslix.vcard(this.dispatcher);
+        this.vcard = new jslix.VCard(this.dispatcher);
         this.storage = account_storage;
         this.roster = data.loaded_plugins.roster;
     }

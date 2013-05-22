@@ -19,7 +19,7 @@
         this.chatstates = this._dispatcher.registerPlugin(jslix.Chatstates,
                                                           options);
         this.chatstates.init();
-        jslix.Chatstates.signals.updated.add(this.updated);
+        this.chatstates.signals.updated.add(this.updated);
     }
 
     fields.update_my_activity = function(state, jid) {
