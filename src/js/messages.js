@@ -76,7 +76,7 @@
             this.update_chat_history(message, roster_item);
             return; // TODO: EmptyStanza?
         }
-    }, [jslix.stanzas.message, jslix.delayed.stanzas.mixin]);
+    }, [jslix.stanzas.MessageStanza, jslix.delayed.stanzas.mixin]);
 
     // From the XEP-0071
     // XXX: Some attributes may need to be sanitized better. For example, id.

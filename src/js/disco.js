@@ -11,7 +11,7 @@
             throw new Error('jslix.disco was not loaded');
         }
         this.disco = this._dispatcher.registerPlugin(jslix.disco);
-        var identity = jslix.disco.stanzas.identity.create({
+        var identity = this.disco.IdentityStanza.create({
             category: 'client',
             type: 'web',
             name: 'Habahaba'

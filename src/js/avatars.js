@@ -15,7 +15,7 @@
             if (value) throw new WrongElement();
             return value;
         }
-    }, [jslix.stanzas.presence]);
+    }, [jslix.stanzas.PresenceStanza]);
 
     var plugin = function(dispatcher, data, storage, account_storage) {
         this.dispatcher = dispatcher;

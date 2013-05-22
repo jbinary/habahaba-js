@@ -88,7 +88,7 @@
             roster_item.presences = presences;
             roster_item.set();
         }
-    }, [jslix.stanzas.presence]);
+    }, [jslix.stanzas.PresenceStanza]);
 
     var _prepare_roster_item = function(item, silently, old_item) {
         var groups = [];
@@ -154,7 +154,7 @@
     }
 
     fields.changeStatus = function() {
-        this.dispatcher.send(jslix.stanzas.presence.create({}));
+        this.dispatcher.send(jslix.stanzas.PresenceStanza.create({}));
     }
 
     habahaba.Plugin({
