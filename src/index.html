@@ -69,22 +69,22 @@
 
 
         <script>
-            function doLogin(oForm) {
+            function doLogin(oForm, event) {
+                event.preventDefault();
                 document.getElementById('err').innerHTML = '';
-                    var options = {
-                        http_base: oForm.http_base.value,
-                        jid: oForm.jid.value,
-                        password: oForm.password.value,
-                        register: oForm.register.checked
-                    },
-                    client = new habahaba.Client(options);
-                    habahaba.client = client;
-                    client.connect().done(function() {
-                        console.log('Started');
-                    }).fail(function(reason) {
-                        alert(reason);
-                    });
-                return false;
+                var options = {
+                    http_base: oForm.http_base.value,
+                    jid: oForm.jid.value,
+                    password: oForm.password.value,
+                    register: oForm.register.checked
+                },
+                client = new habahaba.Client(options);
+                habahaba.client = client;
+                client.connect().done(function() {
+                    console.log('Started');
+                }).fail(function(reason) {
+                    alert(reason);
+                });
             }
             function serializeData(data) {
                 if (data instanceof jslix.JID) {
@@ -138,7 +138,7 @@
         <div id="err"></div>
 
         <div id="login_pane">
-            <form name="loginForm" onSubmit="try {return doLogin(this);} catch (e) { return false; }" action="#">
+            <form name="loginForm" onsubmit="return doLogin(this, arguments[0]);" action="#">
                 <table>
                     <tr>
                         <th><label for="http_base">HTTP Base</label></th><td>
