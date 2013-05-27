@@ -223,27 +223,33 @@ html, body {
                             background-position: center center;
                             }
 
-                        #contact-block #container .group-list .contact .online {
+                        #contact-block #container .group-list .contact .online,
+                        #resource-popup ul li .online {
                             background-image: url(../img/available-circle-status.png);
                             }
 
-                        #contact-block #container .group-list .contact .chat {
+                        #contact-block #container .group-list .contact .chat,
+                        #resource-popup ul li div {
                             background-image: url(../img/chat-circle-status.png);
                             }
 
-                        #contact-block #container .group-list .contact .away {
+                        #contact-block #container .group-list .contact .away,
+                        #resource-popup ul li div {
                             background-image: url(../img/away-circle-status.png);
                             }
 
-                        #contact-block #container .group-list .contact .xa {
+                        #contact-block #container .group-list .contact .xa,
+                        #resource-popup ul li div {
                             background-image: url(../img/notavailable-circle-status.png);
                             }
 
-                        #contact-block #container .group-list .contact .dnd {
+                        #contact-block #container .group-list .contact .dnd,
+                        #resource-popup ul li div {
                             background-image: url(../img/dnd-circle-status.png);
                             }
 
-                        #contact-block #container .group-list .contact .offline {
+                        #contact-block #container .group-list .contact .offline,
+                        #resource-popup ul li div {
                             background-image: url(../img/offline-circle-status.png);
                             }
 
@@ -497,6 +503,145 @@ html, body {
             background-image: url(../img/unread-message-ico-tab.png);
             }
 
+    .resource {
+    float: right;
+    }
+
+        .resource span {
+            padding-left: 18px;
+            font: 14px Verdana;
+            background-position: left center;
+            background-repeat: no-repeat;
+        }
+
+        .resource .mobile {
+            background-image: url(../img/resource/mobile-resource-icon-m.png);
+        }
+        
+        .resource .home {
+            background-image: url(../img/resource/home-resource-icon-m.png);
+        }
+        
+        .resource .custom {
+            background-image: url(../img/resource/custom-resource-icon-m.png);
+        }
+        
+        .resource .gajim {
+            background-image: url(../img/resource/gajim-resource-icon-m.png);
+        }
+        
+        .resource .other {
+            background-image: url(../img/resource/other-resource-icon-m.png);
+        }
+        
+        .resource .work {
+            background-image: url(../img/resource/work-resource-icon-m.png);
+        }
+
+        .resource a {
+            display: inline-block;
+            vertical-align: middle;
+            width: 8px;
+            height: 7px;
+            background: url(../img/resource/arrow.png);
+            margin: 8px 0 0 6px !important;
+        }
+
+        .resource a:hover {
+            background: url(../img/resource/arrow-hover.png);
+        }
+
+    #resource-popup {
+        position: absolute;
+        right: 5px;
+        top: 80px;
+        width: 260px;
+        border: solid 1px #bdbdbd;
+        background: white;
+    }
+
+        #resource-popup ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+            #resource-popup ul li {
+                height: 35px;
+                cursor: pointer;
+                padding-bottom: 3px;
+            }
+
+            #resource-popup ul li:hover {
+                background-color: #edf6f7;
+            }
+
+            #resource-popup ul li:last-child {
+                border-top: solid 1px #bdbdbd;
+            }
+
+                #resource-popup ul li span {
+                    display: block;
+                    margin: 5px 0 0 5px;
+                    height: 25px;
+                    width: 24px;
+                    background-repeat: no-repeat;
+                    float: left;
+                }
+
+                #resource-popup ul li #home-resource {
+                    background-image: url("../img/resource/home-resource-icon.png");
+                }
+
+                #resource-popup ul li #gajim-resource {
+                    background-image: url("../img/resource/gajim-resource-icon.png");
+                }
+
+                #resource-popup ul li #mobile-resource {
+                    background-image: url("../img/resource/mobile-resource-icon.png");
+                }
+
+                #resource-popup ul li #work-resource {
+                    background-image: url("../img/resource/work-resource-icon.png");
+                }
+
+                #resource-popup ul li #custom-resource {
+                    background-image: url("../img/resource/custom-resource-icon.png");
+                }
+
+                #resource-popup ul li #other-resource {
+                    background-image: url("../img/resource/other-resource-icon.png");
+                }
+
+
+                #resource-popup ul li div {
+                    margin-left: -10px;
+                    padding-left: 15px;
+                    background-repeat: no-repeat;
+                    background-position: left 20px;
+                    height: 35px;
+                    float: left;
+                }
+
+        
+                    #resource-popup ul li div h4 {
+                        margin: 4px 0 0;
+                        font: 14px Verdana;
+                    }
+
+                    #resource-popup ul li div p {
+                        font: italic 12px Open Sans;
+                        color: #6f6f6f;
+                        margin: 0 !important;
+                        background-color: transparent !important;
+                    }
+
+                    #resource-popup ul li h3 {
+                        margin: 9px 0 0 6px;
+                        float: left;
+                        font: 14px Verdana;
+                    }
+
         #tabs li .close-button {
             display: block;
             width: 7px;
@@ -554,7 +699,7 @@ html, body {
             #message-window .companion-block .companion-info h5 {
                 text-align: right;
                 font: bold 16px Arial;
-                margin: 7px 10px 10px 0;
+                margin: 7px 10px 0 0;
                 }
 
             #message-window .companion-block .companion-info .contact-status {
@@ -567,6 +712,7 @@ html, body {
                 background: white;
                 font: 12px Arial;
                 margin: 8px 0 0 0;
+                padding: 0 10px 0 0;
                 }
 
             #message-window .companion-block .companion-info a {

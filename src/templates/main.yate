@@ -26,7 +26,7 @@ match / __main__ {
             </div>
             <a href="#" id="finish-call"></a>
         </div>
-        <div id="incoming">
+        <div id="incoming" style="display: none;">
             <h2>Вам звонит Amy</h2>
             <img alt="avatar" />
             <a href="#" id="answer"></a>
