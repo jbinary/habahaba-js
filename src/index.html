@@ -6,6 +6,8 @@
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
         <meta charset="utf-8">
 
+        <script type="text/javascript" src="js/libs/require.js"></script>
+        <script type="text/javascript" src="js/require-config.js"></script>
         <!-- Yate -->
         <script type="text/javascript" src="js/libs/yate-runtime.js"></script>
         <script type="text/javascript" src="templates/main.yate.js"></script>
@@ -21,48 +23,13 @@
         <!-- TODO: needed only when debugging -->
         <script src="js/debug_tools.js" src="js/debug_tools.js"></script>
 
-        <!-- CryptoJS -->
-        <script src="js/libs/cryptojs/rollups/md5.js"></script>
-        <script src="js/libs/cryptojs/rollups/sha1.js"></script>
-        <script src="js/libs/cryptojs/components/core.js"></script>
-        <script src="js/libs/cryptojs/components/enc-base64.js"></script>
-        <!-- JS-Signals -->
-        <script src="js/libs/signals.js"></script>
         <!-- Moment.js -->
         <script src="js/libs/moment.min.js"></script>
-        <!-- JSLiX -->
-        <script src="js/libs/jslix/jslix.js"></script>
-        <script src="js/libs/jslix/jslix.logging.js"></script>
-        <script src="js/libs/jslix/jslix.stanzas.js"></script>
-        <script src="js/libs/jslix/jslix.delay.js"></script>
-        <script src="js/libs/jslix/jslix.bind.js"></script>
-        <script src="js/libs/jslix/jslix.session.js"></script>
-        <script src="js/libs/jslix/jslix.roster.js"></script>
-        <script src="js/libs/jslix/jslix.connection.js"></script>
-        <script src="js/libs/jslix/jslix.connection.transports.bosh.js"></script>
-        <script src="js/libs/jslix/jslix.dispatcher.js"></script>
-        <script src="js/libs/jslix/jslix.JID.js"></script>
-        <script src="js/libs/jslix/jslix.version.js"></script>
-        <script src="js/libs/jslix/jslix.sasl.js"></script>
-        <script src="js/libs/jslix/jslix.sasl.mechanisms.plain.js"></script>
-        <script src="js/libs/jslix/jslix.sasl.mechanisms.digest_md5.js"></script>
-        <script src="js/libs/jslix/jslix.BaseClient.js"></script>
-        <script src="js/libs/jslix/jslix.Client.js"></script>
-        <script src="js/libs/jslix/jslix.vcard.js"></script>
-        <script src="js/libs/jslix/jslix.disco.js"></script>
-        <script src="js/libs/jslix/jslix.chatstates.js"></script>
-        <!-- DOM-diff -->
-        <script type="text/javascript" src="js/DOM-diff.js"/></script>
 
-        <!-- Habahaba -->
-        <script type="text/javascript" src="js/client.js"/></script>
-        <script type="text/javascript" src="js/storage.js"/></script>
-        <script type="text/javascript" src="js/models.js"/></script>
-        <script type="text/javascript" src="js/DOM-patch.js"/></script>
+        <!-- Habahaba plugins -->
         <script type="text/javascript" src="js/view.js"/></script>
         <script type="text/javascript" src="js/roster.js"/></script>
         <script type="text/javascript" src="js/avatars.js"/></script>
-        <!-- Habahaba plugins -->
         <script type="text/javascript" src="js/disco.js"/></script>
         <script type="text/javascript" src="js/messages.js"/></script>
         <script type="text/javascript" src="js/version.js"/></script>
@@ -70,23 +37,26 @@
 
 
         <script>
-            function doLogin(oForm, event) {
-                event.preventDefault();
-                document.getElementById('err').innerHTML = '';
-                var options = {
-                    http_base: oForm.http_base.value,
-                    jid: oForm.jid.value,
-                    password: oForm.password.value,
-                    register: oForm.register.checked
-                },
-                client = new habahaba.Client(options);
-                habahaba.client = client;
-                client.connect().done(function() {
-                    console.log('Started');
-                }).fail(function(reason) {
-                    alert(reason);
-                });
-            }
+            var doLogin;
+            require(['habahaba'], function(habahaba) {
+                doLogin = function(oForm, event) {
+                    event.preventDefault();
+                    document.getElementById('err').innerHTML = '';
+                    var options = {
+                        http_base: oForm.http_base.value,
+                        jid: oForm.jid.value,
+                        password: oForm.password.value,
+                        register: oForm.register.checked
+                    },
+                    client = new habahaba.Client(options);
+                    habahaba.client = client;
+                    client.connect().done(function() {
+                        console.log('Started');
+                    }).fail(function(reason) {
+                        alert(reason);
+                    });
+                }
+            });
             function serializeData(data) {
                 if (data instanceof jslix.JID) {
                     return {

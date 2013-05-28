@@ -1,5 +1,8 @@
 "use strict";
-(function(){
+define(['jslix/client', 'jslix/class', 'storage',
+        'jslix/sasl.mechanisms.plain',
+        'jslix/sasl.mechanisms.digest_md5'],
+       function(JSLiXClient, Class, Storage) {
     var habahaba = {
         plugins: {},
         plugins_init_order: [], // TODO: dependency engine
@@ -18,10 +21,10 @@
             return res;
         }
     };
+    // XXX: how to avoid this? We need it in DOM events handlers
     window.habahaba = habahaba;
 
-    var jslix = window.jslix,
-        data = {
+    var data = {
             nickname: "Binary",
             my_presence: {
                 priority: 0,
@@ -32,7 +35,7 @@
         };
 
     habahaba.Client = function() {
-        jslix.Client.apply(this, arguments);
+        JSLiXClient.apply(this, arguments);
         this.data = data;
         this.data.my_jid = this.connection.jid;
         this.storage = new Storage(localStorage, 'habahaba');
@@ -45,8 +48,8 @@
     var Client = habahaba.Client;
 
     Client._name = 'habahaba.Client';
-    Client.prototype = new jslix.Client();
-    Client.prototype.constructor = Client;
+    Client.prototype = new JSLiXClient();
+    Client.prototype.constructor = JSLiXClient;
 
     Client.prototype.init = function() {
         var that = this;
@@ -96,10 +99,10 @@
                 metadata: {}
             },
             fields = fields || {};
-        var metadata = new (jslix.Class(parent.metadata, function() {},
+        var metadata = new (Class(parent.metadata, function() {},
                                         metadata));
         fields['metadata'] = metadata;
-        var plugin = jslix.Class(parent.plugin, constructor, fields),
+        var plugin = Class(parent.plugin, constructor, fields),
             result = {
                 metadata: metadata,
                 plugin: plugin
@@ -114,4 +117,5 @@
         return result;
     }
     habahaba.Plugin = Plugin;
-})();
+    return habahaba;
+});

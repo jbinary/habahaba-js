@@ -1,5 +1,5 @@
 "use strict";
-(function() {
+define([], function() {
     var Storage = function(storage, root) {
         this._storage = storage
         this._root = '';
@@ -101,5 +101,5 @@
         // TODO
     }
 
-    window.Storage = Storage;
-})();
+    return Storage;
+});

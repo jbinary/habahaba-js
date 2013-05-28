@@ -3,8 +3,7 @@
  *
  * (c) Mike "Pomax" Kamermans, but you can freely use it.
  */
-var DOMdiff = (function() {
-
+define([], function() {
   var diffObject = {};
 
   /**
@@ -147,4 +146,4 @@ var DOMdiff = (function() {
   diffObject.getDiff = getDiff;
 
   return diffObject;
-}());
+});

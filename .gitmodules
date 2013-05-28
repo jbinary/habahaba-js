@@ -13,3 +13,6 @@
 [submodule "jquery.transit"]
 	path = libs/jquery.transit
 	url = git://github.com/rstacruz/jquery.transit.git
+[submodule "requirejs"]
+	path = libs/requirejs
+	url = git://github.com/jrburke/requirejs.git

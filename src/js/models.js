@@ -1,7 +1,16 @@
-modelEngine = function(data) {
-    var dispatcher = {
+define([], function(data) {
+    var dispatcher = null,
+        Dispatcher = function(data) {
+        this.data = data || {};
+        if (dispatcher) {
+            throw new Error('Dispatcher is singleton');
+        } else {
+            dispatcher = this;
+        }
+    }
+
+    Dispatcher.prototype = {
         signals: {},
-        data: data || {},
         _handlers_queue: [],
         //views: {},
         bind: function(signals, handler) {
@@ -58,11 +67,6 @@ modelEngine = function(data) {
         }
     };
 
-    if (window.XMLSerializer) {
-        dispatcher.serializer = new XMLSerializer();
-    }
-
-
     var Model = function(model_name, create_new) {
         this._model_name = model_name;
         this._path = model_name.split('.').slice(1);
@@ -93,7 +97,7 @@ modelEngine = function(data) {
             }
         }
         return obj;
-    } 
+    }
 
     Model.prototype.fromDocument = function(obj) {
         for (var field in obj) {
@@ -253,5 +257,5 @@ modelEngine = function(data) {
     }
 
     return {Model: Model,
-            dispatcher: dispatcher};
-}
+            Dispatcher: Dispatcher};
+});

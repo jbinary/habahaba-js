@@ -1,5 +1,6 @@
 "use strict";
-(function() {
+require(['habahaba', 'models', 'DOM-patch'],
+        function(habahaba, models, DOM_patcher) {
     var roster_search_timer, Model, dispatcher, fields = {};
     var plugin = function(jslix_dispatcher, data, storage, account_storage) {
         this.account_storage = account_storage;
@@ -426,9 +427,8 @@
                 search_string: ""
             }]
         }
-        var _modelEngine = modelEngine(data);
-        dispatcher = this.dispatcher = _modelEngine.dispatcher;
-        Model = this.Model = _modelEngine.Model;
+        dispatcher = this.dispatcher = new models.Dispatcher(data);
+        Model = this.Model = models.Model;
 
         dispatcher.bind('world:changed', function() {
             var rendered = dispatcher.render(new Model('__main__'));
@@ -587,4 +587,4 @@
                        'view.roster',
                        'view.avatars']
         }, plugin, fields);
-})();
+});

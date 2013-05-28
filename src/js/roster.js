@@ -1,8 +1,9 @@
 "use strict";
-(function(){
-    var habahaba = window.habahaba,
-        jslix = window.jslix,
-        WrongElement = jslix.exceptions.WrongElement,
+require(['jslix/exceptions', 'libs/signals',
+         'jslix/roster', 'jslix/stanzas',
+         'jslix/jid', 'habahaba'],
+        function(exceptions, signals, Roster, stanzas, JID, habahaba) {
+    var WrongElement = exceptions.WrongElement,
         Signal = signals.Signal,
         Model;
 
@@ -49,7 +50,7 @@
                 }
             ]
         };
-        this.roster = new jslix.Roster(this.dispatcher);
+        this.roster = new Roster(this.dispatcher);
         this.roster.signals.got.add(this.got_roster, this);
         this.roster.signals.updated.add(this.roster_updated, this);
         this.dispatcher.addHandler(this.Presence, this, 'habahaba.roster');
@@ -60,7 +61,7 @@
         this.dispatcher.unregisterPlugin('habahaba.roster');
     }
 
-    fields.Presence = jslix.Element({
+    fields.Presence = stanzas.Element({
         clean_type: function(value) {
             if (['unavailable', undefined].indexOf(value) == -1)
                  throw new WrongElement();
@@ -88,7 +89,7 @@
             roster_item.presences = presences;
             roster_item.set();
         }
-    }, [jslix.stanzas.PresenceStanza]);
+    }, [stanzas.PresenceStanza]);
 
     var _prepare_roster_item = function(item, silently, old_item) {
         var groups = [];
@@ -125,7 +126,7 @@
         // TODO: indexes may be useful here to make it faster
         var all_items = new Model('.roster.items').getCollection();
         if (typeof(jid) == 'string') {
-            jid = new jslix.JID(jid);
+            jid = new JID(jid);
         }
         var the_item;
         $.each(all_items, function() {
@@ -154,7 +155,7 @@
     }
 
     fields.changeStatus = function() {
-        this.dispatcher.send(jslix.stanzas.PresenceStanza.create({}));
+        this.dispatcher.send(stanzas.PresenceStanza.create({}));
     }
 
     habahaba.Plugin({
