@@ -70,7 +70,7 @@ require(['jslix/exceptions', 'libs/signals',
         anyHandler: function(presence) {
             var roster_item = new Model('.roster.items').getAll();
             roster_item = roster_item.filter(function(item) {
-                return (item.jid.getBareJID() == presence.from.getBareJID()) 
+                return (item.jid.bare == presence.from.bare)
             });
             if (roster_item.length != 1) return; // TODO: EmptyStanza?
             roster_item = roster_item[0];
@@ -130,8 +130,8 @@ require(['jslix/exceptions', 'libs/signals',
         }
         var the_item;
         $.each(all_items, function() {
-            the_item = (this.jid._node == jid._node && 
-                    this.jid._domain == jid._domain) ? this : undefined;
+            the_item = (this.jid.node == jid.node && 
+                    this.jid.domain == jid.domain) ? this : undefined;
             if (the_item) return false;
         });
         return the_item && new Model('.roster.items').get(the_item.pk);

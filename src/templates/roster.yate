@@ -2,12 +2,12 @@ external scalar get_avatar_uri(scalar)
 external nodeset icontains(nodeset, scalar)
 
 func get_contact_jid(nodeset contact) {
-    node = if contact.jid._node {
-        "{ contact.jid._node }@"
+    node = if contact.jid.node {
+        "{ contact.jid.node }@"
     } else {
         ""
     }
-    "{ node }{ contact.jid._domain }"
+    "{ node }{ contact.jid.domain }"
 }
 
 func get_contact_display(nodeset contact) {
@@ -68,7 +68,7 @@ match /.roster.groups {
 
         filter_string = /.view.roster_settings.search_string
         filtered = if (filter_string) {
-            contacts[icontains(.nick, filter_string) || icontains(.jid._node, filter_string)]
+            contacts[icontains(.nick, filter_string) || icontains(.jid.node, filter_string)]
         } else {
             contacts[false()]
         }

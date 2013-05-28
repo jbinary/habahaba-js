@@ -41,7 +41,7 @@ define(['jslix/client', 'jslix/class', 'storage',
         this.storage = new Storage(localStorage, 'habahaba');
         this.account_storage = this.storage.chroot(
             'accounts',
-            this.dispatcher.connection.jid.getBareJID()
+            this.dispatcher.connection.jid.bare
         );
     }
 
@@ -53,7 +53,7 @@ define(['jslix/client', 'jslix/class', 'storage',
 
     Client.prototype.init = function() {
         var that = this;
-        this.data.nickname = this.dispatcher.connection.jid._node;
+        this.data.nickname = this.dispatcher.connection.jid.node;
         // Init plugins
         // TODO: dependency engine
         $.each(habahaba.plugins_init_order, function() {

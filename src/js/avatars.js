@@ -74,7 +74,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/stanzas', 'jslix/vcard',
                 }
             }
 
-            var jid = top.from.getBareJID();
+            var jid = top.from.bare;
             var storage = this.storage.chroot(jid);
             var hash = storage.path('hash');
             var self = this;
@@ -146,7 +146,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/stanzas', 'jslix/vcard',
     attrs.get_avatar_uri = function(roster_item) {
         var result;
         if (roster_item && roster_item.avatar_hash) {
-            var storage = this.storage.chroot(roster_item.jid.getBareJID());
+            var storage = this.storage.chroot(roster_item.jid.bare);
             var type = storage.path('type').get();
             var binval = storage.path('binval').get();
             binval = binval.replace(/[^a-z0-9+/=]/gi, '');

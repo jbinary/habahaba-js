@@ -33,7 +33,7 @@ require(['habahaba', 'jslix/chatstates'], function(habahaba, Chatstates) {
 
     fields.updated = function(jid, state) {
         var contact = new Model('.roster.items').get({
-            jid: jid.getBareJID()
+            jid: jid.bare
         });
         if (contact) {
             contact.chatstate = state;

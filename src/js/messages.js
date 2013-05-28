@@ -50,7 +50,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
         },
         anyHandler: function(message) {
             var roster_item = new Model('.roster.items'),
-                bareJID = message.from.getBareJID();
+                bareJID = message.from.bare;
             roster_item = roster_item.filter({
                 jid: bareJID
             }).execute();
