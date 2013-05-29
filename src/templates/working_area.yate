@@ -141,7 +141,7 @@ match /.messages.contacts.history {
     } else {
         /.my_jid
     }
-    sender = /.roster.items[.jid._node == from._node][.jid._domain == from._domain]
+    sender = /.roster.items[.jid.node == from.node][.jid.domain == from.domain]
     sender_jid = get_contact_jid(sender)
     <div class="message">
         <div class="avatar">
