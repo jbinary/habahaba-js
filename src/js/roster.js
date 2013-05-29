@@ -83,8 +83,15 @@ require(['jslix/exceptions', 'libs/signals',
             if (!resource.length) {
                 presences.push(presence);
             } else {
-                // FIXME: remove obsolete unavailable presences
                 presences[presences.indexOf(resource[0])] = presence;
+            }
+            // remove unavailable resource if it's not the only one left
+            if (presences.length > 1) {
+                for (var i=presences.length - 1; i>=0; i--) {
+                    if (presences[i].type == 'unavailable') {
+                        presences.splice(i, 1);
+                    }
+                }
             }
             roster_item.presences = presences;
             roster_item.set();
