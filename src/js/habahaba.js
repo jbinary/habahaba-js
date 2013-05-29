@@ -21,8 +21,6 @@ define(['jslix/client', 'jslix/class', 'storage',
             return res;
         }
     };
-    // XXX: how to avoid this? We need it in DOM events handlers
-    window.habahaba = habahaba;
 
     var data = {
             nickname: "Binary",

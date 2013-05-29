@@ -5,11 +5,12 @@ require(['habahaba', 'models', 'DOM-patch'],
     var plugin = function(jslix_dispatcher, data, storage, account_storage) {
         this.account_storage = account_storage;
         var that = this;
-        habahaba.view = {
+        // XXX: how to avoid using window? We need it in DOM events handlers
+        window.view = {
             setup_dialog_block: function() {
                 var $this = $(this);
                 $this.scroll(function() {
-                    var prevent_auto_scroll = 
+                    var prevent_auto_scroll =
                         $this.scrollTop() + $this.height() != $this.prop('scrollHeight');
                     var tab = new Model('.view.tabs').get($this.attr('data-tab'));
                     tab.prevent_auto_scroll = prevent_auto_scroll;
@@ -17,7 +18,7 @@ require(['habahaba', 'models', 'DOM-patch'],
                 });
                 var roster_item = $this.attr('data-rosteritem');
                 var roster_item = new Model('.roster.items').get(roster_item);
-                habahaba.view.autoscroll(roster_item);
+                view.autoscroll(roster_item);
             },
             roster_search: function() {
                 // We don't want to search too often because it can hurt
@@ -79,7 +80,7 @@ require(['habahaba', 'models', 'DOM-patch'],
                     tab = tab[0];
                 }
                 if (activate) {
-                    habahaba.view.activate_tab(tab.pk); 
+                    view.activate_tab(tab.pk);
                 }
                 return true;
             },
@@ -94,7 +95,7 @@ require(['habahaba', 'models', 'DOM-patch'],
                 var a_tab = tabs[index + 1] || tabs[index - 1];
                 tab.del();
                 if (a_tab) {
-                    habahaba.view.activate_tab(a_tab.pk);
+                    view.activate_tab(a_tab.pk);
                 }
                 update_chatstate({tab: tab, state: 'gone'});
                 return true;
@@ -149,7 +150,7 @@ require(['habahaba', 'models', 'DOM-patch'],
                 }
                 // Do actual scrolling if it's needed
                 if (offset !== undefined) {
-                    habahaba.view.tab_scroll(offset, true);
+                    view.tab_scroll(offset, true);
                 }
 
                 // Activate tab and update chatstate for the contact
@@ -189,7 +190,7 @@ require(['habahaba', 'models', 'DOM-patch'],
                     var msg = $this.val();
                     $this.val('');
                     update_chatstate({tab: tab, state: 'active'});
-                    habahaba.view.send_message($.trim(msg), tab);
+                    view.send_message($.trim(msg), tab);
                 } else {
                     update_chatstate({tab: tab, state: 'composing'});
                 }
@@ -262,7 +263,7 @@ require(['habahaba', 'models', 'DOM-patch'],
             tab_move: function(event) {
                 if (is_tab_moving) {
                     if (!tab_moving.active) {
-                        habahaba.view.activate_tab(tab_moving.pk);
+                        view.activate_tab(tab_moving.pk);
                         tab_moving.active = true;
                     }
                     left = left + event.pageX - tab_moving_pageX;
@@ -405,8 +406,8 @@ require(['habahaba', 'models', 'DOM-patch'],
         // TODO: unload
         var that = this;
         $(window).resize(function() {
-            habahaba.view.check_tabs_scrollstate();
-            habahaba.view.tab_scroll(0);
+            view.check_tabs_scrollstate();
+            view.tab_scroll(0);
         });
 
         var viewModel,
@@ -460,13 +461,13 @@ require(['habahaba', 'models', 'DOM-patch'],
 
                 // We want also to expand the group if the tab was not opened
                 if (!tab && roster_item.groups.length) {
-                    habahaba.view.collapse_group(roster_item.groups[0], {
+                    view.collapse_group(roster_item.groups[0], {
                                                     only_expand: true
                                                  });
                 }
             }
 
-            habahaba.view.autoscroll(roster_item);
+            view.autoscroll(roster_item);
         });
 
         // When prevent_autoscroll is reset or inactive tab became active then

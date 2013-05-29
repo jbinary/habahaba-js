@@ -36,7 +36,7 @@ key roster_item(.roster.items, .pk) { . }
 match /.roster.items (nodeset group) {
     presence = max_priority(.presences)
     <div class="contact" id="contact-{ group.pk }-{ .pk }">
-        @onclick = "habahaba.view.open_contact({ .pk }, true);"
+        @onclick = "view.open_contact({ .pk }, true);"
         slideAnimation()
         jid = get_contact_jid(.)
         <div class="avatar">
@@ -84,7 +84,7 @@ match /.roster.groups {
                 slideAnimation()
                 <div class="group-name">
                     @onclick = (
-                        "habahaba.view.collapse_group({ gpk });"
+                        "view.collapse_group({ gpk });"
                     )
                     <h4>{ .name }</h4>
                     overall = count(contacts)
@@ -113,7 +113,7 @@ match .roster render_roster {
         <div id="contact-block">
             <div id="container">
                 <div id="search">
-                    <input type="text" onkeydown="habahaba.view.roster_search()">
+                    <input type="text" onkeydown="view.roster_search()">
                         @value = /.view.roster_settings.search_string
                         @id = "roster-search-input"
                     </input>
@@ -156,11 +156,11 @@ match .roster render_roster {
             if (/.view.roster_settings.hide_offline_users) {
                 @checked = "checked"
             }
-            @onclick = "habahaba.view.toggle_hide_offline();"
+            @onclick = "view.toggle_hide_offline();"
         </command>
         <command>
             @label = "Show/collapse all groups"
-            @onclick = "habahaba.view.collapse_all_groups();"
+            @onclick = "view.collapse_all_groups();"
         </command>
     </menu>
 }
