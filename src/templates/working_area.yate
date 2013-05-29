@@ -51,7 +51,7 @@ match /.view.tabs[.active] msgwindow {
     <div id="message-window">
         contact = roster_item(.roster_item_id)
         jid = get_contact_jid(contact)
-        presence = max_priority(contact.presences)
+        presence = get_contact_presence(contact)
         <div class="companion-block">
             <div class="avatar">
                 if contact.avatar_hash {

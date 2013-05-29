@@ -30,8 +30,16 @@ func get_presence_status(nodeset presence) {
     }
 }
 
+func get_contact_presence(nodeset contact) {
+    if (contact.current_resource) {
+        contact.presences[.from.resource == contact.current_resource]
+    } else {
+        max_priority(contact.presences)
+    }
+}
+
 func get_contact_status(nodeset contact) {
-    presence = max_priority(contact.presences)
+    presence = get_contact_presence(contact)
     get_presence_status(presence)
 }
 
