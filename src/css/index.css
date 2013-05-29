@@ -521,6 +521,10 @@ html, body {
             float: left;
             }
 
+        #message-window .companion-block #companion-inner-wrapper {
+            margin-left: 83px;
+        }
+
         #message-window .companion-block p {
             float: left;
             margin: 13px 0 0 0;
@@ -537,7 +541,7 @@ html, body {
 
             #message-window .companion-block .status-messages {
                 float: left;
-                width: 50%;
+                width: 60%;
                 }
 
         #message-window .companion-block #action-info {

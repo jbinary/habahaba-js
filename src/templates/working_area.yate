@@ -58,54 +58,56 @@ match /.view.tabs[.active] msgwindow {
                     @class += ' hash-' + contact.avatar_hash
                 }
             </div>
-            <div class="status-messages">
-                <p>
-                    @title = "{ presence.status }"
-                    "{ presence.status }"
-                </p>
-                <br class="clr" />
-                if (contact.chatstate) {
-                    state = contact.chatstate
-                    <p id="action-info">
-                        if (state == 'active') {
-                            "is paying attention to the conversation"
-                        } else if (state == 'inactive') {
-                            "is doing something else"
-                        } else if (state == 'gone') {
-                            "has gone"
-                        } else if (state == 'composing') {
-                            "is composing a message"
-                        } else if (state == 'paused') {
-                            "has paused composing a message"
-                        }
+            <div id="companion-inner-wrapper">
+                <div class="status-messages">
+                    <p>
+                        @title = "{ presence.status }"
+                        "{ presence.status }"
                     </p>
-                }
-            </div>
-            <div class="companion-info">
-                <h5>
-                get_contact_display(contact)
-                </h5>
-                status = get_contact_status(contact)
-                <p>
-                if status == 'dnd' {
-                    "Do not disturb"
-                } else if status == 'online' {
-                    "Online"
-                } else if status == 'away' {
-                    "Away"
-                } else if status == 'xa' {
-                    "Extended Away"
-                } else if status == 'chat' {
-                    "Free for Chat"
-                } else if status == 'offline' {
-                    "Offline"
-                }
-                </p>
-                <span class="contact-status ">
-                    @class += get_contact_status(contact)
-                </span>
-                <br class="clr" />
-                /*<a href="#">Read blog</a>*/
+                    <br class="clr" />
+                    if (contact.chatstate) {
+                        state = contact.chatstate
+                        <p id="action-info">
+                            if (state == 'active') {
+                                "is paying attention to the conversation"
+                            } else if (state == 'inactive') {
+                                "is doing something else"
+                            } else if (state == 'gone') {
+                                "has gone"
+                            } else if (state == 'composing') {
+                                "is composing a message"
+                            } else if (state == 'paused') {
+                                "has paused composing a message"
+                            }
+                        </p>
+                    }
+                </div>
+                <div class="companion-info">
+                    <h5>
+                    get_contact_display(contact)
+                    </h5>
+                    status = get_contact_status(contact)
+                    <p>
+                    if status == 'dnd' {
+                        "Do not disturb"
+                    } else if status == 'online' {
+                        "Online"
+                    } else if status == 'away' {
+                        "Away"
+                    } else if status == 'xa' {
+                        "Extended Away"
+                    } else if status == 'chat' {
+                        "Free for Chat"
+                    } else if status == 'offline' {
+                        "Offline"
+                    }
+                    </p>
+                    <span class="contact-status ">
+                        @class += get_contact_status(contact)
+                    </span>
+                    <br class="clr" />
+                    /*<a href="#">Read blog</a>*/
+                </div>
             </div>
         </div>
         <div id="dialog-block-{ .pk }" class="dialog-block" data-tab="{ .pk }" data-rosteritem="{ .roster_item_id }">
