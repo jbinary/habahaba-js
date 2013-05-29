@@ -125,7 +125,10 @@ match /.view.tabs[.active] msgwindow {
                                     </div>
                                 </li>
                             }
-                            <li><span class="default resource"></span><h3>По умолчанию</h3></li>
+                            <li>
+                                <span class="default resource"></span>
+                                <h3>По умолчанию</h3>
+                            </li>
                         </ul>
                     </div>
                     <br class="clr" />
