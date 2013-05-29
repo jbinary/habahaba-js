@@ -112,12 +112,12 @@ match /.view.tabs[.active] msgwindow {
                     </p>
                     <div id="resource-popup">
                         <ul>
-                            <li><span id="home-resource"></span><div class="xa"><h4>Дом</h4><p>Всем приветулички</p></div></li>
-                            <li><span id="gajim-resource"></span><div class="xa"><h4>Gajim</h4><p>Drug likes me</p></div></li>
-                            <li><span id="mobile-resource"></span><div class="xa"><h4>Телефон</h4><p>То то, то сё...</p></div></li>
-                            <li><span id="work-resource"></span><div class="xa"><h4>Работа</h4><p>Внезапно, работаю</p></div></li>
-                            <li><span id="other-resource"></span><div class="xa"><h4>Непонятка</h4></div></li>
-                            <li><span id="custom-resource"></span><h3>По умолчанию</h3></li>
+                            <li><span class="home resource"></span><div class="xa"><h4>Дом</h4><p>Всем приветулички</p></div></li>
+                            <li><span class="gajim resource"></span><div class="xa"><h4>Gajim</h4><p>Drug likes me</p></div></li>
+                            <li><span class="mobile resource"></span><div class="xa"><h4>Телефон</h4><p>То то, то сё...</p></div></li>
+                            <li><span class="work resource"></span><div class="xa"><h4>Работа</h4><p>Внезапно, работаю</p></div></li>
+                            <li><span class="other resource"></span><div class="xa"><h4>Непонятка</h4></div></li>
+                            <li><span class="default resource"></span><h3>По умолчанию</h3></li>
                         </ul>
                     </div>
                     <br class="clr" />

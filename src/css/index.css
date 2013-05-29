@@ -517,23 +517,23 @@ html, body {
         .resource .mobile {
             background-image: url(../img/resource/mobile-resource-icon-m.png);
         }
-        
+
         .resource .home {
             background-image: url(../img/resource/home-resource-icon-m.png);
         }
-        
+
         .resource .custom {
             background-image: url(../img/resource/custom-resource-icon-m.png);
         }
-        
+
         .resource .gajim {
             background-image: url(../img/resource/gajim-resource-icon-m.png);
         }
-        
+
         .resource .other {
             background-image: url(../img/resource/other-resource-icon-m.png);
         }
-        
+
         .resource .work {
             background-image: url(../img/resource/work-resource-icon-m.png);
         }
@@ -589,27 +589,27 @@ html, body {
                     float: left;
                 }
 
-                #resource-popup ul li #home-resource {
+                #resource-popup ul li .home.resource {
                     background-image: url("../img/resource/home-resource-icon.png");
                 }
 
-                #resource-popup ul li #gajim-resource {
+                #resource-popup ul li .gajim.resource {
                     background-image: url("../img/resource/gajim-resource-icon.png");
                 }
 
-                #resource-popup ul li #mobile-resource {
+                #resource-popup ul li .mobile.resource {
                     background-image: url("../img/resource/mobile-resource-icon.png");
                 }
 
-                #resource-popup ul li #work-resource {
+                #resource-popup ul li .work.resource {
                     background-image: url("../img/resource/work-resource-icon.png");
                 }
 
-                #resource-popup ul li #custom-resource {
+                #resource-popup ul li .custom.resource {
                     background-image: url("../img/resource/custom-resource-icon.png");
                 }
 
-                #resource-popup ul li #other-resource {
+                #resource-popup ul li .default.resource {
                     background-image: url("../img/resource/other-resource-icon.png");
                 }
 
