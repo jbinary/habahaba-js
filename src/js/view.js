@@ -305,8 +305,10 @@ require(['habahaba', 'models', 'DOM-patch'],
                 roster_settings.set();
             },
             change_current_resource: function(roster_item_id, resource) {
-                console.log(roster_item_id, resource);
                 $('#resource-popup').hide();
+                var roster_item = new Model('.roster.items').get(roster_item_id);
+                roster_item.current_resource = resource;
+                roster_item.set();
             }
         }
 

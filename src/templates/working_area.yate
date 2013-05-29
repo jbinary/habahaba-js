@@ -108,7 +108,13 @@ match /.view.tabs[.active] msgwindow {
                     <br class="clr" />
                     <p class="resource">
                         @onclick = "$('#resource-popup').toggle()"
-                        <span class="default">Default</span>
+                        <span class="default">
+                            if (contact.current_resource) {
+                                contact.current_resource
+                            } else {
+                                "Default"
+                            }
+                        </span>
                         <a></a>
                     </p>
                     <div id="resource-popup">
