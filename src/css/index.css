@@ -229,27 +229,27 @@ html, body {
                             }
 
                         #contact-block #container .group-list .contact .chat,
-                        #resource-popup ul li div {
+                        #resource-popup ul li div.chat {
                             background-image: url(../img/chat-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .away,
-                        #resource-popup ul li div {
+                        #resource-popup ul li div.away {
                             background-image: url(../img/away-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .xa,
-                        #resource-popup ul li div {
+                        #resource-popup ul li div.xa {
                             background-image: url(../img/notavailable-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .dnd,
-                        #resource-popup ul li div {
+                        #resource-popup ul li div.dnd {
                             background-image: url(../img/dnd-circle-status.png);
                             }
 
                         #contact-block #container .group-list .contact .offline,
-                        #resource-popup ul li div {
+                        #resource-popup ul li div.offline {
                             background-image: url(../img/offline-circle-status.png);
                             }
 
@@ -613,6 +613,9 @@ html, body {
                     background-image: url("../img/resource/other-resource-icon.png");
                 }
 
+                #resource-popup ul li .other.resource {
+                    background-image: url("../img/resource/other-resource-icon.png");
+                }
 
                 #resource-popup ul li div {
                     margin-left: -10px;
@@ -623,17 +626,21 @@ html, body {
                     float: left;
                 }
 
-        
                     #resource-popup ul li div h4 {
                         margin: 4px 0 0;
                         font: 14px Verdana;
                     }
 
-                    #resource-popup ul li div p {
+                    #resource-popup ul li div span.status {
                         font: italic 12px Open Sans;
                         color: #6f6f6f;
                         margin: 0 !important;
                         background-color: transparent !important;
+                        height: 1.3em;
+                        width: 212px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        text-align: left;
                     }
 
                     #resource-popup ul li h3 {

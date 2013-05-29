@@ -18,8 +18,7 @@ func get_contact_display(nodeset contact) {
     }
 }
 
-func get_contact_status(nodeset contact) {
-    presence = max_priority(contact.presences)
+func get_presence_status(nodeset presence) {
     if !presence || presence.type == 'unavailable' {
         "offline"
     } else {
@@ -29,6 +28,11 @@ func get_contact_status(nodeset contact) {
             "online"
         }
     }
+}
+
+func get_contact_status(nodeset contact) {
+    presence = max_priority(contact.presences)
+    get_presence_status(presence)
 }
 
 key roster_item(.roster.items, .pk) { . }
