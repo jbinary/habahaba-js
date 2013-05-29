@@ -77,7 +77,7 @@ require(['jslix/exceptions', 'libs/signals',
 
             var presences = roster_item.presences.slice();
             var resource = presences.filter(function(p) {
-                return p.from.getResource() == presence.from.getResource();
+                return p.from.resource == presence.from.resource;
             });
             presence = habahaba.onlyFields(presence);
             if (!resource.length) {
