@@ -108,7 +108,7 @@ match /.view.tabs[.active] msgwindow {
                     <br class="clr" />
                     <p class="resource">
                         @onclick = "$('#resource-popup').toggle()"
-                        <span class="home">Дом</span>
+                        <span class="default">Default</span>
                         <a></a>
                     </p>
                     <div id="resource-popup">
@@ -131,7 +131,7 @@ match /.view.tabs[.active] msgwindow {
                             }
                             <li>
                                 <span class="default resource"></span>
-                                <h3>По умолчанию</h3>
+                                <h3>Default</h3>
                             </li>
                         </ul>
                     </div>

@@ -530,7 +530,7 @@ html, body {
             background-image: url(../img/resource/gajim-resource-icon-m.png);
         }
 
-        .resource .other {
+        .resource .other, .resource .default {
             background-image: url(../img/resource/other-resource-icon-m.png);
         }
 
