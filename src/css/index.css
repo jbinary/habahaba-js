@@ -558,6 +558,7 @@ html, body {
         width: 260px;
         border: solid 1px #bdbdbd;
         background: white;
+        display: none;
     }
 
         #resource-popup ul {

@@ -107,6 +107,7 @@ match /.view.tabs[.active] msgwindow {
                     </span>
                     <br class="clr" />
                     <p class="resource">
+                        @onclick = "$('#resource-popup').toggle()"
                         <span class="home">Дом</span>
                         <a></a>
                     </p>
