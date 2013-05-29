@@ -113,7 +113,17 @@ match /.view.tabs[.active] msgwindow {
                     <div id="resource-popup">
                         <ul>
                             for (contact.presences) {
-                                <li><span class="other resource"></span><div class="{ get_presence_status(.) }"><h4>{ .from.resource }</h4><span class="status">{ .status }</span></div></li>
+                                <li>
+                                    <span class="other resource"></span>
+                                    <div class="{ get_presence_status(.) }">
+                                        <h4>
+                                            .from.resource
+                                        </h4>
+                                        <span class="status">
+                                            .status
+                                        </span>
+                                    </div>
+                                </li>
                             }
                             <li><span class="default resource"></span><h3>По умолчанию</h3></li>
                         </ul>
