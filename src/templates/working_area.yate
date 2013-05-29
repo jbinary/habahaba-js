@@ -115,6 +115,7 @@ match /.view.tabs[.active] msgwindow {
                         <ul>
                             for (contact.presences) {
                                 <li>
+                                    @onclick = "view.change_current_resource({ contact.pk}, { toJSON(.from.resource) })"
                                     <span class="other resource"></span>
                                     <div class="{ get_presence_status(.) }">
                                         <h4>
@@ -130,6 +131,7 @@ match /.view.tabs[.active] msgwindow {
                                 </li>
                             }
                             <li>
+                                @onclick = "view.change_current_resource({ contact.pk })"
                                 <span class="default resource"></span>
                                 <h3>Default</h3>
                             </li>

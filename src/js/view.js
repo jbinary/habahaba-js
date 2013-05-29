@@ -303,6 +303,10 @@ require(['habahaba', 'models', 'DOM-patch'],
                 var roster_settings = new Model('.view.roster_settings').get();
                 roster_settings.hide_offline_users = !roster_settings.hide_offline_users;
                 roster_settings.set();
+            },
+            change_current_resource: function(roster_item_id, resource) {
+                console.log(roster_item_id, resource);
+                $('#resource-popup').hide();
             }
         }
 
@@ -375,6 +379,10 @@ require(['habahaba', 'models', 'DOM-patch'],
 
         yr.externals.icontains = function(nodeset, scalar) {
             return yr.externals.contains(nodeset, scalar, true);
+        }
+
+        yr.externals.toJSON = function(scalar) {
+            return JSON.stringify(scalar);
         }
 
         var require = function(plugin_name, to_execute) {
