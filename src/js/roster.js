@@ -1,24 +1,46 @@
 "use strict";
 require(['jslix/exceptions', 'libs/signals',
          'jslix/roster', 'jslix/stanzas',
-         'jslix/jid', 'habahaba'],
-        function(exceptions, signals, Roster, stanzas, JID, habahaba) {
+         'jslix/jid', 'habahaba', 'models'],
+        function(exceptions, signals, Roster, stanzas, JID, habahaba, models) {
     var WrongElement = exceptions.WrongElement,
         Signal = signals.Signal,
-        Model;
+        Model = models.Model;
+
+    var RosterItem = function() {
+        Model.call(this, '.roster.items');
+    }
+
+    var model = RosterItem.prototype = Object.create(Model.prototype);
+    model.constructor = RosterItem;
+
+    model.getMaxPriorityPresence = function() {
+        var priorities = [],
+            lookup = {};
+        for (var i=0; i<this.presences.length; i++) {
+            var presence = this.presences[i],
+                prio = presence.priority || 0;
+            lookup[prio] = presence;
+            priorities.push(prio);
+        }
+        var max = Math.max.apply(null, priorities);
+        return lookup[max] || null;
+    }
 
     var plugin = function(dispatcher, data) {
             this.dispatcher = dispatcher;
             this.data = data;
         },
-        fields = {};
+        fields = {
+            RosterItem: RosterItem
+        };
 
     fields.signals = {
         got: new Signal()
     };
 
     fields.load = function() {
-        this.Model = Model = this.data.loaded_plugins.view.Model;
+        this.Model = Model;
         this.data.roster = {
             items: [
                 {

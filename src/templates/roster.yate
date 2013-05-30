@@ -34,7 +34,7 @@ func get_contact_presence(nodeset contact) {
     if (contact.current_resource) {
         contact.presences[.from.resource == contact.current_resource]
     } else {
-        max_priority(contact.presences)
+        maxPriorityPresence(contact)
     }
 }
 
@@ -46,7 +46,7 @@ func get_contact_status(nodeset contact) {
 key roster_item(.roster.items, .pk) { . }
 
 match /.roster.items (nodeset group) {
-    presence = max_priority(.presences)
+    presence = maxPriorityPresence(.)
     <div class="contact" id="contact-{ group.pk }-{ .pk }">
         @onclick = "view.open_contact({ .pk }, true);"
         slideAnimation()

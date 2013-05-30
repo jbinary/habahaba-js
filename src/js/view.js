@@ -323,25 +323,13 @@ require(['habahaba', 'models', 'DOM-patch'],
             return nodeset.length;
         }
 
-        yr.externals.max_priority = function(nodes) {
-            var values = {};
-            var avalues = [];
-            for (var i=0, l=nodes.length; i<l; i++) {
-                var node = nodes[i];
-                var value = node.data.priority;
-                if (node.data.type == 'unavailable') value = undefined;
-                values[value] = node;
-                if (value !== undefined) {
-                    avalues.push(value);
-                }
+        yr.externals.maxPriority = function(nodes) {
+            var RosterItem = data.loaded_plugins.roster.RosterItem,
+                item = new RosterItem().get(nodes[0].data.pk);
+            var presence = item.getMaxPriorityPresence();
+            if (presence) {
+                return presence.priority;
             }
-            if (avalues.length) {
-                var max = Math.max.apply(null, avalues);
-                return [values[max]];
-            } else if (undefined in values) {
-                return [values[undefined]];
-            }
-            return [];
         }
 
         yr.externals.splitlines = function(string) {

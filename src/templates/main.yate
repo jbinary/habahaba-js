@@ -1,9 +1,18 @@
 module "main"
 
-external nodeset max_priority(nodeset)
+external scalar maxPriority(nodeset)
 external array splitlines(scalar)
 external scalar formatDate(nodeset, scalar)
 external scalar toJSON(scalar)
+
+func maxPriorityPresence(nodeset contact) {
+    prio = maxPriority(contact)
+    if (prio || prio == 0) {
+        contact.presences[.priority == prio]
+    } else {
+        contact.presences[0]
+    }
+}
 
 match / __main__ {
     <div id="wrapper">
