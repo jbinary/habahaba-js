@@ -185,7 +185,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
     attrs.send_chat_message = function(text, roster_item) {
         var msg = this.message_stanza.create({
             type: 'chat',
-            to: roster_item.jid,
+            to: roster_item.getMessagingJID(),
             body: text,
             delay: {
                 stamp: new Date()

@@ -163,9 +163,11 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
             send_message: function(text, tab) {
                 if (!text.length) return;
                 if (!tab || tab.type != 'contact') return;
-                var contact = new Model('.roster.items').get(tab.roster_item_id);
+                var plugins = data.loaded_plugins,
+                    RosterItem = plugins.roster.RosterItem,
+                    contact = new RosterItem().get(tab.roster_item_id);
                 if (!contact) return;
-                data.loaded_plugins.messages.send_chat_message(text, contact);
+                plugins.messages.send_chat_message(text, contact);
                 return true;
             },
             autoscroll: function(roster_item) {
