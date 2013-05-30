@@ -67,7 +67,6 @@ require(['jslix/exceptions', 'libs/signals',
             }
         };
 
-
     fields.load = function() {
         this.Model = Model;
         this.data.roster = {
