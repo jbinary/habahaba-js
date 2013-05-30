@@ -13,7 +13,7 @@ require(['habahaba', 'jslix/version'], function(habahaba, Version) {
         }
         var disco_plugin = this.data.loaded_plugins.disco;
         if (disco_plugin) {
-            options.disco_plugin = this.data.loaded_plugins.disco.disco;
+            options.disco_plugin = disco_plugin.disco;
         }
         this.version = this._dispatcher.registerPlugin(Version, options);
         this.version.init();
