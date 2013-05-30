@@ -119,7 +119,7 @@ match /.view.tabs[.active] msgwindow {
                     </p>
                     <div id="resource-popup">
                         <ul>
-                            for (contact.presences) {
+                            for (sort(contact.presences, desc .priority)) {
                                 <li>
                                     @onclick = "view.change_current_resource({ contact.pk}, { toJSON(.from.resource) })"
                                     <span class="other resource"></span>
