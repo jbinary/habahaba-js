@@ -139,6 +139,10 @@ require(['jslix/exceptions', 'libs/signals',
                 }
             }
             roster_item.presences = presences;
+            if (presence.type == 'unavailable' &&
+                presence.from.resource == roster_item.current_resource) {
+                delete roster_item.current_resource;
+            }
             roster_item.set();
         }
     }, [stanzas.PresenceStanza]);
