@@ -36,7 +36,24 @@ define([], function() {
     }
 
     Storage.prototype.key = function(key) {
-        return new this.Element(storage, key);
+        return new this.Element(this._storage, key);
+    }
+
+    Storage.prototype.getItem = function(key) {
+        try {
+            return this.key(key).get();
+        } catch(e) {
+            // XXX TODO: use storage exceptions here!!!
+            return null;
+        }
+    }
+
+    Storage.prototype.setItem = function(key, value) {
+        this.key(key).set(value);
+    }
+
+    Storage.prototype.removeItem = function(key) {
+        this.key(key).del();
     }
 
     var Element = function(storage, key) {
