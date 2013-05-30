@@ -67,10 +67,32 @@ define([], function(data) {
         }
     };
 
-    var Model = function(model_name, create_new) {
+    var Model = function(model_name) {
         this._model_name = model_name;
-        this._path = model_name.split('.').slice(1);
         this._query = null;
+    }
+
+    Model.prototype = {
+        get _path() {
+            if (!this._cached_path) {
+                var _path = this._model_name.split('.').slice(1);
+                this._cached_path = _path;
+            }
+            return this._cached_path;
+        }
+    }
+    Model.prototype.constructor = Model;
+
+    Model.prototype.createChain = function() {
+        var chain = new this.constructor();
+        if (this._arguments) {
+            this.constructor.apply(chain,
+                Array.prototype.slice.call(this._arguments));
+        }
+        if (!chain._model_name) {
+            chain._model_name = this._model_name;
+        }
+        return chain;
     }
 
     Model.prototype.new = function() {
@@ -142,7 +164,7 @@ define([], function(data) {
         var new_query = this._query || {};
         for (var f in query)
             new_query[f] = query[f];
-        var chain = new Model(this._model_name);
+        var chain = this.createChain();
         chain._query = new_query
         return chain
     }
@@ -159,8 +181,8 @@ define([], function(data) {
         });
         if (!_raw) {
             for (var i=0; i<results.length; i++) {
-                results[i] = new Model(this._model_name).fromDocument(results[i]);
-                results[i]._old = new Model(this._model_name).fromDocument(results[i]);
+                results[i] = this.createChain().fromDocument(results[i]);
+                results[i]._old = this.createChain().fromDocument(results[i]);
             }
         }
         return results;
@@ -174,7 +196,7 @@ define([], function(data) {
         } else if (pk instanceof Object) {
             var query = pk;
         }
-        var m = new Model(this._model_name).filter(query);
+        var m = this.createChain().filter(query);
         var results = m.execute(_raw);
         if (!results.length) return null;
         if (results.length > 1) throw new Error("More than 1 object returned"); // TODO: exception here
@@ -191,7 +213,7 @@ define([], function(data) {
     var c =0;
     Model.prototype.set = function(silently) {
         var obj = this.toDocument();
-        var old_obj = new Model(this._model_name).get(this.pk, true);
+        var old_obj = this.createChain().get(this.pk, true);
         // fire attr changed event
         if (!old_obj) {
             var collection = this.getCollection();
@@ -218,7 +240,7 @@ define([], function(data) {
             }
         } else if (!silently) dispatcher.fire('world:changed');
         if (!silently) dispatcher.actually_fire();
-        this._old = new Model(this._model_name).fromDocument(this);
+        this._old = this.createChain().fromDocument(this);
     }
 
     Model.prototype.del = function(silently) {
@@ -248,9 +270,9 @@ define([], function(data) {
         var collection = this.getCollection().slice();
         for (var i=0; i<collection.length; i++) {
             // XXX: should use execute as well
-            collection[i] = new Model(this._model_name).
+            collection[i] = this.createChain().
                                 fromDocument(collection[i]);
-            collection[i]._old = new Model(this._model_name).
+            collection[i]._old = this.createChain().
                                 fromDocument(collection[i]);
         }
         return collection;
