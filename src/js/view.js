@@ -1,5 +1,6 @@
 "use strict";
-require(['habahaba', 'models', 'DOM-patch'],
+require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
+         'contextmenu/jquery.contextMenu', 'libs/jquery.transit'],
         function(habahaba, models, DOM_patcher) {
     var roster_search_timer, Model, dispatcher, fields = {};
     var plugin = function(jslix_dispatcher, data, storage, account_storage) {

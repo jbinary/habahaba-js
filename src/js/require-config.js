@@ -3,7 +3,8 @@ require.config({
     paths: {
         'jslix': 'libs/jslix',
         'libs': 'libs',
-        'cryptojs': 'libs/cryptojs/components'
+        'cryptojs': 'libs/cryptojs/components',
+        'contextmenu': 'libs/jQuery-contextmenu'
     },
     shim: {
         'libs/log4javascript': {
@@ -12,6 +13,9 @@ require.config({
         'libs/jquery': {
             exports: '$'
         },
+        'contextmenu/jquery.contextMenu': ['libs/jquery'],
+        'contextmenu/jquery.ui.position': ['contextmenu/jquery.contextMenu'],
+        'libs/jquery.transit': ['libs/jquery'],
         'cryptojs/core': {
             exports: 'CryptoJS'
         },
