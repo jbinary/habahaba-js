@@ -37,15 +37,21 @@ require(['jslix/exceptions', 'libs/signals',
         return jid;
     }
 
+    model.getDefaultJID = function() {
+        var jid = this.jid.clone(),
+            presence = this.getMaxPriorityPresence();
+        if (presence) {
+            jid.resource = presence.from.resource;
+        } else {
+            jid = null;
+        }
+        return jid;
+    }
+
     model.getIQJID = function() {
         var jid = this.getMessagingJID();
         if (!jid.resource) {
-            var presence = this.getMaxPriorityPresence();
-            if (presence) {
-                jid.resource = presence.from.resource;
-            } else {
-                jid = null;
-            }
+            jid = this.getDefaultJID();
         }
         return jid;
     }

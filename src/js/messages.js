@@ -3,7 +3,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
          'jslix/delay', 'jslix/fields'],
         function(habahaba, exceptions, JID, stanzas, delay, fields) {
     var WrongElement = exceptions.WrongElement,
-        Model;
+        Model, RosterItem;
 
     var plugin = function(dispatcher, data) {
             this.data = data;
@@ -22,6 +22,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
         if ('disco' in this.data.loaded_plugins) {
             this.data.loaded_plugins.disco.disco.registerFeature(this.XHTML_NS);
         }
+        RosterItem = this.data.loaded_plugins.roster.RosterItem;
     }
 
     attrs.unload = function() {
@@ -49,7 +50,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
             return value;
         },
         anyHandler: function(message) {
-            var roster_item = new Model('.roster.items'),
+            var roster_item = new RosterItem(),
                 bareJID = message.from.bare;
             roster_item = roster_item.filter({
                 jid: bareJID
@@ -71,6 +72,18 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
                 message.html = this.plain_to_xhtml(message.body);
             } else {
                 this.sanitize_xhtml(message.html);
+            }
+            if (message.from.resource) {
+                if (roster_item.current_resource != message.from.resource) {
+                    var default_jid = roster_item.getDefaultJID();
+                    if (!default_jid || default_jid.resource !=
+                        message.from.resource) {
+                        roster_item.current_resource = message.from.resource;
+                    } else {
+                        delete roster_item.current_resource;
+                    }
+                    roster_item.set(true);
+                }
             }
             this.update_chat_history(message, roster_item);
             return; // TODO: EmptyStanza?
@@ -185,7 +198,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
     attrs.send_chat_message = function(text, roster_item) {
         var msg = this.message_stanza.create({
             type: 'chat',
-            to: roster_item.getMessagingJID(),
+            to: roster_item.getIQJID() || roster_item.jid,
             body: text,
             delay: {
                 stamp: new Date()
@@ -199,6 +212,6 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
     habahaba.Plugin(
         {
             name: 'messages',
-            depends: ['view']
+            depends: ['view', 'roster']
         }, plugin, attrs);
 })();
