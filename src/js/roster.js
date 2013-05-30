@@ -61,12 +61,12 @@ require(['jslix/exceptions', 'libs/signals',
             this.data = data;
         },
         fields = {
-            RosterItem: RosterItem
+            RosterItem: RosterItem,
+            signals: {
+                got: new Signal()
+            }
         };
 
-    fields.signals = {
-        got: new Signal()
-    };
 
     fields.load = function() {
         this.Model = Model;
