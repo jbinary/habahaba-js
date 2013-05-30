@@ -1,3 +1,4 @@
+include "resource_picker.yate"
 key roster_item_messages(.messages.contacts, .roster_item_id) { . }
 
 match / working_area {
@@ -117,32 +118,7 @@ match /.view.tabs[.active] msgwindow {
                         </span>
                         <a></a>
                     </p>
-                    <div id="resource-popup">
-                        <ul>
-                            for (sort(contact.presences, desc .priority)) {
-                                <li>
-                                    @onclick = "view.change_current_resource({ contact.pk}, { toJSON(.from.resource) })"
-                                    <span class="other resource"></span>
-                                    <div class="{ get_presence_status(.) }">
-                                        <h4>
-                                            .from.resource
-                                            if (.priority) {
-                                            " (" + .priority + ")"
-                                            }
-                                        </h4>
-                                        <span class="status">
-                                            .status
-                                        </span>
-                                    </div>
-                                </li>
-                            }
-                            <li>
-                                @onclick = "view.change_current_resource({ contact.pk })"
-                                <span class="default resource"></span>
-                                <h3>Default</h3>
-                            </li>
-                        </ul>
-                    </div>
+                    apply contact resource-picker
                     <br class="clr" />
                     /*<a href="#">Read blog</a>*/
                 </div>

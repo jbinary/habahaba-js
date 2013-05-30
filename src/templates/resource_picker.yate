@@ -1,0 +1,30 @@
+match /.roster.items resource-picker {
+    <div id="resource-popup">
+        <ul>
+            apply sort(.presences, desc .priority) resource-picker
+            <li>
+                @onclick = "view.change_current_resource({ .pk })"
+                <span class="default resource"></span>
+                <h3>Default</h3>
+            </li>
+        </ul>
+    </div>
+}
+
+match /.roster.items.presences resource-picker {
+    <li>
+        @onclick = "view.change_current_resource({ ..pk }, { toJSON(.from.resource) })"
+        <span class="other resource"></span>
+        <div class="{ get_presence_status(.) }">
+            <h4>
+                .from.resource
+                if (.priority) {
+                " (" + .priority + ")"
+                }
+            </h4>
+            <span class="status">
+                .status
+            </span>
+        </div>
+    </li>
+}
