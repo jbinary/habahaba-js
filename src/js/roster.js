@@ -20,8 +20,10 @@ require(['jslix/exceptions', 'libs/signals',
         for (var i=0; i<this.presences.length; i++) {
             var presence = this.presences[i],
                 prio = presence.priority || 0;
-            lookup[prio] = presence;
-            priorities.push(prio);
+            if (presence.type != 'unavailable') {
+                lookup[prio] = presence;
+                priorities.push(prio);
+            }
         }
         var max = Math.max.apply(null, priorities);
         return lookup[max] || null;
