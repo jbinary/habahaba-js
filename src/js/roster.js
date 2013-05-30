@@ -29,6 +29,27 @@ require(['jslix/exceptions', 'libs/signals',
         return lookup[max] || null;
     }
 
+    model.getMessagingJID = function() {
+        var jid = this.jid.clone();
+        if (this.current_resource) {
+            jid.resource = this.current_resource;
+        }
+        return jid;
+    }
+
+    model.getIQJID = function() {
+        var jid = this.getMessagingJID();
+        if (!jid.resource) {
+            var presence = this.getMaxPriorityPresence();
+            if (presence) {
+                jid.resource = presence.from.resource;
+            } else {
+                jid = null;
+            }
+        }
+        return jid;
+    }
+
     var plugin = function(dispatcher, data) {
             this.dispatcher = dispatcher;
             this.data = data;
