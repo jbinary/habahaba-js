@@ -30,7 +30,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
     }
 
     attrs.message_stanza = stanzas.Element({
-        html: new fields.Node('html', fields.XHTML_NS),
+        html: new fields.Node('html', attrs.XHTML_NS),
 
         clean_body: function(value) {
             if (!value && value !== '')
