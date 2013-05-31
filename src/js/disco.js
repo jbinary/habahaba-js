@@ -8,12 +8,7 @@ require(['habahaba', 'jslix/disco'], function(habahaba, Disco) {
 
     attrs.load = function() {
         this.disco = this._dispatcher.registerPlugin(Disco);
-        var identity = this.disco.IdentityStanza.create({
-            category: 'client',
-            type: 'web',
-            name: 'Habahaba'
-        });
-        this.disco.registerIdentity(identity);
+        this.disco.registerIdentity('client', 'web', 'Habahaba');
         this.disco.init();
     }
 
