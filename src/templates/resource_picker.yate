@@ -1,7 +1,34 @@
-match /.roster.items resource-picker {
+external scalar get_client_icon(nodeset)
+
+match /.roster.items resource-picker-widget {
+    <p class="resource">
+        @onclick = "$('#resource-popup').toggle()"
+        <span>
+            current = .current_resource
+            resource = .presences[.from.resource == current]
+            icon = if (resource && resource.features) {
+                get_client_icon(resource.features.identities)
+            }
+            if (icon) {
+                @class = icon
+            } else {
+                @class = "default"
+            }
+            if (current) {
+                current
+            } else {
+                "Default"
+            }
+        </span>
+        <a></a>
+    </p>
+    apply . resource-picker-popup
+}
+
+match /.roster.items resource-picker-popup {
     <div id="resource-popup">
         <ul>
-            apply sort(.presences, desc .priority) resource-picker
+            apply sort(.presences, desc .priority) resource-picker-list
             <li>
                 @onclick = "view.change_current_resource({ .pk })"
                 <span class="default resource"></span>
@@ -11,10 +38,17 @@ match /.roster.items resource-picker {
     </div>
 }
 
-match /.roster.items.presences resource-picker {
+match /.roster.items.presences resource-picker-list {
     <li>
         @onclick = "view.change_current_resource({ ..pk }, { toJSON(.from.resource) })"
-        <span class="other resource"></span>
+        <span class="resource ">
+            client_icon = get_client_icon(.features.identities)
+            if (client_icon) {
+                @class += client_icon
+            } else {
+                @class += 'other'
+            }
+        </span>
         <div class="{ get_presence_status(.) }">
             <h4>
                 .from.resource

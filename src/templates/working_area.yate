@@ -107,18 +107,7 @@ match /.view.tabs[.active] msgwindow {
                         @class += get_contact_status(contact)
                     </span>
                     <br class="clr" />
-                    <p class="resource">
-                        @onclick = "$('#resource-popup').toggle()"
-                        <span class="default">
-                            if (contact.current_resource) {
-                                contact.current_resource
-                            } else {
-                                "Default"
-                            }
-                        </span>
-                        <a></a>
-                    </p>
-                    apply contact resource-picker
+                    apply contact resource-picker-widget
                     <br class="clr" />
                     /*<a href="#">Read blog</a>*/
                 </div>

@@ -378,6 +378,26 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
             return JSON.stringify(scalar);
         }
 
+        var clients = {
+            'Gajim': 'gajim'
+        },
+            types = {
+            'mobile': 'mobile'
+        }
+        yr.externals.get_client_icon = function(nodeset) {
+            for (var i=0; i<nodeset.length; i++) {
+                var identity = nodeset[i].data;
+                if (identity.category == 'client') {
+                    if (identity.name in clients) {
+                        return clients[identity.name];
+                    }
+                    if (identity.type in types) {
+                        return types[identity.type];
+                    }
+                }
+            }
+        }
+
         var require = function(plugin_name, to_execute) {
             if (data.loaded_plugins[plugin_name]) {
                 to_execute(data.loaded_plugins[plugin_name]);
