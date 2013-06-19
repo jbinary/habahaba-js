@@ -210,6 +210,49 @@ define([], function(data) {
         }
     }
 
+    Model.prototype.compareValues = function(v1, v2) {
+        var res = true;
+        if (typeof(v1) != typeof(v2)) {
+            res = false;
+        } else if (v1 instanceof Array) {
+            if (v1.length == v2.length) {
+                for (var i=0; i<v1.length; i++) {
+                    if (!this.compareValues(v1[i], v2[i])) {
+                        res = false;
+                        break;
+                    }
+                }
+            } else {
+                res = false;
+            }
+        } else if (v1 instanceof Date) {
+            res = v1.getTime() == v2.getTime();
+        } else if (v1 instanceof Object) {
+            if ('isEqualTo' in v1) {
+                res = v1.isEqualTo(v2);
+            } else if (false && 'toString' in v1 && 'toString' in v2) {
+                res = v1.toString() == v2.toString();
+            } else {
+                var keys = {};
+                for (var k in v1) {
+                    keys[k] = null;
+                }
+                for (var k in v2) {
+                    keys[k] = null;
+                }
+                for (var k in keys) {
+                    if (!this.compareValues(v1[k], v2[k])) {
+                        res = false;
+                        break;
+                    }
+                }
+            }
+        } else {
+            res = v1 == v2;
+        }
+        return res;
+    }
+
     var c =0;
     Model.prototype.set = function(silently) {
         var obj = this.toDocument();
@@ -224,7 +267,9 @@ define([], function(data) {
         if (old_obj && this.pk && this._model_name) {
             var anything_changed = false;
             var test = function(k) {
-                if (k[0] != '_' && that._old[k] != that[k] && !(that[k] instanceof Function)) {
+                if (k[0] != '_' &&
+                    !that.compareValues(that._old[k], that[k]) &&
+                    !(that[k] instanceof Function)) {
                     dispatcher.fire('model:' + that._model_name + ':attr-changed:' + k,
                                     that, old_obj[k]); // XXX: or that._old[k]?
                     anything_changed = true;
@@ -239,8 +284,8 @@ define([], function(data) {
                 this.fireChanged(silently);
             }
         } else if (!silently) dispatcher.fire('world:changed');
-        if (!silently) dispatcher.actually_fire();
         this._old = this.createChain().fromDocument(this);
+        if (!silently) dispatcher.actually_fire();
     }
 
     Model.prototype.del = function(silently) {
