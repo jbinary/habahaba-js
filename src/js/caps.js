@@ -33,7 +33,6 @@ require(['habahaba', 'jslix/caps', 'models'], function(habahaba, Caps, models) {
         });
         if (presence !== undefined) {
             presence.features = features;
-        debugger;
             item.set();
         }
     }
