@@ -16,10 +16,16 @@ require(['habahaba', 'jslix/caps', 'models'], function(habahaba, Caps, models) {
                 storage: this._storage,
                 // TODO: specify this
                 node: 'http://dev.habahaba.im/'
-            };
+            },
+            that=this;
         this.caps = this._dispatcher.registerPlugin(Caps, options);
         this.caps.signals.caps_changed.add(this.capsChanged, this);
         this.roster = loaded_plugins.roster;
+        var dispatcher = models.Dispatcher();
+        dispatcher.bind('model:.roster.items:attr-changed:presences',
+        function(model) {
+            that.presence_catcher(model);
+        });
     }
 
     fields.capsChanged = function(jid, features) {
@@ -42,8 +48,18 @@ require(['habahaba', 'jslix/caps', 'models'], function(habahaba, Caps, models) {
         // XXX: unregister signal handler
     }
 
+    fields.presence_catcher = function(model) {
+        var that = this;
+        $.each(model.presences, function() {
+            if (!('features' in this)) {
+                this.features = JSON.parse(that.caps.getJIDFeatures(this.from));
+            }
+        });
+        model.set();
+    };
+
     habahaba.Plugin({
         name: 'caps',
-        depends: ['disco', 'roster']
+        depends: ['disco', 'roster', 'view']
     }, plugin, fields);
 });
