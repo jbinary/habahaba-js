@@ -196,7 +196,7 @@ define([], function(data) {
         } else if (pk instanceof Object) {
             var query = pk;
         }
-        var m = this.createChain().filter(query);
+        var m = this.filter(query);
         var results = m.execute(_raw);
         if (!results.length) return null;
         if (results.length > 1) throw new Error("More than 1 object returned"); // TODO: exception here
