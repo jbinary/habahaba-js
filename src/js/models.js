@@ -3,7 +3,7 @@ define([], function(data) {
         Dispatcher = function(data) {
         this.data = data || {};
         if (dispatcher) {
-            throw new Error('Dispatcher is singleton');
+            return dispatcher;
         } else {
             dispatcher = this;
         }
