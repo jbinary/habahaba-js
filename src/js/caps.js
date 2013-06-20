@@ -39,6 +39,7 @@ require(['habahaba', 'jslix/caps', 'models'], function(habahaba, Caps, models) {
         });
         if (presence !== undefined) {
             presence.features = features;
+            presence._force_changed = true;
             item.set();
         }
     }
@@ -49,13 +50,18 @@ require(['habahaba', 'jslix/caps', 'models'], function(habahaba, Caps, models) {
     }
 
     fields.presence_catcher = function(model) {
-        var that = this;
+        var that = this,
+            changed = false;
         $.each(model.presences, function() {
             if (!('features' in this)) {
                 this.features = that.caps.getJIDFeatures(this.from);
+                changed = true;
             }
         });
-        model.set();
+        if (changed) {
+            model.presences._force_changed = true;
+            model.set();
+        }
     };
 
     habahaba.Plugin({

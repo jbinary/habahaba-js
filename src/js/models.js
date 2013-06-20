@@ -214,6 +214,9 @@ define([], function(data) {
         var res = true;
         if (typeof(v1) != typeof(v2)) {
             res = false;
+        } else if (v1 && v1._force_changed) {
+            delete v1._force_changed;
+            res = false;
         } else if (v1 instanceof Array) {
             if (v1.length == v2.length) {
                 for (var i=0; i<v1.length; i++) {
@@ -266,7 +269,7 @@ define([], function(data) {
             var anything_changed = false;
             var test = function(k) {
                 if (k[0] != '_' &&
-                    !that.compareValues(that._old[k], that[k]) &&
+                    !that.compareValues(that[k], that._old[k]) &&
                     !(that[k] instanceof Function)) {
                     dispatcher.fire('model:' + that._model_name + ':attr-changed:' + k,
                                     that, old_obj[k]); // XXX: or that._old[k]?
