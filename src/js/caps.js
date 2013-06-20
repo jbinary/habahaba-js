@@ -52,7 +52,7 @@ require(['habahaba', 'jslix/caps', 'models'], function(habahaba, Caps, models) {
         var that = this;
         $.each(model.presences, function() {
             if (!('features' in this)) {
-                this.features = JSON.parse(that.caps.getJIDFeatures(this.from));
+                this.features = that.caps.getJIDFeatures(this.from);
             }
         });
         model.set();
