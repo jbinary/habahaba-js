@@ -230,8 +230,6 @@ define([], function(data) {
         } else if (v1 instanceof Object) {
             if ('isEqualTo' in v1) {
                 res = v1.isEqualTo(v2);
-            } else if (false && 'toString' in v1 && 'toString' in v2) {
-                res = v1.toString() == v2.toString();
             } else {
                 var keys = {};
                 for (var k in v1) {
