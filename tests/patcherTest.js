@@ -111,37 +111,39 @@ data.rendered4 = '\
     </div>\
 </div>';
 
-var PatcherTest = buster.testCase("PatcherTest", {
-    setUp: function() {
-        this._genericPatcherTest = function(existent, rendered) {
-            assert(existent != rendered);
-            var wrapper = document.implementation.createHTMLDocument('');
-            wrapper.body.innerHTML = rendered;
-            rendered = wrapper.body.firstChild;
+define(['DOM-patch', 'DOM-diff'], function(DOMpatch, DOMdiff){
+    buster.testCase("PatcherTest", {
+        setUp: function() {
+            this._genericPatcherTest = function(existent, rendered) {
+                assert(existent != rendered);
+                var wrapper = document.implementation.createHTMLDocument('');
+                wrapper.body.innerHTML = rendered;
+                rendered = wrapper.body.firstChild;
 
-            var wrapper = document.implementation.createHTMLDocument('');
-            wrapper.body.innerHTML = existent;
-            existent = wrapper.body.firstChild;
+                var wrapper = document.implementation.createHTMLDocument('');
+                wrapper.body.innerHTML = existent;
+                existent = wrapper.body.firstChild;
 
-            var rendered = rendered,
-                existent = existent;
-            habahaba._patch(rendered, existent);
-            assert(!DOMdiff.getDiff(rendered, existent)[0]);
+                var rendered = rendered,
+                    existent = existent;
+                DOMpatch.patch(rendered, existent);
+                assert(!DOMdiff.getDiff(rendered, existent)[0]);
+            }
+        },
+        testGoneToOffline: function() {
+            this._genericPatcherTest(data.existent, data.rendered);
+        },
+        testGoneToOffline1: function() {
+            this._genericPatcherTest(data.existent1, data.rendered1);
+        },
+        testAppearOnline: function() {
+            this._genericPatcherTest(data.existent2, data.rendered2);
+        },
+        testSearch: function() {
+            this._genericPatcherTest(data.existent3, data.rendered3);
+        },
+        testContactOfflineThenOnlineWithAnotherStatus: function() {
+            this._genericPatcherTest(data.existent4, data.rendered4);
         }
-    },
-    testGoneToOffline: function() {
-        this._genericPatcherTest(data.existent, data.rendered);
-    },
-    testGoneToOffline1: function() {
-        this._genericPatcherTest(data.existent1, data.rendered1);
-    },
-    testAppearOnline: function() {
-        this._genericPatcherTest(data.existent2, data.rendered2);
-    },
-    testSearch: function() {
-        this._genericPatcherTest(data.existent3, data.rendered3);
-    },
-    testContactOfflineThenOnlineWithAnotherStatus: function() {
-        this._genericPatcherTest(data.existent4, data.rendered4);
-    }
+    });
 });
