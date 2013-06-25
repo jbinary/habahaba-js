@@ -3,7 +3,7 @@
  *
  * (c) Mike "Pomax" Kamermans, but you can freely use it.
  */
-define([], function() {
+define(['libs/jquery'], function($) {
   var diffObject = {};
 
   /**
