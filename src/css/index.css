@@ -838,3 +838,129 @@ textarea.typing-window {
     padding: 3px;
     }
 
+#video-wrap {
+    display: none;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    background: white;
+    width: 630px;
+    height: 520px;
+    margin-left: -315px;
+    border: 1px solid #0098a9;
+}
+
+    #video-wrap h2 {
+        font: bold 18px Arial;
+        line-height: 24px;
+        margin: 12px 0 12px 15px;
+    }
+
+    #video-wrap video {
+        margin: 0 15px;
+    }
+
+    #video-wrap #controls {
+        height: 33px;
+        width: 598px;
+        border: 1px solid #bdbdbd;
+        background: #e6e6e6;
+        margin: 0 15px;
+    }
+
+    #video-wrap #controls a {
+        width: 27px;
+        height: 27px;
+        display: block;
+        margin: 3px;
+    }
+
+        #video-wrap #controls #mute {
+            background: url(../img/video-icons/microphone-on-button.png);
+            float: left;
+        }
+
+        #video-wrap #controls #webcam {
+            background: url(../img/video-icons/camera-on-button.png);
+            float: left;
+        }
+
+        #video-wrap #controls #settings {
+            background: url(../img/video-icons/settings-button.png);
+            float: right;
+        }
+
+        #video-wrap #controls #full-screen {
+            background: url(../img/video-icons/fullscreen-button.png);
+            float: right;
+        }
+
+    #video-wrap #finish-call {
+        display: block;
+        width: 148px;
+        height: 27px;
+        background: url(../img/video-icons/callend-button.png);
+        margin: 12px auto 0;
+    }
+
+#incoming {
+    width: 157px;
+    border: 3px double #0098a9;
+    padding: 10px 15px;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    margin-left: -94px;
+    background: white;
+}
+
+    #incoming h2 {
+        font: bold 18px Arial;
+        line-height: 24px;
+        margin: 0;
+    }
+
+    #incoming img {
+        width: 155px;
+        height: 155px;
+        margin: 10px auto;
+    }
+
+    #incoming a {
+        display: block;
+        height: 27px;
+        width: 155px;
+        margin: 0 auto 12px;
+    }
+
+    #incoming #answer {
+        background: url(../img/video-icons/answer-button.png);
+    }
+
+    #incoming #reject {
+        background: url(../img/video-icons/reject-button.png);
+    }
+
+    #incoming p {
+        font: italic 11px  Verdana;
+        color: #bbbcbb;
+        margin: 0 3px;
+    }
+
+        #incoming p span {
+            display: inline-block;
+            width: 14px;
+            height: 9px;
+            background: url(../img/video-icons/camera-off-icon.png);
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+    #incoming #webon {
+        color: black;
+    }
+
+        #incoming #webon span {
+            background: url(../img/video-icons/camera-on-icon.png);
+        }
+
