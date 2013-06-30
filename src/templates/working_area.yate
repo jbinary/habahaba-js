@@ -1,3 +1,4 @@
+include "resource_picker.yate"
 key roster_item_messages(.messages.contacts, .roster_item_id) { . }
 
 match / working_area {
@@ -7,7 +8,7 @@ match / working_area {
             if (tabs_state.scrolling) {
                 <div class="scroll-btn left " id="tabs-scroll-btn-left">
                     if (tabs_state.position > 0) {
-                        @onclick = "habahaba.view.tab_scroll(-1)"
+                        @onclick = "view.tab_scroll(-1)"
                     } else {
                         @class += "disabled"
                     }
@@ -22,7 +23,7 @@ match / working_area {
             if (tabs_state.scrolling) {
                 <div class="scroll-btn right " id="tabs-scroll-btn-right">
                     if (tabs_state.scrollable_right) {
-                        @onclick = "habahaba.view.tab_scroll(1)"
+                        @onclick = "view.tab_scroll(1)"
                     } else {
                         @class += "disabled"
                     }
@@ -42,7 +43,7 @@ match /.view.tabs[.active] inputarea {
         </div>
         <textarea id="typing-window-{ .pk }" class="typing-window" data-tab="{ .pk }">
             @data-preserve = "value,scrollTop,selectionDirection,selectionStart,selectionEnd"
-            @onkeyup = "habahaba.view.chat_keyup.apply(this, arguments)"
+            @onkeyup = "view.chat_keyup.apply(this, arguments)"
         </textarea>
     </div>
 }
@@ -51,66 +52,70 @@ match /.view.tabs[.active] msgwindow {
     <div id="message-window">
         contact = roster_item(.roster_item_id)
         jid = get_contact_jid(contact)
-        presence = max_priority(contact.presences)
+        presence = get_contact_presence(contact)
         <div class="companion-block">
             <div class="avatar">
                 if contact.avatar_hash {
                     @class += ' hash-' + contact.avatar_hash
                 }
             </div>
-            <div class="status-messages">
-                <p>
-                    @title = "{ presence.status }"
-                    "{ presence.status }"
-                </p>
-                <br class="clr" />
-                if (contact.chatstate) {
-                    state = contact.chatstate
-                    <p id="action-info">
-                        if (state == 'active') {
-                            "is paying attention to the conversation"
-                        } else if (state == 'inactive') {
-                            "is doing something else"
-                        } else if (state == 'gone') {
-                            "has gone"
-                        } else if (state == 'composing') {
-                            "is composing a message"
-                        } else if (state == 'paused') {
-                            "has paused composing a message"
-                        }
+            <div id="companion-inner-wrapper">
+                <div class="status-messages">
+                    <p>
+                        @title = "{ presence.status }"
+                        "{ presence.status }"
                     </p>
-                }
-            </div>
-            <div class="companion-info">
-                <h5>
-                get_contact_display(contact)
-                </h5>
-                status = get_contact_status(contact)
-                <p>
-                if status == 'dnd' {
-                    "Do not disturb"
-                } else if status == 'online' {
-                    "Online"
-                } else if status == 'away' {
-                    "Away"
-                } else if status == 'xa' {
-                    "Extended Away"
-                } else if status == 'chat' {
-                    "Free for Chat"
-                } else if status == 'offline' {
-                    "Offline"
-                }
-                </p>
-                <span class="contact-status ">
-                    @class += get_contact_status(contact)
-                </span>
-                <br class="clr" />
-                /*<a href="#">Read blog</a>*/
+                    <br class="clr" />
+                    if (contact.chatstate) {
+                        state = contact.chatstate
+                        <p id="action-info">
+                            if (state == 'active') {
+                                "is paying attention to the conversation"
+                            } else if (state == 'inactive') {
+                                "is doing something else"
+                            } else if (state == 'gone') {
+                                "has gone"
+                            } else if (state == 'composing') {
+                                "is composing a message"
+                            } else if (state == 'paused') {
+                                "has paused composing a message"
+                            }
+                        </p>
+                    }
+                </div>
+                <div class="companion-info">
+                    <h5>
+                    get_contact_display(contact)
+                    </h5>
+                    status = get_contact_status(contact)
+                    <p>
+                    if status == 'dnd' {
+                        "Do not disturb"
+                    } else if status == 'online' {
+                        "Online"
+                    } else if status == 'away' {
+                        "Away"
+                    } else if status == 'xa' {
+                        "Extended Away"
+                    } else if status == 'chat' {
+                        "Free for Chat"
+                    } else if status == 'offline' {
+                        "Offline"
+                    }
+                    </p>
+                    <span class="contact-status ">
+                        @class += get_contact_status(contact)
+                    </span>
+                    <br class="clr" />
+                    apply contact resource-picker-widget
+                    <br class="clr" />
+                    /*<a href="#">Read blog</a>*/
+                </div>
             </div>
         </div>
         <div id="dialog-block-{ .pk }" class="dialog-block" data-tab="{ .pk }" data-rosteritem="{ .roster_item_id }">
             @data-preserve = "scrollTop"
-            @oncreate = "habahaba.view.setup_dialog_block.call(this)"
+            @oncreate = "view.setup_dialog_block.call(this)"
             messages = roster_item_messages(.roster_item_id)
             apply messages.history
             <br class="clr"/>
@@ -124,7 +129,7 @@ match /.messages.contacts.history {
     } else {
         /.my_jid
     }
-    sender = /.roster.items[.jid._node == from._node][.jid._domain == from._domain]
+    sender = /.roster.items[.jid.node == from.node][.jid.domain == from.domain]
     sender_jid = get_contact_jid(sender)
     <div class="message">
         <div class="avatar">
@@ -151,22 +156,22 @@ match /.view.tabs {
             @style = "display: none;"
         }
         create_remove_handler = :::
-            habahaba.view.check_tabs_scrollstate();
-            habahaba.view.tab_scroll(0);
+            view.check_tabs_scrollstate();
+            view.tab_scroll(0);
         :::
         create_handler = :::
             var $this = $(this);
-            $this.mousedown(habahaba.view.tab_start_move);
-            $this.mousemove(habahaba.view.tab_move);
-            $this.mouseup(habahaba.view.tab_stop_move);
-            $this.mouseleave(habahaba.view.tab_stop_move);
+            $this.mousedown(view.tab_start_move);
+            $this.mousemove(view.tab_move);
+            $this.mouseup(view.tab_stop_move);
+            $this.mouseleave(view.tab_stop_move);
         :::
         @oncreate = create_remove_handler + create_handler
         @onremove = create_remove_handler
         if .active {
             @class = 'active'
         }
-        @onclick = "habahaba.view.activate_tab({ .pk })"
+        @onclick = "view.activate_tab({ .pk })"
         <span class="contact-status ">
             @class += if (contact.unread) {
                 "unread"
@@ -178,7 +183,7 @@ match /.view.tabs {
             get_contact_display(contact)
         </div>
         <a href="#" class="close-button">
-            @onclick="habahaba.view.close_tab({ .pk }); return false"
+            @onclick="view.close_tab({ .pk }); return false"
         </a>
     </li>
 }

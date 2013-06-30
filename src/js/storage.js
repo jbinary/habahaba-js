@@ -1,5 +1,5 @@
 "use strict";
-(function() {
+define([], function() {
     var Storage = function(storage, root) {
         this._storage = storage
         this._root = '';
@@ -35,8 +35,21 @@
         return new this.Element(this._storage, key);
     }
 
-    Storage.prototype.key = function(key) {
-        return new this.Element(storage, key);
+    Storage.prototype.getItem = function(key) {
+        try {
+            return this.path(key).get();
+        } catch(e) {
+            // XXX TODO: use storage exceptions here!!!
+            return null;
+        }
+    }
+
+    Storage.prototype.setItem = function(key, value) {
+        this.path(key).set(value);
+    }
+
+    Storage.prototype.removeItem = function(key) {
+        this.path(key).del();
     }
 
     var Element = function(storage, key) {
@@ -101,5 +114,5 @@
         // TODO
     }
 
-    window.Storage = Storage;
-})();
+    return Storage;
+});

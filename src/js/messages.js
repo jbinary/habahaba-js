@@ -1,20 +1,19 @@
 "use strict";
-(function() {
-    var habahaba = window.habahaba,
-        jslix = window.jslix,
-        WrongElement = jslix.exceptions.WrongElement,
-        Model,
-        JID = jslix.JID;
+require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
+         'jslix/delay', 'jslix/fields'],
+        function(habahaba, exceptions, JID, stanzas, delay, fields) {
+    var WrongElement = exceptions.WrongElement,
+        Model, RosterItem;
 
     var plugin = function(dispatcher, data) {
             this.data = data;
             this.dispatcher = dispatcher;
         },
-        fields = {};
+        attrs = {};
 
-    fields.XHTML_NS = 'http://jabber.org/protocol/xhtml-im';
+    attrs.XHTML_NS = 'http://jabber.org/protocol/xhtml-im';
 
-    fields.load = function() {
+    attrs.load = function() {
         this.Model = Model = this.data.loaded_plugins.view.Model;
         this.data.messages = {
             contacts: []
@@ -23,14 +22,15 @@
         if ('disco' in this.data.loaded_plugins) {
             this.data.loaded_plugins.disco.disco.registerFeature(this.XHTML_NS);
         }
+        RosterItem = this.data.loaded_plugins.roster.RosterItem;
     }
 
-    fields.unload = function() {
+    attrs.unload = function() {
         this.dispatcher.unregisterPlugin(plugin._name);
     }
 
-    fields.message_stanza = jslix.Element({
-        html: new jslix.fields.Node('html', fields.XHTML_NS),
+    attrs.message_stanza = stanzas.Element({
+        html: new fields.Node('html', attrs.XHTML_NS),
 
         clean_body: function(value) {
             if (!value && value !== '')
@@ -44,14 +44,14 @@
         },
         clean_delay: function(value) {
             if (value) return value;
-            value = jslix.delayed.stanzas.delay.create({
+            value = delay.stanzas.delay.create({
                 stamp: new Date()
             });
             return value;
         },
         anyHandler: function(message) {
-            var roster_item = new Model('.roster.items'),
-                bareJID = message.from.getBareJID();
+            var roster_item = new RosterItem(),
+                bareJID = message.from.bare;
             roster_item = roster_item.filter({
                 jid: bareJID
             }).execute();
@@ -73,14 +73,26 @@
             } else {
                 this.sanitize_xhtml(message.html);
             }
+            if (message.from.resource) {
+                if (roster_item.current_resource != message.from.resource) {
+                    var default_jid = roster_item.getDefaultJID();
+                    if (!default_jid || default_jid.resource !=
+                        message.from.resource) {
+                        roster_item.current_resource = message.from.resource;
+                    } else {
+                        delete roster_item.current_resource;
+                    }
+                    roster_item.set(true);
+                }
+            }
             this.update_chat_history(message, roster_item);
             return; // TODO: EmptyStanza?
         }
-    }, [jslix.stanzas.message, jslix.delayed.stanzas.mixin]);
+    }, [stanzas.MessageStanza, delay.stanzas.mixin]);
 
     // From the XEP-0071
     // XXX: Some attributes may need to be sanitized better. For example, id.
-    fields.xhtml_profile = {
+    attrs.xhtml_profile = {
         'body': ['class', 'id', 'title', 'style'],
         'head': ['profile'],
         'html': ['version'],
@@ -125,7 +137,7 @@
                 'src', 'width']
     }
 
-    fields.sanitize_xhtml = function(html) {
+    attrs.sanitize_xhtml = function(html) {
         // Remove all inappropriate tags and attributes from a message
         for (var i=html.childNodes.length - 1; i>=0; i--) {
             var el = html.childNodes[i];
@@ -151,7 +163,7 @@
         }
     }
 
-    fields.plain_to_xhtml = function(message) {
+    attrs.plain_to_xhtml = function(message) {
         var doc = $('<html>').html('<body></body>'),
             body = doc.find('body')[0],
             splitted = message.split('\n');
@@ -163,7 +175,7 @@
         return doc[0];
     }
 
-    fields.update_chat_history = function(message, roster_item) {
+    attrs.update_chat_history = function(message, roster_item) {
         var messages = new Model('.messages.contacts');
         messages = messages.filter({
             roster_item_id: roster_item.pk
@@ -183,10 +195,10 @@
         messages.set();
     }
 
-    fields.send_chat_message = function(text, roster_item) {
+    attrs.send_chat_message = function(text, roster_item) {
         var msg = this.message_stanza.create({
             type: 'chat',
-            to: roster_item.jid,
+            to: roster_item.getIQJID() || roster_item.jid,
             body: text,
             delay: {
                 stamp: new Date()
@@ -200,6 +212,6 @@
     habahaba.Plugin(
         {
             name: 'messages',
-            depends: ['view']
-        }, plugin, fields);
+            depends: ['view', 'roster']
+        }, plugin, attrs);
 })();

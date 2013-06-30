@@ -1,14 +1,17 @@
 "use strict";
-(function() {
+require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
+         'contextmenu/jquery.contextMenu', 'libs/jquery.transit'],
+        function(habahaba, models, DOM_patcher) {
     var roster_search_timer, Model, dispatcher, fields = {};
     var plugin = function(jslix_dispatcher, data, storage, account_storage) {
         this.account_storage = account_storage;
         var that = this;
-        habahaba.view = {
+        // XXX: how to avoid using window? We need it in DOM events handlers
+        window.view = {
             setup_dialog_block: function() {
                 var $this = $(this);
                 $this.scroll(function() {
-                    var prevent_auto_scroll = 
+                    var prevent_auto_scroll =
                         $this.scrollTop() + $this.height() != $this.prop('scrollHeight');
                     var tab = new Model('.view.tabs').get($this.attr('data-tab'));
                     tab.prevent_auto_scroll = prevent_auto_scroll;
@@ -16,7 +19,7 @@
                 });
                 var roster_item = $this.attr('data-rosteritem');
                 var roster_item = new Model('.roster.items').get(roster_item);
-                habahaba.view.autoscroll(roster_item);
+                view.autoscroll(roster_item);
             },
             roster_search: function() {
                 // We don't want to search too often because it can hurt
@@ -78,7 +81,7 @@
                     tab = tab[0];
                 }
                 if (activate) {
-                    habahaba.view.activate_tab(tab.pk); 
+                    view.activate_tab(tab.pk);
                 }
                 return true;
             },
@@ -93,7 +96,7 @@
                 var a_tab = tabs[index + 1] || tabs[index - 1];
                 tab.del();
                 if (a_tab) {
-                    habahaba.view.activate_tab(a_tab.pk);
+                    view.activate_tab(a_tab.pk);
                 }
                 update_chatstate({tab: tab, state: 'gone'});
                 return true;
@@ -148,7 +151,7 @@
                 }
                 // Do actual scrolling if it's needed
                 if (offset !== undefined) {
-                    habahaba.view.tab_scroll(offset, true);
+                    view.tab_scroll(offset, true);
                 }
 
                 // Activate tab and update chatstate for the contact
@@ -160,9 +163,11 @@
             send_message: function(text, tab) {
                 if (!text.length) return;
                 if (!tab || tab.type != 'contact') return;
-                var contact = new Model('.roster.items').get(tab.roster_item_id);
+                var plugins = data.loaded_plugins,
+                    RosterItem = plugins.roster.RosterItem,
+                    contact = new RosterItem().get(tab.roster_item_id);
                 if (!contact) return;
-                data.loaded_plugins.messages.send_chat_message(text, contact);
+                plugins.messages.send_chat_message(text, contact);
                 return true;
             },
             autoscroll: function(roster_item) {
@@ -188,7 +193,7 @@
                     var msg = $this.val();
                     $this.val('');
                     update_chatstate({tab: tab, state: 'active'});
-                    habahaba.view.send_message($.trim(msg), tab);
+                    view.send_message($.trim(msg), tab);
                 } else {
                     update_chatstate({tab: tab, state: 'composing'});
                 }
@@ -261,7 +266,7 @@
             tab_move: function(event) {
                 if (is_tab_moving) {
                     if (!tab_moving.active) {
-                        habahaba.view.activate_tab(tab_moving.pk);
+                        view.activate_tab(tab_moving.pk);
                         tab_moving.active = true;
                     }
                     left = left + event.pageX - tab_moving_pageX;
@@ -301,6 +306,12 @@
                 var roster_settings = new Model('.view.roster_settings').get();
                 roster_settings.hide_offline_users = !roster_settings.hide_offline_users;
                 roster_settings.set();
+            },
+            change_current_resource: function(roster_item_id, resource) {
+                $('#resource-popup').hide();
+                var roster_item = new Model('.roster.items').get(roster_item_id);
+                roster_item.current_resource = resource;
+                roster_item.set();
             }
         }
 
@@ -315,25 +326,13 @@
             return nodeset.length;
         }
 
-        yr.externals.max_priority = function(nodes) {
-            var values = {};
-            var avalues = [];
-            for (var i=0, l=nodes.length; i<l; i++) {
-                var node = nodes[i];
-                var value = node.data.priority;
-                if (node.data.type == 'unavailable') value = undefined;
-                values[value] = node;
-                if (value !== undefined) {
-                    avalues.push(value);
-                }
+        yr.externals.maxPriority = function(nodes) {
+            var RosterItem = data.loaded_plugins.roster.RosterItem,
+                item = new RosterItem().get(nodes[0].data.pk);
+            var presence = item.getMaxPriorityPresence();
+            if (presence) {
+                return presence.priority;
             }
-            if (avalues.length) {
-                var max = Math.max.apply(null, avalues);
-                return [values[max]];
-            } else if (undefined in values) {
-                return [values[undefined]];
-            }
-            return [];
         }
 
         yr.externals.splitlines = function(string) {
@@ -375,6 +374,30 @@
             return yr.externals.contains(nodeset, scalar, true);
         }
 
+        yr.externals.toJSON = function(scalar) {
+            return JSON.stringify(scalar);
+        }
+
+        var clients = {
+            'Gajim': 'gajim'
+        },
+            types = {
+            'mobile': 'mobile'
+        }
+        yr.externals.get_client_icon = function(nodeset) {
+            for (var i=0; i<nodeset.length; i++) {
+                var identity = nodeset[i].data;
+                if (identity.category == 'client') {
+                    if (identity.name in clients) {
+                        return clients[identity.name];
+                    }
+                    if (identity.type in types) {
+                        return types[identity.type];
+                    }
+                }
+            }
+        }
+
         var require = function(plugin_name, to_execute) {
             if (data.loaded_plugins[plugin_name]) {
                 to_execute(data.loaded_plugins[plugin_name]);
@@ -404,8 +427,8 @@
         // TODO: unload
         var that = this;
         $(window).resize(function() {
-            habahaba.view.check_tabs_scrollstate();
-            habahaba.view.tab_scroll(0);
+            view.check_tabs_scrollstate();
+            view.tab_scroll(0);
         });
 
         var viewModel,
@@ -426,9 +449,8 @@
                 search_string: ""
             }]
         }
-        var _modelEngine = modelEngine(data);
-        dispatcher = this.dispatcher = _modelEngine.dispatcher;
-        Model = this.Model = _modelEngine.Model;
+        dispatcher = this.dispatcher = new models.Dispatcher(data);
+        Model = this.Model = models.Model;
 
         dispatcher.bind('world:changed', function() {
             var rendered = dispatcher.render(new Model('__main__'));
@@ -460,13 +482,13 @@
 
                 // We want also to expand the group if the tab was not opened
                 if (!tab && roster_item.groups.length) {
-                    habahaba.view.collapse_group(roster_item.groups[0], {
+                    view.collapse_group(roster_item.groups[0], {
                                                     only_expand: true
                                                  });
                 }
             }
 
-            habahaba.view.autoscroll(roster_item);
+            view.autoscroll(roster_item);
         });
 
         // When prevent_autoscroll is reset or inactive tab became active then
@@ -587,4 +609,4 @@
                        'view.roster',
                        'view.avatars']
         }, plugin, fields);
-})();
+});

@@ -5,27 +5,27 @@
  */
 
 "use strict";
-(function(){
-    var habahaba = window.habahaba;
-    var jslix = window.jslix;
-    var WrongElement = jslix.exceptions.WrongElement;
+require(['habahaba', 'jslix/exceptions', 'jslix/stanzas', 'jslix/vcard',
+         'jslix/fields'],
+        function(habahaba, exceptions, stanzas, VCard, fields) {
+    var WrongElement = exceptions.WrongElement;
 
-    var presence = jslix.Element({
+    var presence = stanzas.Element({
         clean_type: function(value) {
             if (value) throw new WrongElement();
             return value;
         }
-    }, [jslix.stanzas.presence]);
+    }, [stanzas.PresenceStanza]);
 
     var plugin = function(dispatcher, data, storage, account_storage) {
         this.dispatcher = dispatcher;
-        this.vcard = new jslix.vcard(this.dispatcher);
+        this.vcard = new VCard(this.dispatcher);
         this.storage = account_storage;
         this.roster = data.loaded_plugins.roster;
     }
 
-    var fields = {};
-    fields.load = function() {
+    var attrs = {};
+    attrs.load = function() {
         this.dispatcher.addHandler(this.update_request, this,
                                    'habahaba.avatars');
         this.avatars_available = this.storage.path('avatars_available');
@@ -42,20 +42,20 @@
         }, this);
     }
 
-    fields.unload = function() {
+    attrs.unload = function() {
         this.dispatcher.unregisterPlugin(this);
         // XXX TODO: don't listen to any signals anymore
     }
 
-    fields.update_request = jslix.Element({
+    attrs.update_request = stanzas.Element({
         parent_element: presence,
         element_name: 'x',
         xmlns: 'vcard-temp:x:update',
-        photo: new jslix.fields.StringNode('photo'),
+        photo: new fields.StringNode('photo'),
 
         clean_photo: function(value) {
             if (value === undefined) {
-                throw new jslix.exceptions.WrongElement('Photo is undefined');
+                throw new exceptions.WrongElement('Photo is undefined');
             }
             return value;
         },
@@ -74,7 +74,7 @@
                 }
             }
 
-            var jid = top.from.getBareJID();
+            var jid = top.from.bare;
             var storage = this.storage.chroot(jid);
             var hash = storage.path('hash');
             var self = this;
@@ -114,7 +114,7 @@
                     // any avatar announced then we won't want to fetch it
                     // again, huh?
                     if (!update.photo ||
-                      failure instanceof jslix.exceptions.ElementParseError) {
+                      failure instanceof exceptions.ElementParseError) {
                         hash.set(update.photo);
                         _remove_avatar_but_not_hash();
                     }
@@ -125,7 +125,7 @@
         }
     });
 
-    fields._createCSSClass = function(selector, style) {
+    attrs._createCSSClass = function(selector, style) {
         var id = 'injected-style-' + selector;
         if (!document.getElementById(id)) {
             var style_el = document.createElement('style');
@@ -136,17 +136,17 @@
         }
     }
 
-    fields._removeCSSClass = function(selector) {
+    attrs._removeCSSClass = function(selector) {
         var style = document.getElementById('injected-style-' + selector);
         if (style) {
             style.parentElement.removeChild(style);
         }
     }
 
-    fields.get_avatar_uri = function(roster_item) {
+    attrs.get_avatar_uri = function(roster_item) {
         var result;
         if (roster_item && roster_item.avatar_hash) {
-            var storage = this.storage.chroot(roster_item.jid.getBareJID());
+            var storage = this.storage.chroot(roster_item.jid.bare);
             var type = storage.path('type').get();
             var binval = storage.path('binval').get();
             binval = binval.replace(/[^a-z0-9+/=]/gi, '');
@@ -157,7 +157,7 @@
         return result;
     }
 
-    fields.update_avatar_availability = function(jid, hash, silently) {
+    attrs.update_avatar_availability = function(jid, hash, silently) {
         var item = this.roster.get_roster_item(jid);
         if (item) {
             if (hash) {
@@ -181,6 +181,6 @@
             depends: ['view.avatars', 'roster']
         },
         plugin,
-        fields
+        attrs
     );
-})();
+});

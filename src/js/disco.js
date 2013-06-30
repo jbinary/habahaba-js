@@ -1,28 +1,23 @@
 "use strict";
-(function() {
+require(['habahaba', 'jslix/disco'], function(habahaba, Disco) {
     var plugin = function(dispatcher, data) {
             this._dispatcher = dispatcher;
+            this.data = data;
         },
-        fields = {};
-    
-    fields.load = function() {
-        // TODO: check that jslix.disco was loaded
-        this.disco = this._dispatcher.registerPlugin(jslix.disco);
-        var identity = jslix.disco.stanzas.identity.create({
-            category: 'client',
-            type: 'web',
-            name: 'Habahaba'
-        });
-        this.disco.registerIdentity(identity);
+        attrs = {};
+
+    attrs.load = function() {
+        this.disco = this._dispatcher.registerPlugin(Disco);
+        this.disco.registerIdentity('client', 'web', 'Habahaba');
         this.disco.init();
     }
 
-    fields.unload = function() {
-        this._dispatcher.unregisterPlugin(jslix.disco);
+    attrs.unload = function() {
+        this._dispatcher.unregisterPlugin(Disco);
     }
 
     habahaba.Plugin(
         {
             name: 'disco'
-        }, plugin, fields);
+        }, plugin, attrs);
 })();

@@ -2,12 +2,12 @@ external scalar get_avatar_uri(scalar)
 external nodeset icontains(nodeset, scalar)
 
 func get_contact_jid(nodeset contact) {
-    node = if contact.jid._node {
-        "{ contact.jid._node }@"
+    node = if contact.jid.node {
+        "{ contact.jid.node }@"
     } else {
         ""
     }
-    "{ node }{ contact.jid._domain }"
+    "{ node }{ contact.jid.domain }"
 }
 
 func get_contact_display(nodeset contact) {
@@ -18,8 +18,7 @@ func get_contact_display(nodeset contact) {
     }
 }
 
-func get_contact_status(nodeset contact) {
-    presence = max_priority(contact.presences)
+func get_presence_status(nodeset presence) {
     if !presence || presence.type == 'unavailable' {
         "offline"
     } else {
@@ -31,12 +30,25 @@ func get_contact_status(nodeset contact) {
     }
 }
 
+func get_contact_presence(nodeset contact) {
+    if (contact.current_resource) {
+        contact.presences[.from.resource == contact.current_resource]
+    } else {
+        maxPriorityPresence(contact)
+    }
+}
+
+func get_contact_status(nodeset contact) {
+    presence = get_contact_presence(contact)
+    get_presence_status(presence)
+}
+
 key roster_item(.roster.items, .pk) { . }
 
 match /.roster.items (nodeset group) {
-    presence = max_priority(.presences)
+    presence = maxPriorityPresence(.)
     <div class="contact" id="contact-{ group.pk }-{ .pk }">
-        @onclick = "habahaba.view.open_contact({ .pk }, true);"
+        @onclick = "view.open_contact({ .pk }, true);"
         slideAnimation()
         jid = get_contact_jid(.)
         <div class="avatar">
@@ -68,7 +80,7 @@ match /.roster.groups {
 
         filter_string = /.view.roster_settings.search_string
         filtered = if (filter_string) {
-            contacts[icontains(.nick, filter_string) || icontains(.jid._node, filter_string)]
+            contacts[icontains(.nick, filter_string) || icontains(.jid.node, filter_string)]
         } else {
             contacts[false()]
         }
@@ -84,7 +96,7 @@ match /.roster.groups {
                 slideAnimation()
                 <div class="group-name">
                     @onclick = (
-                        "habahaba.view.collapse_group({ gpk });"
+                        "view.collapse_group({ gpk });"
                     )
                     <h4>{ .name }</h4>
                     overall = count(contacts)
@@ -113,7 +125,7 @@ match .roster render_roster {
         <div id="contact-block">
             <div id="container">
                 <div id="search">
-                    <input type="text" onkeydown="habahaba.view.roster_search()">
+                    <input type="text" onkeydown="view.roster_search()">
                         @value = /.view.roster_settings.search_string
                         @id = "roster-search-input"
                     </input>
@@ -156,11 +168,11 @@ match .roster render_roster {
             if (/.view.roster_settings.hide_offline_users) {
                 @checked = "checked"
             }
-            @onclick = "habahaba.view.toggle_hide_offline();"
+            @onclick = "view.toggle_hide_offline();"
         </command>
         <command>
             @label = "Show/collapse all groups"
-            @onclick = "habahaba.view.collapse_all_groups();"
+            @onclick = "view.collapse_all_groups();"
         </command>
     </menu>
 }

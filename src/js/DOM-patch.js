@@ -1,5 +1,5 @@
 "use strict";
-(function() {
+define(['DOM-diff'], function(DOMdiff) {
     var _moveNode = function(parent, node, i) {
         parent.removeChild(node);
         if (i == parent.childNodes.length) {
@@ -289,10 +289,10 @@
         }
     }
 
-    window.DOM_patcher = {
+    return {
         update_world: update_world,
         patch: patch,
         apply_bubbledown_handler: apply_bubbledown_handler,
         really_apply_handlers: really_apply_handlers
     }
-})();
+});

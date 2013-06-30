@@ -1,7 +1,16 @@
-modelEngine = function(data) {
-    var dispatcher = {
+define([], function(data) {
+    var dispatcher = null,
+        Dispatcher = function(data) {
+        this.data = data || {};
+        if (dispatcher) {
+            return dispatcher;
+        } else {
+            dispatcher = this;
+        }
+    }
+
+    Dispatcher.prototype = {
         signals: {},
-        data: data || {},
         _handlers_queue: [],
         //views: {},
         bind: function(signals, handler) {
@@ -58,15 +67,32 @@ modelEngine = function(data) {
         }
     };
 
-    if (window.XMLSerializer) {
-        dispatcher.serializer = new XMLSerializer();
+    var Model = function(model_name) {
+        this._model_name = model_name;
+        this._query = null;
     }
 
+    Model.prototype = {
+        get _path() {
+            if (!this._cached_path) {
+                var _path = this._model_name.split('.').slice(1);
+                this._cached_path = _path;
+            }
+            return this._cached_path;
+        }
+    }
+    Model.prototype.constructor = Model;
 
-    var Model = function(model_name, create_new) {
-        this._model_name = model_name;
-        this._path = model_name.split('.').slice(1);
-        this._query = null;
+    Model.prototype.createChain = function() {
+        var chain = new this.constructor();
+        if (this._arguments) {
+            this.constructor.apply(chain,
+                Array.prototype.slice.call(this._arguments));
+        }
+        if (!chain._model_name) {
+            chain._model_name = this._model_name;
+        }
+        return chain;
     }
 
     Model.prototype.new = function() {
@@ -93,7 +119,7 @@ modelEngine = function(data) {
             }
         }
         return obj;
-    } 
+    }
 
     Model.prototype.fromDocument = function(obj) {
         for (var field in obj) {
@@ -138,7 +164,7 @@ modelEngine = function(data) {
         var new_query = this._query || {};
         for (var f in query)
             new_query[f] = query[f];
-        var chain = new Model(this._model_name);
+        var chain = this.createChain();
         chain._query = new_query
         return chain
     }
@@ -155,8 +181,8 @@ modelEngine = function(data) {
         });
         if (!_raw) {
             for (var i=0; i<results.length; i++) {
-                results[i] = new Model(this._model_name).fromDocument(results[i]);
-                results[i]._old = new Model(this._model_name).fromDocument(results[i]);
+                results[i] = this.createChain().fromDocument(results[i]);
+                results[i]._old = this.createChain().fromDocument(results[i]);
             }
         }
         return results;
@@ -170,7 +196,7 @@ modelEngine = function(data) {
         } else if (pk instanceof Object) {
             var query = pk;
         }
-        var m = new Model(this._model_name).filter(query);
+        var m = this.filter(query);
         var results = m.execute(_raw);
         if (!results.length) return null;
         if (results.length > 1) throw new Error("More than 1 object returned"); // TODO: exception here
@@ -184,10 +210,54 @@ modelEngine = function(data) {
         }
     }
 
+    Model.prototype.compareValues = function(v1, v2) {
+        var res = true;
+        if (typeof(v1) != typeof(v2)) {
+            res = false;
+        } else if (v1 && v1._force_changed) {
+            delete v1._force_changed;
+            res = false;
+        } else if (v1 instanceof Array) {
+            if (v1.length == v2.length) {
+                for (var i=0; i<v1.length; i++) {
+                    if (!this.compareValues(v1[i], v2[i])) {
+                        res = false;
+                        break;
+                    }
+                }
+            } else {
+                res = false;
+            }
+        } else if (v1 instanceof Date) {
+            res = v1.getTime() == v2.getTime();
+        } else if (v1 instanceof Object) {
+            if ('isEqualTo' in v1) {
+                res = v1.isEqualTo(v2);
+            } else {
+                var keys = {};
+                for (var k in v1) {
+                    keys[k] = null;
+                }
+                for (var k in v2) {
+                    keys[k] = null;
+                }
+                for (var k in keys) {
+                    if (!this.compareValues(v1[k], v2[k])) {
+                        res = false;
+                        break;
+                    }
+                }
+            }
+        } else {
+            res = v1 == v2;
+        }
+        return res;
+    }
+
     var c =0;
     Model.prototype.set = function(silently) {
         var obj = this.toDocument();
-        var old_obj = new Model(this._model_name).get(this.pk, true);
+        var old_obj = this.createChain().get(this.pk, true);
         // fire attr changed event
         if (!old_obj) {
             var collection = this.getCollection();
@@ -198,7 +268,9 @@ modelEngine = function(data) {
         if (old_obj && this.pk && this._model_name) {
             var anything_changed = false;
             var test = function(k) {
-                if (k[0] != '_' && that._old[k] != that[k] && !(that[k] instanceof Function)) {
+                if (k[0] != '_' &&
+                    !that.compareValues(that[k], that._old[k]) &&
+                    !(that[k] instanceof Function)) {
                     dispatcher.fire('model:' + that._model_name + ':attr-changed:' + k,
                                     that, old_obj[k]); // XXX: or that._old[k]?
                     anything_changed = true;
@@ -213,8 +285,8 @@ modelEngine = function(data) {
                 this.fireChanged(silently);
             }
         } else if (!silently) dispatcher.fire('world:changed');
+        this._old = this.createChain().fromDocument(this);
         if (!silently) dispatcher.actually_fire();
-        this._old = new Model(this._model_name).fromDocument(this);
     }
 
     Model.prototype.del = function(silently) {
@@ -244,14 +316,14 @@ modelEngine = function(data) {
         var collection = this.getCollection().slice();
         for (var i=0; i<collection.length; i++) {
             // XXX: should use execute as well
-            collection[i] = new Model(this._model_name).
+            collection[i] = this.createChain().
                                 fromDocument(collection[i]);
-            collection[i]._old = new Model(this._model_name).
+            collection[i]._old = this.createChain().
                                 fromDocument(collection[i]);
         }
         return collection;
     }
 
     return {Model: Model,
-            dispatcher: dispatcher};
-}
+            Dispatcher: Dispatcher};
+});

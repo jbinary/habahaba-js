@@ -29,10 +29,11 @@ libs: init ../libs/*
 	cp ../libs/js-signals/dist/signals.js $(LIBDIR)/signals.js
 	cp ../libs/moment.min.js $(LIBDIR)/moment.min.js
 	cp ../libs/yate/lib/runtime.js $(LIBDIR)/yate-runtime.js
-	# XXX: will we separate css and images? Will we use require-js?
+	# XXX: will we separate css and images?
 	cp -TR ../libs/jQuery-contextmenu/src/ $(LIBDIR)/jQuery-contextmenu
 	cp ../libs/jquery.js $(LIBDIR)
 	cp ../libs/jquery.transit/jquery.transit.js $(LIBDIR)
+	cp ../libs/requirejs/require.js $(LIBDIR)
 
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js
