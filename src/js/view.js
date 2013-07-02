@@ -312,6 +312,11 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
                 var roster_item = new Model('.roster.items').get(roster_item_id);
                 roster_item.current_resource = resource;
                 roster_item.set();
+            },
+            call: function(roster_item_id) {
+                var plugins = data.loaded_plugins;
+                if (!plugins.jingle) return;
+                plugins.jingle.initiate(roster_item_id);
             }
         }
 
@@ -607,6 +612,7 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
             provides: ['view',
                        'view.chatstates',
                        'view.roster',
-                       'view.avatars']
+                       'view.avatars',
+                       'view.rtc']
         }, plugin, fields);
 });
