@@ -802,6 +802,19 @@ html, body {
     bottom: 47px;
     }
 
+    #chat-buttons .voip {
+        margin: 3px;
+        float: left;
+        display: block;
+        width: 27px;
+        height: 27px;
+        background: url("../img/video-icons/camera-on-button.png");
+        }
+
+    #chat-buttons .voip:hover {
+        background: url("../img/video-icons/camera-on-button-hover.png");
+        }
+
     #chat-buttons #emoticons {
         margin: 3px;
         float: left;
