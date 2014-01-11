@@ -52,13 +52,16 @@ require(['habahaba', 'jslix/jingle/jingle', 'models', 'jslix/jingle/adapter',
             state.set();
         },
         incoming_call: function(sid) {
-            var session = this.jingle.sessions[sid],
-                roster_item = new RosterItem().getByJID(session.peerjid),
+            var state = new Model('.jingle.state').get(),
+                session = this.jingle.sessions[sid];
+            if (state.state) {
+                session.sendTerminate('busy');
+            }
+            var roster_item = new RosterItem().getByJID(session.peerjid),
                 peer = new Model('.jingle.peer').get();
             peer.fulljid = session.peerjid;
             peer.roster_item = roster_item.pk;
             peer.set(true);
-            var state = new Model('.jingle.state').get();
             state.state = 'incoming';
             state.sid = sid;
             state.set()
