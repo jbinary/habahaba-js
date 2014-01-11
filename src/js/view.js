@@ -204,6 +204,7 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
                 // to calculate sizes properly. Then we can hide them back.
                 var panel = document.getElementById('tabs'),
                     $hidden = $('li:hidden', panel);
+                if (!panel) return;
                 var state = new Model('.view.tabs_state').get();
                 $hidden.show();
                 state.scrolling = panel.scrollHeight > panel.clientHeight;
@@ -220,6 +221,7 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
                     position = state.position,
                     tabs_count = new Model('.view.tabs').getCollection().length,
                     panel = document.getElementById('tabs');
+                if (!panel) return;
                 position += offset;
                 // Check that we won't quit the borders
                 if (position < 0) {
@@ -315,8 +317,21 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
             },
             call: function(roster_item_id) {
                 var plugins = data.loaded_plugins;
-                if (!plugins.jingle) return;
+                if (!plugins.jingle) return false;
                 plugins.jingle.initiate(roster_item_id);
+                return false;
+            },
+            accept_call: function() {
+                var plugins = data.loaded_plugins;
+                if (!plugins.jingle) return false;
+                plugins.jingle.accept_call();
+                return false;
+            },
+            hangup: function() {
+                var plugins = data.loaded_plugins;
+                if (!plugins.jingle) return false;
+                plugins.jingle.hangup();
+                return false;
             }
         }
 

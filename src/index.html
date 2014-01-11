@@ -32,6 +32,11 @@
         <script type="text/javascript" src="js/jingle.js"/></script>
 
         <script>
+            window.onload = function() {
+                if (document.location.hash.length > 1) {
+                    document.getElementById('jid').value = document.location.hash.slice(1) + '@server.local';
+                }
+            }
             var doLogin;
             require(['habahaba'], function(habahaba) {
                 doLogin = function(oForm, event) {

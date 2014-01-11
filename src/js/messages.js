@@ -50,24 +50,7 @@ require(['habahaba', 'jslix/exceptions', 'jslix/jid', 'jslix/stanzas',
             return value;
         },
         anyHandler: function(message) {
-            var roster_item = new RosterItem(),
-                bareJID = message.from.bare;
-            roster_item = roster_item.filter({
-                jid: bareJID
-            }).execute();
-            if (!roster_item.length) {
-                var group = new Model('.roster.groups').filter({
-                    special_group: 'not-in-roster'
-                }).execute()[0];
-                roster_item = new Model('.roster.items').new();
-                roster_item.jid = new JID(bareJID);
-                roster_item.presences = [];
-                roster_item.subscription = 'none';
-                roster_item.groups = [group.pk];
-                roster_item.set(true);
-            } else {
-                roster_item = roster_item[0];
-            }
+            var roster_item = new RosterItem().getByJID(message.from);
             if (!message.html) {
                 message.html = this.plain_to_xhtml(message.body);
             } else {

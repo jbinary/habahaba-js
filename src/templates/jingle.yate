@@ -1,0 +1,52 @@
+match /.jingle jingle {
+    state = .state.state
+    contact = if (.peer.roster_item) {
+        roster_item(.peer.roster_item)
+    }
+    <div id="video-wrap">
+        if state == 'active' {
+            @class = 'shown'
+        }
+        <h2>
+        "Conference with "
+        get_contact_display(contact)
+        </h2>
+        <video id="jingle-video" width="600" height="380">
+            if .state.src {
+                @src = .state.src
+            }
+        </video>
+        <div id="controls">
+            <a href="#" id="mute"></a>
+            <a href="#" id="webcam"></a>
+            <a href="#" id="full-screen"></a>
+            <a href="#" id="settings"></a>
+        </div>
+        <a href="#" id="finish-call" onclick="return view.hangup()"></a>
+    </div>
+    if state == 'initiating' || state == 'incoming' {
+        <div id="incoming">
+            <h2>
+            if state == 'initiating' {
+                "Calling "
+            }
+            get_contact_display(contact)
+            if state == 'incoming' {
+                " is calling"
+            }
+            "..."
+            </h2>
+            <div class="avatar">
+                if contact.avatar_hash {
+                    @class += ' hash-' + contact.avatar_hash
+                }
+            </div>
+            if .state.state != 'initiating' {
+                <a href="#" onclick="return view.accept_call()" id="answer"></a>
+            }
+            <a href="#" onclick="return view.hangup();" id="reject"></a>
+            /*<p style="display:none;">Веб-камера выключена<span></span></p>
+            <p id="webon">Веб-камера включена<span></span></p>*/
+        </div>
+    }
+}

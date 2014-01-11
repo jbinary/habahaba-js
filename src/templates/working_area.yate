@@ -41,7 +41,7 @@ match /.view.tabs[.active] inputarea {
             /*<a id="emoticons" href="#"></a>
             <a id="send" href="#"></a>*/
             /* TODO: show voip button only when appropriate plugin is loaded */
-            <a class="voip" href="#" title="Call" onclick="view.call({ .roster_item_id });"></a>
+            <a class="voip" href="#" title="Call" onclick="return view.call({ .roster_item_id });"></a>
         </div>
         <textarea id="typing-window-{ .pk }" class="typing-window" data-tab="{ .pk }">
             @data-preserve = "value,scrollTop,selectionDirection,selectionStart,selectionEnd"

@@ -14,6 +14,28 @@ require(['jslix/exceptions', 'libs/signals',
     var model = RosterItem.prototype = Object.create(Model.prototype);
     model.constructor = RosterItem;
 
+    model.getByJID = function(jid) {
+        var bareJID = jid.bare,
+            roster_item = new RosterItem();
+        roster_item = roster_item.filter({
+            jid: bareJID
+        }).execute();
+        if (!roster_item.length) {
+            var group = new Model('.roster.groups').filter({
+                special_group: 'not-in-roster'
+            }).execute()[0];
+            roster_item = new Model('.roster.items').new();
+            roster_item.jid = new JID(bareJID);
+            roster_item.presences = [];
+            roster_item.subscription = 'none';
+            roster_item.groups = [group.pk];
+            roster_item.set(true);
+        } else {
+            roster_item = roster_item[0];
+        }
+        return roster_item;
+    }
+
     model.getMaxPriorityPresence = function() {
         var priorities = [],
             lookup = {};

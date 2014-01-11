@@ -863,6 +863,10 @@ textarea.typing-window {
     border: 1px solid #0098a9;
 }
 
+    #video-wrap.shown {
+        display: block;
+    }
+
     #video-wrap h2 {
         font: bold 18px Arial;
         line-height: 24px;
@@ -933,7 +937,7 @@ textarea.typing-window {
         margin: 0;
     }
 
-    #incoming img {
+    #incoming div.avatar {
         width: 155px;
         height: 155px;
         margin: 10px auto;
