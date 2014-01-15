@@ -72,16 +72,12 @@ require(['habahaba', 'jslix/jingle/jingle', 'models', 'jslix/jingle/adapter',
                 that = this,
                 sel = $(vid);
             vid.autoplay = true;
-            /*sel.hide();*/
             this.RTC.attachMediaStream(sel, data.stream);
-            //waitForRemoteVideo(sel, sid);
             console.log(data.stream);
             data.stream.onended = function() {
                 console.log('stream ended', this.id);
-                //$('#' + id).remove();
             }
             var state = new Model('.jingle.state').get();
-            //state.state = 'active';
             state.src = sel.attr('src');
             state.set();
         },
