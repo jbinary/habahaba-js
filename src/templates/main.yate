@@ -38,6 +38,10 @@ func slideAnimation() {
     @onhide = "$(this).slideUp('slow');"
 }
 
+func draggable() {
+    "$(this).drags();"
+}
+
 match / render_my_presence {
     apply .my_presence render_my_presence
 }

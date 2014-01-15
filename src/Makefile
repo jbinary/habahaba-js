@@ -38,6 +38,8 @@ libs: init ../libs/*
 js: init js/*.js
 	mkdir -p $(BUILDDIR)/js
 	cp js/*.js $(BUILDDIR)/js
+	mkdir -p $(BUILDDIR)/js/view
+	cp js/view/*.js $(BUILDDIR)/js/view
 
 html: init index.html
 	cp index.html $(BUILDDIR)

@@ -4,6 +4,7 @@ match /.jingle jingle {
         roster_item(.peer.roster_item)
     }
     <div id="video-wrap">
+        @oncreate = draggable()
         if state == 'active' {
             @class = 'shown'
         }
@@ -26,6 +27,7 @@ match /.jingle jingle {
     </div>
     if state == 'initiating' || state == 'incoming' {
         <div id="incoming">
+            @onshow = draggable()
             <h2>
             if state == 'initiating' {
                 "Calling "
