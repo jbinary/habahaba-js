@@ -67,17 +67,6 @@ require(['habahaba', 'jslix/jingle/jingle', 'models', 'jslix/jingle/adapter',
             state.set()
         },
         remote_stream_added: function(data, sid) {
-            /*function waitForRemoteVideo(selector, sid) {
-                sess = that.jingle.sessions[sid];
-                videoTracks = sess.remoteStream.getVideoTracks();
-                if (videoTracks.length === 0 || selector[0].currentTime > 0) {
-                    $(document).trigger('callactive.jingle-interop', [selector, sid]);
-                    RTC.attachMediaStream(selector, data.stream); // FIXME: why do i have to do this for FF?
-                    console.log('waitForremotevideo', sess.peerconnection.iceConnectionState, sess.peerconnection.signalingState);
-                } else {
-                    setTimeout(function() { waitForRemoteVideo(selector, sid); }, 100);
-                }
-            }*/
             var sess = this.jingle.sessions[sid],
                 vid = document.getElementById('jingle-video'),
                 that = this,
