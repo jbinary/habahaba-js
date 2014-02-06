@@ -21,7 +21,13 @@ require(['habahaba', 'jslix/jingle/jingle', 'models', 'jslix/jingle/adapter',
             this.jingle = this._dispatcher.registerPlugin(
                 Jingle,
                 {
-                    'disco_plugin': this._data.loaded_plugins.disco.disco
+                    'disco_plugin': this._data.loaded_plugins.disco.disco,
+                    'ice_config': {
+                        "iceServers":[{
+                            // TODO: use discovery
+                            "url": "stun:stunserver.org"
+                        }]
+                    }
                 }
             );
             this.jingle.init();
