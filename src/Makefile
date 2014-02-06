@@ -12,7 +12,7 @@ templates: init templates/main.yate
 	mkdir -p $(BUILDDIR)/templates
 	for template in templates/main.yate; \
 	do \
-	    yate $$template > $(BUILDDIR)/$$template.js; \
+	    /home/binary/projects/habahaba-js/src/node_modules/yate/yate $$template > $(BUILDDIR)/$$template.js; \
 	done
 	rm templates/*.obj
 
@@ -33,6 +33,7 @@ libs: init ../libs/*
 	cp -TR ../libs/jQuery-contextmenu/src/ $(LIBDIR)/jQuery-contextmenu
 	cp ../libs/jquery.js $(LIBDIR)
 	cp ../libs/jquery.transit/jquery.transit.js $(LIBDIR)
+	cp ../libs/jquery.fullscreen.js $(LIBDIR)
 	cp ../libs/requirejs/require.js $(LIBDIR)
 
 js: init js/*.js

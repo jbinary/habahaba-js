@@ -1,7 +1,7 @@
 "use strict";
 require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
          'contextmenu/jquery.contextMenu', 'libs/jquery.transit',
-         'view/draggable'],
+         'view/draggable', 'libs/jquery.fullscreen'],
         function(habahaba, models, DOM_patcher) {
     var roster_search_timer, Model, dispatcher, fields = {};
     var plugin = function(jslix_dispatcher, data, storage, account_storage) {
@@ -332,6 +332,10 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
                 var plugins = data.loaded_plugins;
                 if (!plugins.jingle) return false;
                 plugins.jingle.hangup();
+                return false;
+            },
+            jingle_fullscreen: function() {
+                $('#video-wrap').toggleFullScreen();
                 return false;
             }
         }

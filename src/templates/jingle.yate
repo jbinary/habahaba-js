@@ -20,7 +20,9 @@ match /.jingle jingle {
         <div id="controls">
             <a href="#" id="mute"></a>
             <a href="#" id="webcam"></a>
-            <a href="#" id="full-screen"></a>
+            <a href="#" id="full-screen">
+                @onclick="return view.jingle_fullscreen()"
+            </a>
             <a href="#" id="settings"></a>
         </div>
         <a href="#" id="finish-call" onclick="return view.hangup()"></a>

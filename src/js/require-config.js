@@ -16,6 +16,7 @@ require.config({
         'contextmenu/jquery.contextMenu': ['libs/jquery'],
         'contextmenu/jquery.ui.position': ['contextmenu/jquery.contextMenu'],
         'libs/jquery.transit': ['libs/jquery'],
+        'libs/jquery.fullscreen': ['libs/jquery'],
         'cryptojs/core': {
             exports: 'CryptoJS'
         },
