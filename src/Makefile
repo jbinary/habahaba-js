@@ -2,6 +2,7 @@ SHELL := /bin/bash
 BUILDDIR=../build
 JSDIR=$(BUILDDIR)/js
 LIBDIR=$(JSDIR)/libs
+YATE=/usr/bin/yate
 
 all: html css img templates js libs
 
@@ -12,7 +13,7 @@ templates: init templates/main.yate
 	mkdir -p $(BUILDDIR)/templates
 	for template in templates/main.yate; \
 	do \
-	    /home/binary/projects/habahaba-js/src/node_modules/yate/yate $$template > $(BUILDDIR)/$$template.js; \
+	    $(YATE) $$template > $(BUILDDIR)/$$template.js; \
 	done
 	rm templates/*.obj
 
