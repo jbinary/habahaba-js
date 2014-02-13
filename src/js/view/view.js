@@ -341,6 +341,7 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
                         plugins.jingle.toggle_fullscreen(
                             !!$(document).fullScreen()
                         );
+                        $('#video-wrap.fullscreen').attr('style', '');
                     });
                 }
                 $('#video-wrap').toggleFullScreen();

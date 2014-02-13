@@ -5,7 +5,7 @@ match /.jingle jingle {
     }
     <div id="video-wrap" class="window">
         if .state.fullscreen {
-            @class += ' fullscreen'
+            @class += ' fullscreen draggable'
         }
         @oncreate = draggable()
         if state == 'active' {

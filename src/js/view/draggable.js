@@ -31,7 +31,7 @@ require(['libs/jquery'], function($) {
         var $elements = (opt.handle === "") ? this : this.find(opt.handle);
 
         $elements.css('cursor', opt.cursor).on("mousedown", function(e) {
-            if (e.button != 0) {
+            if (e.button != 0 || $(this).hasClass(opt.draggableClass)) {
                 return;
             }
             if(opt.handle === "") {
