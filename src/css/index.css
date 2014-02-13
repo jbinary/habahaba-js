@@ -958,6 +958,8 @@ textarea.typing-window {
         font: bold 18px Arial;
         line-height: 24px;
         margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     #incoming div.avatar {
