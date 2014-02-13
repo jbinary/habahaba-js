@@ -335,7 +335,17 @@ require(['habahaba', 'models', 'DOM-patch', 'libs/jquery',
                 return false;
             },
             jingle_fullscreen: function() {
+                if (!that.fullscreen_listener_installed) {
+                    that.fullscreen_listener_installed = true;
+                    $(document).bind("fullscreenchange", function() {
+                        plugins.jingle.toggle_fullscreen(
+                            !!$(document).fullScreen()
+                        );
+                    });
+                }
                 $('#video-wrap').toggleFullScreen();
+                var plugins = data.loaded_plugins;
+                if (!plugins.jingle) return false;
                 return false;
             }
         }

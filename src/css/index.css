@@ -861,6 +861,15 @@ textarea.typing-window {
     height: 520px;
     margin-left: -315px;
     border: 1px solid #0098a9;
+    z-index: 5;
+}
+
+#video-wrap.fullscreen {
+    margin: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
     #video-wrap.shown {
@@ -877,12 +886,23 @@ textarea.typing-window {
         margin: 0 15px;
     }
 
+    #video-wrap.fullscreen video {
+        height: calc(100% - 130px);
+        width: 100%;
+        margin: 0;
+    }
+
     #video-wrap #controls {
         height: 33px;
         width: 598px;
         border: 1px solid #bdbdbd;
         background: #e6e6e6;
         margin: 0 15px;
+    }
+
+    #video-wrap.fullscreen #controls {
+        margin: 0;
+        width: 100%;
     }
 
     #video-wrap #controls a {

@@ -39,7 +39,8 @@ require(['habahaba', 'jslix/jingle/jingle', 'models', 'jslix/jingle/adapter',
             });
             this._data.jingle = {
                 peer: [{'pk': 'singleton'}],
-                state:[{'pk': 'singleton'}]
+                state:[{'pk': 'singleton',
+                        'fullscreen': false}],
             };
             signals.remote_stream.added.add(this.remote_stream_added.bind(this));
             signals.call.incoming.add(this.incoming_call.bind(this));
@@ -117,6 +118,18 @@ require(['habahaba', 'jslix/jingle/jingle', 'models', 'jslix/jingle/adapter',
                 state.state = 'active';
                 state.set();
             }
+        },
+        toggle_fullscreen: function(new_state) {
+            var state = new Model('.jingle.state').get();
+            if (!state) {
+                return;
+            }
+            if (new_state === undefined) {
+                state.fullscreen = !state.fullscreen;
+            } else {
+                state.fullscreen = new_state;
+            }
+            state.set();
         }
     });
 });
