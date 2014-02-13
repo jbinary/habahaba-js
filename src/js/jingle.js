@@ -36,6 +36,11 @@ require(['habahaba', 'jslix/jingle/jingle', 'models', 'jslix/jingle/adapter',
             adapter.getUserMediaWithConstraints(this.RTC, ['audio', 'video']);
             signals.media.ready.add(function(stream) {
                 that.jingle.localStream = stream;
+                var sel = $('#jingle-myself-video')
+                that.RTC.attachMediaStream(sel, stream);
+                var state = new Model('.jingle.state').get();
+                state.local_src = sel.attr('src');
+                state.set();
             });
             this._data.jingle = {
                 peer: [{'pk': 'singleton'}],

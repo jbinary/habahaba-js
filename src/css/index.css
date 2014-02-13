@@ -895,6 +895,14 @@ textarea.typing-window {
         margin: 0;
     }
 
+    #video-wrap #jingle-myself-video {
+        position: absolute;
+        right: 15px;
+        bottom: 105px;
+        width: 15%;
+        height: calc((100% - 130px) * 0.15);
+    }
+
     #video-wrap #controls {
         height: 33px;
         width: 598px;

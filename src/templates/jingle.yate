@@ -15,9 +15,14 @@ match /.jingle jingle {
         "Conference with "
         get_contact_display(contact)
         </h2>
-        <video id="jingle-video" width="600" height="380">
+        <video id="jingle-video" width="600" height="380" autoplay="autoplay">
             if .state.src {
                 @src = .state.src
+            }
+        </video>
+        <video id="jingle-myself-video" autoplay="autoplay">
+            if .state.local_src {
+                @src = .state.local_src
             }
         </video>
         <div id="controls">
