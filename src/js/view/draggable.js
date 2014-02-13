@@ -31,6 +31,9 @@ require(['libs/jquery'], function($) {
         var $elements = (opt.handle === "") ? this : this.find(opt.handle);
 
         $elements.css('cursor', opt.cursor).on("mousedown", function(e) {
+            if (e.button != 0) {
+                return;
+            }
             if(opt.handle === "") {
                 $selected = $(this);
                 $selected.addClass(opt.draggableClass);
