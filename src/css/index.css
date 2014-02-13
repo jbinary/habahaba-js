@@ -851,6 +851,10 @@ textarea.typing-window {
     padding: 3px;
     }
 
+.window {
+    z-index: 100;
+}
+
 #video-wrap {
     display: none;
     position: absolute;
@@ -861,7 +865,6 @@ textarea.typing-window {
     height: 520px;
     margin-left: -315px;
     border: 1px solid #0098a9;
-    z-index: 5;
 }
 
 #video-wrap.fullscreen {

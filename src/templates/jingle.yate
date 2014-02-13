@@ -3,13 +3,13 @@ match /.jingle jingle {
     contact = if (.peer.roster_item) {
         roster_item(.peer.roster_item)
     }
-    <div id="video-wrap">
+    <div id="video-wrap" class="window">
         if .state.fullscreen {
-            @class += 'fullscreen '
+            @class += ' fullscreen'
         }
         @oncreate = draggable()
         if state == 'active' {
-            @class += 'shown '
+            @class += ' shown'
         }
         <h2>
         "Conference with "
@@ -31,7 +31,7 @@ match /.jingle jingle {
         <a href="#" id="finish-call" onclick="return view.hangup()"></a>
     </div>
     if state == 'initiating' || state == 'incoming' {
-        <div id="incoming">
+        <div id="incoming" class="window">
             @onshow = draggable()
             <h2>
             if state == 'initiating' {
